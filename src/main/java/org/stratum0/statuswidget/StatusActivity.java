@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -30,6 +31,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
     SpaceStatus status;
     EditText nameBox;
     ToggleButton toggleButton;
+    TextView currentUser;
 
     private class SuccessCheckTask extends AsyncTask<Boolean, Void, Boolean> {
         @Override
@@ -76,6 +78,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
 
         toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
         nameBox = (EditText) findViewById(R.id.editText);
+        currentUser = (TextView) findViewById(R.id.textView);
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE);
 
         toggleButton.setOnClickListener(this);
@@ -100,6 +103,11 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
         Log.d(StratumsphereStatusProvider.TAG, "Open since: " + status.getSince());
 
         toggleButton.setChecked(status.isOpen());
+        if(status.isOpen()) {
+            currentUser.setText(status.getSince() + "(" + status.getOpenedBy() + ")");
+        } else {
+            currentUser.setText(status.getSince().toString());
+        }
     }
 
     @Override

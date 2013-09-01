@@ -21,8 +21,15 @@
         android:layout_height="wrap_content"
         android:text="Toggle Status"
         android:id="@+id/toggleButton"
-        android:layout_weight="2.54"
         android:checked="false"
         android:textOn="@string/open"
         android:textOff="@string/closed" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:id="@+id/textView"
+        android:layout_gravity="center"
+        android:layout_weight="1" />
+
 </LinearLayout>
