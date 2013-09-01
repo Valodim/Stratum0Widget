@@ -104,7 +104,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
 
         toggleButton.setChecked(status.isOpen());
         if(status.isOpen()) {
-            currentUser.setText(status.getSince() + "(" + status.getOpenedBy() + ")");
+            currentUser.setText(status.getSince() + " (" + status.getOpenedBy() + ")");
         } else {
             currentUser.setText(status.getSince().toString());
         }
