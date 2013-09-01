@@ -88,8 +88,6 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
     }
 
     private void updateActivityInfo() {
-        ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-
         try {
             status.update();
         } catch (ParseException e) {
