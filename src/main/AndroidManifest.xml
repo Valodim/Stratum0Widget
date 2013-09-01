@@ -18,6 +18,14 @@
 			<meta-data android:name="android.appwidget.provider"
                android:resource="@xml/stratumsphere_info" />
         </receiver>
+        <activity
+            android:name=".StatusActivity"
+            android:label="Status">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

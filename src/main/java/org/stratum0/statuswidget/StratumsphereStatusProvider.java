@@ -26,7 +26,7 @@ import android.app.Notification;
 
 public class StratumsphereStatusProvider extends AppWidgetProvider {
 	
-	private static final String TAG = "Stratum0";
+	public static final String TAG = "Stratum0";
 	private static final String url = "http://status.stratum0.org/status.json";
 	private static final int nID = 1;
 
@@ -90,9 +90,9 @@ public class StratumsphereStatusProvider extends AppWidgetProvider {
 				}
 				else {
 					//check if connected to Stratum0 while space status is closed
-					if (wifiInfo.getSSID() != null && wifiInfo.getSSID().equals("Stratum0")) {
-							openSpace();
-							currentImage = R.drawable.stratum0_closed;
+                    if (wifiInfo.getSSID() != null && (wifiInfo.getSSID().equals("Stratum0") || wifiInfo.getSSID().equals("Stratum0_5g"))) {
+                        openSpace();
+                        currentImage = R.drawable.stratum0_closed;
 							upTimeText = "";
 							text += " WIFI";
 							//request action from user
@@ -131,7 +131,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider {
 		// call some API to open the Space (change status to open)
 	}
 
-	public String getStatusFromJSON() {
+	public static String getStatusFromJSON() {
 		String result = "";
 		DefaultHttpClient client = new DefaultHttpClient();
 		try {
