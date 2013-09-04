@@ -16,8 +16,11 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.RemoteViews;
 import android.util.Log;
 import android.app.NotificationManager;
@@ -115,19 +118,67 @@ public class StratumsphereStatusProvider extends AppWidgetProvider {
 			views.setTextViewText(R.id.lastUpdateTextView, text);
 			views.setTextViewText(R.id.spaceUptimeTextView, upTimeText);
 			
-			// Register an onClickListener
+			// Register an onClickListener to custom "click" intent
 			Intent intent = new Intent(context, StratumsphereStatusProvider.class);
-			intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+			intent.setAction("click");
 			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-			PendingIntent updateOnClickIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-			views.setOnClickPendingIntent(R.id.statusImageView, updateOnClickIntent);
-			
+			PendingIntent clickIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			views.setOnClickPendingIntent(R.id.statusImageView, clickIntent);
+
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
+		context.getSharedPreferences("preferences", Context.MODE_PRIVATE).edit().putInt("clicks", 0).commit();
+
 	}
-	
-	
-	private void openSpace() {
+
+	@Override
+	public void onReceive(final Context context, final Intent intent) {
+		if(intent.getAction().equals("click")) {
+
+			// Increment click count for every received click intent
+			final SharedPreferences prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE);
+			int clickCount = prefs.getInt("clicks", 0);
+			prefs.edit().putInt("clicks", ++clickCount).commit();
+
+			final Handler handler = new Handler() {
+				public void handleMessage(Message msg) {
+
+					int clickCount = prefs.getInt("clicks", 0);
+
+					if (clickCount > 1) {
+						Intent activityIntent = new Intent(context, StatusActivity.class);
+						activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(activityIntent);
+					}
+					else {
+						int[] appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+
+						Intent updateIntent = new Intent(context, StratumsphereStatusProvider.class);
+						updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+						updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+						context.sendBroadcast(updateIntent);
+					}
+
+					prefs.edit().putInt("clicks", 0).commit();
+				}
+			};
+
+			// On the first recv'd click intent, wait 500ms before calling the handler to wait
+			// for a possible second click
+			if (clickCount == 1) new Thread() {
+				@Override
+				public void run(){
+					try {
+						synchronized(this) { wait(500); }
+						handler.sendEmptyMessage(0);
+					} catch(InterruptedException ex) {}
+				}
+			}.start();
+		}
+		super.onReceive(context, intent);
+	}
+
+    private void openSpace() {
 		// call some API to open the Space (change status to open)
 	}
 
@@ -148,7 +199,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider {
 		}
 		return result;
 	}
- 	
+
 
 
 }
