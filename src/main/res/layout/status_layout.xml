@@ -25,6 +25,14 @@
         android:textOn="@string/open"
         android:textOff="@string/closed" />
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/inherit"
+        android:id="@+id/inheritButton"
+        android:layout_gravity="center"
+        android:enabled="false" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="0dp"

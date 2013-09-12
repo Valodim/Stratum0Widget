@@ -25,12 +25,13 @@ import java.net.URLConnection;
 /**
  * Created by tsuro on 9/1/13.
  */
-public class StatusActivity extends Activity implements Button.OnClickListener, TextWatcher {
+public class StatusActivity extends Activity implements Button.OnClickListener {
 
     private SharedPreferences prefs;
     SpaceStatus status;
     EditText nameBox;
     ToggleButton toggleButton;
+    Button inheritButton;
     TextView currentUser;
 
     private class SuccessCheckTask extends AsyncTask<Boolean, Void, Boolean> {
@@ -53,6 +54,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
         @Override
         protected void onPreExecute() {
             toggleButton.setEnabled(false);
+            inheritButton.setEnabled(false);
             StatusActivity.this.setProgressBarIndeterminate(true);
             StatusActivity.this.setProgressBarIndeterminateVisibility(true);
         }
@@ -65,6 +67,9 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
                 Toast.makeText(StatusActivity.this, "Status update failed.", Toast.LENGTH_LONG).show();
             }
             toggleButton.setEnabled(true);
+            if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
+                inheritButton.setEnabled(status.isOpen());
+            }
             StatusActivity.this.setProgressBarIndeterminate(false);
             StatusActivity.this.setProgressBarIndeterminateVisibility(false);
         }
@@ -77,17 +82,35 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
         setContentView(R.layout.status_layout);
 
         toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        inheritButton = (Button) findViewById(R.id.inheritButton);
         nameBox = (EditText) findViewById(R.id.editText);
         currentUser = (TextView) findViewById(R.id.textView);
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE);
 
+        status = new SpaceStatus();
+
         toggleButton.setOnClickListener(this);
-        nameBox.addTextChangedListener(this);
+        inheritButton.setOnClickListener(this);
+        nameBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(status.isOpen()) {
+                    inheritButton.setEnabled(!nameBox.getText().toString().equals(status.getOpenedBy()));
+                }
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("username", editable.toString());
+                editor.commit();
+            }
+        });
 
         String username = prefs.getString("username", "DooRMasteR");
         nameBox.setText(username);
-
-        status = new SpaceStatus();
     }
 
     private void updateActivityInfo() {
@@ -103,6 +126,9 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
         Log.d(StratumsphereStatusProvider.TAG, "Open since: " + status.getSince());
 
         toggleButton.setChecked(status.isOpen());
+        if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
+            inheritButton.setEnabled(status.isOpen());
+        }
         if(status.isOpen()) {
             currentUser.setText(status.getSince() + " (" + status.getOpenedBy() + ")");
         } else {
@@ -143,18 +169,4 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
         new SuccessCheckTask().execute(b);
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("username", editable.toString());
-        editor.commit();
-    }
 }
