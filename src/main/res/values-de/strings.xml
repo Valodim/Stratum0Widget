@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">StratumsphereStatusWidget</string>
+    <string name="nNotOpen">Du bist im Space, aber er ist nicht als offen gemeldet.</string>
+    <string name="ImageViewDescription">Stratum0 Status</string>
+    <string name="defaultTime">Aktualisiert:\n--:--</string>
+    <string name="closed">Zu</string>
+    <string name="open">Offen</string>
+    <string name="inherit">Space Status übernehmen</string>
+
+</resources>
