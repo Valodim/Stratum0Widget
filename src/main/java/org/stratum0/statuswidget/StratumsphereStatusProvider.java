@@ -54,7 +54,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider {
 		nNotOpen.tickerText = context.getText(R.string.nNotOpen);
 		nNotOpen.when = System.currentTimeMillis();
 		nNotOpen.defaults = Notification.DEFAULT_ALL;
-		nNotOpen.setLatestEventInfo(context, "Warnung!", "Schnell den Space im IRC als offen makieren.", contentIntent);
+		nNotOpen.setLatestEventInfo(context, context.getText(R.string.nNotOpenLatestEventInfo1), context.getText(R.string.nNotOpenLatestEventInfo2), contentIntent);
 		
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main);
 		int currentImage = R.drawable.stratum0_unknown;
@@ -63,7 +63,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider {
 		for (int i=0; i<appWidgetIds.length; i++) {
 			int appWidgetId = appWidgetIds[i];
 
-			String updatingText = "updating ...\n";
+			String updatingText = (String) context.getText(R.string.updating);
 			views.setTextViewText(R.id.lastUpdateTextView, updatingText);
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
@@ -72,7 +72,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider {
 		Date now = new GregorianCalendar().getTime();
 
 		String upTimeText = "";
-		String text = String.format("Updated:\n%02d:%02d", now.getHours(), now.getMinutes());
+		String text = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime), now.getHours(), now.getMinutes());
 
 		if (jsonText.startsWith("{") && jsonText.endsWith("}")) {
 			try {

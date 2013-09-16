@@ -2,9 +2,22 @@
 <resources>
 
     <string name="app_name">StratumsphereStatusWidget</string>
+
+    <!-- Notification texts -->
     <string name="nNotOpen">You\'re at the hackerspace, don\'t forget to change the status!</string>
+    <string name="nNotOpenLatestEventInfo1">Attention!</string>
+    <string name="nNotOpenLatestEventInfo2">Change the space status to \"open\".</string>
+
+    <!-- Messages -->
+    <string name="updateFailed">Status update failed.</string>
+
+    <!-- Labels -->
     <string name="ImageViewDescription">Stratum0 Status</string>
     <string name="defaultTime">Updated:\n--:--</string>
+    <string name="currentTime">Updated</string>
+    <string name="updating">updating...\n</string>
+
+    <!-- Buttons -->
     <string name="closed">Closed</string>
     <string name="open">Open</string>
     <string name="inherit">Inherit Space Status</string>

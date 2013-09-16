@@ -2,11 +2,24 @@
 <resources>
 
     <string name="app_name">StratumsphereStatusWidget</string>
+
+    <!-- Notification texts -->
     <string name="nNotOpen">Du bist im Space, aber er ist nicht als offen gemeldet.</string>
+    <string name="nNotOpenLatestEventInfo1">Achtung!</string>
+    <string name="nNotOpenLatestEventInfo2">Schnell den Space als offen makieren.</string>
+
+    <!-- Messages -->
+    <string name="updateFailed">Aktualisierung fehlgeschlagen.</string>
+
+    <!-- Labels -->
     <string name="ImageViewDescription">Stratum0 Status</string>
     <string name="defaultTime">Aktualisiert:\n--:--</string>
+    <string name="currentTime">Aktualisiert</string>
+    <string name="updating">aktualisiere...\n</string>
+
+    <!-- Buttons -->
     <string name="closed">Zu</string>
     <string name="open">Offen</string>
-    <string name="inherit">Space Status übernehmen</string>
+    <string name="inherit">Spacestatus übernehmen</string>
 
 </resources>

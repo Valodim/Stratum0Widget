@@ -64,7 +64,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
             updateActivityInfo();
             if(!success) {
                 Log.e(StratumsphereStatusProvider.TAG, "Status update failed.");
-                Toast.makeText(StatusActivity.this, "Status update failed.", Toast.LENGTH_LONG).show();
+                Toast.makeText(StatusActivity.this, getText(R.string.updateFailed), Toast.LENGTH_LONG).show();
             }
             toggleButton.setEnabled(true);
             if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
