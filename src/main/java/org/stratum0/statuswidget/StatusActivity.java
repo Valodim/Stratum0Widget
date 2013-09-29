@@ -22,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import static org.stratum0.statuswidget.GlobalVars.TAG;
+
 /**
  * Created by tsuro on 9/1/13.
  */
@@ -44,7 +46,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
                         return true;
                     Thread.sleep(500);
                 } catch (ParseException e) {
-                    Log.d(StratumsphereStatusProvider.TAG, "Could not parse status response.");
+                    Log.d(TAG, "Could not parse status response.");
                 } catch (InterruptedException e) {
                 }
             }
@@ -63,7 +65,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
         protected void onPostExecute(Boolean success) {
             updateActivityInfo();
             if(!success) {
-                Log.e(StratumsphereStatusProvider.TAG, "Status update failed.");
+                Log.e(TAG, "Status update failed.");
                 Toast.makeText(StatusActivity.this, getText(R.string.updateFailed), Toast.LENGTH_LONG).show();
             }
             toggleButton.setEnabled(true);
@@ -117,13 +119,13 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
         try {
             status.update();
         } catch (ParseException e) {
-            Log.e(StratumsphereStatusProvider.TAG, "Could not parse space status.", e);
+            Log.e(TAG, "Could not parse space status.", e);
             return;
         }
 
-        Log.d(StratumsphereStatusProvider.TAG, "Open?  " + status.isOpen());
-        Log.d(StratumsphereStatusProvider.TAG, "Opened by: " + status.getOpenedBy());
-        Log.d(StratumsphereStatusProvider.TAG, "Open since: " + status.getSince());
+        Log.d(TAG, "Open?  " + status.isOpen());
+        Log.d(TAG, "Opened by: " + status.getOpenedBy());
+        Log.d(TAG, "Open since: " + status.getSince());
 
         toggleButton.setChecked(status.isOpen());
         if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
@@ -159,10 +161,10 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
             c.connect();
             c.getContent();
         } catch (MalformedURLException e) {
-            Log.e(StratumsphereStatusProvider.TAG, "Update request: malformed URL.", e);
+            Log.e(TAG, "Update request: malformed URL.", e);
             return;
         } catch (IOException e) {
-            Log.e(StratumsphereStatusProvider.TAG, "Update request: could not connect to server.", e);
+            Log.e(TAG, "Update request: could not connect to server.", e);
             return;
         }
 
