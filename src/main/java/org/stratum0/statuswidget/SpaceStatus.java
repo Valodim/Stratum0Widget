@@ -13,13 +13,13 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.stratum0.statuswidget.GlobalVars.TAG;
+import static org.stratum0.statuswidget.GlobalVars.url;
+
 /**
  * Created by tsuro on 9/1/13.
  */
 public class SpaceStatus {
-
-    private static final String TAG = "Stratum0";
-    private static final String url = "http://status.stratum0.org/status.json";
 
     private boolean isOpen;
     private Date since;

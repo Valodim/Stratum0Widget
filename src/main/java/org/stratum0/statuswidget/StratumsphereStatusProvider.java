@@ -26,11 +26,12 @@ import android.util.Log;
 import android.app.NotificationManager;
 import android.app.Notification;
 
+import static org.stratum0.statuswidget.GlobalVars.TAG;
+import static org.stratum0.statuswidget.GlobalVars.url;
+
 
 public class StratumsphereStatusProvider extends AppWidgetProvider {
 	
-	public static final String TAG = "Stratum0";
-	private static final String url = "http://status.stratum0.org/status.json";
 	private static final int nID = 1;
 
 	@Override
