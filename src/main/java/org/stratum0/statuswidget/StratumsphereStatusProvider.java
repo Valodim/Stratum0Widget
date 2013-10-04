@@ -3,6 +3,7 @@ package org.stratum0.statuswidget;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -30,104 +31,23 @@ import static org.stratum0.statuswidget.GlobalVars.TAG;
 import static org.stratum0.statuswidget.GlobalVars.url;
 
 
-public class StratumsphereStatusProvider extends AppWidgetProvider {
+public class StratumsphereStatusProvider extends AppWidgetProvider implements SpaceStatusListener {
 	
 	private static final int nID = 1;
+    private SpaceStatus status;
+    private int[] appWidgetIds;
+    private AppWidgetManager appWidgetManager;
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		
-		//get WiFi APIs
-		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		
-		//Prepare notification
-		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification nNotOpen = new Notification();
-		
-		//legacy work for Android 2.x (where notifications need an intenthandler)
-		Intent notificationIntent = new Intent(context, StratumsphereStatusProvider.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-		nNotOpen.defaults = Notification.DEFAULT_ALL;
-		
-		//setting up the notification
-		nNotOpen.icon = R.drawable.stratum0_unknown;
-		nNotOpen.tickerText = context.getText(R.string.nNotOpen);
-		nNotOpen.when = System.currentTimeMillis();
-		nNotOpen.defaults = Notification.DEFAULT_ALL;
-		nNotOpen.setLatestEventInfo(context, context.getText(R.string.nNotOpenLatestEventInfo1), context.getText(R.string.nNotOpenLatestEventInfo2), contentIntent);
-		
-		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main);
-		int currentImage = R.drawable.stratum0_unknown;
+		this.appWidgetIds = appWidgetIds;
+        this.appWidgetManager = appWidgetManager;
 
-		// indicate that the status is currently updating
-		for (int i=0; i<appWidgetIds.length; i++) {
-			int appWidgetId = appWidgetIds[i];
+        SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(context);
+        updateTask.addListener(this);
+        updateTask.execute();
 
-			String updatingText = (String) context.getText(R.string.updating);
-			views.setTextViewText(R.id.lastUpdateTextView, updatingText);
-			appWidgetManager.updateAppWidget(appWidgetId, views);
-		}
-
-		String jsonText = getStatusFromJSON();
-		Date now = new GregorianCalendar().getTime();
-
-		String upTimeText = "";
-		String text = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime), now.getHours(), now.getMinutes());
-
-		if (jsonText.startsWith("{") && jsonText.endsWith("}")) {
-			try {
-				JSONObject jsonObject = new JSONObject(jsonText);
-				String upTime = jsonObject.getString("since");
-				SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-				Date d = f.parse(upTime);
-				long difference = now.getTime() - d.getTime();
-				//TODO Date class probably offers a better way to do this
-				long upTimeMins = (difference)/(1000*60) % 60;
-				long upTimeHours = (difference)/(1000*60) / 60;
-				upTimeText = String.format("%02d     %02d", upTimeHours, upTimeMins);
-
-				if (jsonObject.getBoolean("isOpen")) {
-					currentImage = R.drawable.stratum0_open;
-					//dismiss previous useractionrequest
-					notificationManager.cancel(nID);
-				}
-				else {
-					//check if connected to Stratum0 while space status is closed
-                    if (wifiInfo.getSSID() != null && (wifiInfo.getSSID().equals("Stratum0") || wifiInfo.getSSID().equals("Stratum0_5g"))) {
-                        openSpace();
-                        currentImage = R.drawable.stratum0_closed;
-							upTimeText = "";
-							text += " WIFI";
-							//request action from user
-							notificationManager.notify(nID, nNotOpen);
-					}
-					else {
-						//if not on matching SSID (or not anymore) dismiss the notification
-						currentImage = R.drawable.stratum0_closed;
-						notificationManager.cancel(nID);
-					}
-				}
-			} catch (Exception e) {
-				Log.w(TAG, "Exception " + e);
-			}
-		}
-		for (int i=0; i<appWidgetIds.length; i++) {
-			int appWidgetId = appWidgetIds[i];
-
-			views.setImageViewResource(R.id.statusImageView, currentImage);
-			views.setTextViewText(R.id.lastUpdateTextView, text);
-			views.setTextViewText(R.id.spaceUptimeTextView, upTimeText);
-			
-			// Register an onClickListener to custom "click" intent
-			Intent intent = new Intent(context, StratumsphereStatusProvider.class);
-			intent.setAction("click");
-			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-			PendingIntent clickIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-			views.setOnClickPendingIntent(R.id.statusImageView, clickIntent);
-
-			appWidgetManager.updateAppWidget(appWidgetId, views);
-		}
 		context.getSharedPreferences("preferences", Context.MODE_PRIVATE).edit().putInt("clicks", 0).commit();
 
 	}
@@ -179,11 +99,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider {
 		super.onReceive(context, intent);
 	}
 
-    private void openSpace() {
-		// call some API to open the Space (change status to open)
-	}
-
-	public static String getStatusFromJSON() {
+    public static String getStatusFromJSON() {
 		String result = "";
 		DefaultHttpClient client = new DefaultHttpClient();
 		try {
@@ -202,5 +118,89 @@ public class StratumsphereStatusProvider extends AppWidgetProvider {
 	}
 
 
+    @Override
+    public void onPreSpaceStatusUpdate(Context context) {
 
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main);
+        String updatingText = (String) context.getText(R.string.updating);
+
+        // indicate that the status is currently updating
+        for (int i=0; i<appWidgetIds.length; i++) {
+            int appWidgetId = appWidgetIds[i];
+
+            views.setTextViewText(R.id.lastUpdateTextView, updatingText);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+
+    }
+
+    @Override
+    public void onPostSpaceStatusUpdate(Context context) {
+
+        status = SpaceStatus.getInstance();
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main);
+        int currentImage = R.drawable.stratum0_unknown;
+
+        //get WiFi APIs
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+
+        //Prepare notification
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification nNotOpen = new Notification();
+
+        //legacy work for Android 2.x (where notifications need an intenthandler)
+        Intent notificationIntent = new Intent(context, StratumsphereStatusProvider.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        nNotOpen.defaults = Notification.DEFAULT_ALL;
+
+        //setting up the notification
+        nNotOpen.icon = R.drawable.stratum0_unknown;
+        nNotOpen.tickerText = context.getText(R.string.nNotOpen);
+        nNotOpen.when = System.currentTimeMillis();
+        nNotOpen.defaults = Notification.DEFAULT_ALL;
+        nNotOpen.setLatestEventInfo(context, context.getText(R.string.nNotOpenLatestEventInfo1), context.getText(R.string.nNotOpenLatestEventInfo2), contentIntent);
+
+        String upTimeText = String.format("%02d     %02d", status.getUpTimeHours(), status.getUpTimeMins());
+        String lastUpdateText = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime), status.getLastUpdated().get(Calendar.HOUR_OF_DAY), status.getLastUpdated().get(Calendar.MINUTE));
+
+        if (status.isOpen()) {
+            currentImage = R.drawable.stratum0_open;
+            //dismiss previous useractionrequest
+            notificationManager.cancel(nID);
+        }
+        else {
+            //check if connected to Stratum0 while space status is closed
+            if (wifiInfo.getSSID() != null && (wifiInfo.getSSID().equals("Stratum0") || wifiInfo.getSSID().equals("Stratum0_5g"))) {
+                currentImage = R.drawable.stratum0_closed;
+                upTimeText = "";
+                lastUpdateText += " WIFI";
+                //request action from user
+                notificationManager.notify(nID, nNotOpen);
+            }
+            else {
+                //if not on matching SSID (or not anymore) dismiss the notification
+                currentImage = R.drawable.stratum0_closed;
+                notificationManager.cancel(nID);
+            }
+        }
+
+        for (int i=0; i<appWidgetIds.length; i++) {
+            int appWidgetId = appWidgetIds[i];
+
+            views.setImageViewResource(R.id.statusImageView, currentImage);
+            views.setTextViewText(R.id.lastUpdateTextView, lastUpdateText);
+            views.setTextViewText(R.id.spaceUptimeTextView, upTimeText);
+
+            // Register an onClickListener to custom "click" intent
+            Intent intent = new Intent(context, StratumsphereStatusProvider.class);
+            intent.setAction("click");
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+            PendingIntent clickIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.statusImageView, clickIntent);
+
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+
+    }
 }

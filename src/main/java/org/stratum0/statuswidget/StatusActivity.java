@@ -3,7 +3,6 @@ package org.stratum0.statuswidget;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,31 +10,31 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 
 import static org.stratum0.statuswidget.GlobalVars.TAG;
 
 /**
  * Created by tsuro on 9/1/13.
  */
-public class StatusActivity extends Activity implements Button.OnClickListener {
+public class StatusActivity extends Activity implements Button.OnClickListener, SpaceStatusListener {
 
     private SharedPreferences prefs;
-    SpaceStatus status;
+    private SpaceStatus status;
     EditText nameBox;
-    ToggleButton toggleButton;
+    ToggleButton openCloseButton;
     Button inheritButton;
-    TextView currentUser;
+    TextView currentStatus;
 
+    /*
     private class SuccessCheckTask extends AsyncTask<Boolean, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Boolean... expected) {
@@ -55,7 +54,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
 
         @Override
         protected void onPreExecute() {
-            toggleButton.setEnabled(false);
+            openCloseButton.setEnabled(false);
             inheritButton.setEnabled(false);
             StatusActivity.this.setProgressBarIndeterminate(true);
             StatusActivity.this.setProgressBarIndeterminateVisibility(true);
@@ -68,7 +67,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
                 Log.e(TAG, "Status update failed.");
                 Toast.makeText(StatusActivity.this, getText(R.string.updateFailed), Toast.LENGTH_LONG).show();
             }
-            toggleButton.setEnabled(true);
+            openCloseButton.setEnabled(true);
             if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
                 inheritButton.setEnabled(status.isOpen());
             }
@@ -76,22 +75,24 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
             StatusActivity.this.setProgressBarIndeterminateVisibility(false);
         }
     }
+    */
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        status = SpaceStatus.getInstance();
+
+
         getWindow().requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.status_layout);
 
-        toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        openCloseButton = (ToggleButton) findViewById(R.id.openCloseButton);
         inheritButton = (Button) findViewById(R.id.inheritButton);
-        nameBox = (EditText) findViewById(R.id.editText);
-        currentUser = (TextView) findViewById(R.id.textView);
+        nameBox = (EditText) findViewById(R.id.nameBox);
+        currentStatus = (TextView) findViewById(R.id.currentStatus);
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE);
 
-        status = new SpaceStatus();
-
-        toggleButton.setOnClickListener(this);
+        openCloseButton.setOnClickListener(this);
         inheritButton.setOnClickListener(this);
         nameBox.addTextChangedListener(new TextWatcher() {
             @Override
@@ -113,8 +114,12 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
 
         String username = prefs.getString("username", "DooRMasteR");
         nameBox.setText(username);
+        SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(this);
+        updateTask.addListener(this);
+        updateTask.execute();
     }
 
+    /*
     private void updateActivityInfo() {
         try {
             status.update();
@@ -127,28 +132,32 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
         Log.d(TAG, "Opened by: " + status.getOpenedBy());
         Log.d(TAG, "Open since: " + status.getSince());
 
-        toggleButton.setChecked(status.isOpen());
+        openCloseButton.setChecked(status.isOpen());
         if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
             inheritButton.setEnabled(status.isOpen());
         }
         if(status.isOpen()) {
-            currentUser.setText(status.getSince() + " (" + status.getOpenedBy() + ")");
+            currentStatus.setText(status.getSince() + " (" + status.getOpenedBy() + ")");
         } else {
-            currentUser.setText(status.getSince().toString());
+            currentStatus.setText(status.getSince().toString());
         }
     }
+    */
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateActivityInfo();
+        //updateActivityInfo();
+        SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(this);
+        updateTask.addListener(this);
+        updateTask.execute();
     }
 
     @Override
     public void onClick(View view) {
         String new_status;
         URL u;
-        boolean b = toggleButton.isChecked();
+        boolean b = openCloseButton.isChecked();
         if(b) {
             new_status = "open%20"+nameBox.getText();
         } else {
@@ -168,7 +177,31 @@ public class StatusActivity extends Activity implements Button.OnClickListener {
             return;
         }
 
-        new SuccessCheckTask().execute(b);
+        //new SuccessCheckTask().execute(b);
+        SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(this);
+        updateTask.addListener(this);
+        updateTask.execute();
+    }
+
+    @Override
+    public void onPreSpaceStatusUpdate(Context context) {
+        openCloseButton.setEnabled(false);
+        inheritButton.setEnabled(false);
+        StatusActivity.this.setProgressBarIndeterminate(true);
+        StatusActivity.this.setProgressBarIndeterminateVisibility(true);
+    }
+
+    @Override
+    public void onPostSpaceStatusUpdate(Context context) {
+        openCloseButton.setEnabled(true);
+        openCloseButton.setChecked(status.isOpen());
+        if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
+            inheritButton.setEnabled(status.isOpen());
+        }
+        SimpleDateFormat isodate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        currentStatus.setText(String.format("%s (%s)", isodate.format(status.getSince().getTime()), status.getOpenedBy()));
+        StatusActivity.this.setProgressBarIndeterminate(false);
+        StatusActivity.this.setProgressBarIndeterminateVisibility(false);
     }
 
 }

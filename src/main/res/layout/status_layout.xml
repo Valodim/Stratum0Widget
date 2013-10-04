@@ -13,14 +13,14 @@
         android:inputType="textPersonName"
         android:text="Name"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/nameBox"
         android:layout_gravity="center" />
 
     <ToggleButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Toggle Status"
-        android:id="@+id/toggleButton"
+        android:id="@+id/openCloseButton"
         android:checked="false"
         android:textOn="@string/open"
         android:textOff="@string/closed" />
@@ -36,7 +36,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:id="@+id/textView"
+        android:id="@+id/currentStatus"
         android:layout_gravity="center"
         android:layout_weight="1" />
 
