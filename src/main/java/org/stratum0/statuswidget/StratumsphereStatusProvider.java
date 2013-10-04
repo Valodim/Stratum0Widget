@@ -196,7 +196,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
             Intent intent = new Intent(context, StratumsphereStatusProvider.class);
             intent.setAction("click");
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-            PendingIntent clickIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent clickIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.statusImageView, clickIntent);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
