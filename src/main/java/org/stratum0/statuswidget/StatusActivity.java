@@ -198,8 +198,15 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
         if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
             inheritButton.setEnabled(status.isOpen());
         }
-        SimpleDateFormat isodate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        currentStatus.setText(String.format("%s (%s)", isodate.format(status.getSince().getTime()), status.getOpenedBy()));
+
+        if(status.isOpen()) {
+            SimpleDateFormat isodate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            currentStatus.setText(String.format("%s (%s)", isodate.format(status.getSince().getTime()), status.getOpenedBy()));
+        }
+        else {
+            currentStatus.setText("");
+        }
+
         StatusActivity.this.setProgressBarIndeterminate(false);
         StatusActivity.this.setProgressBarIndeterminateVisibility(false);
     }
