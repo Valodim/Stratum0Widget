@@ -156,8 +156,9 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
 
     @Override
     public void onClick(View view) {
+
         String new_status;
-        URL u;
+
         boolean b = openCloseButton.isChecked();
         if(b) {
             new_status = "open%20"+nameBox.getText();
@@ -165,23 +166,10 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
             new_status = "close";
         }
 
-        try {
-            u = new URL(setStatusUrl + new_status);
-            URLConnection c = u.openConnection();
-            c.connect();
-            c.getContent();
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "Update request: malformed URL.", e);
-            return;
-        } catch (IOException e) {
-            Log.e(TAG, "Update request: could not connect to server.", e);
-            return;
-        }
+        SpaceStatusChangeTask changeTask = new SpaceStatusChangeTask(this);
+        changeTask.execute(setStatusUrl + new_status);
 
         //new SuccessCheckTask().execute(b);
-        SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(this);
-        updateTask.addListener(this);
-        updateTask.execute();
     }
 
     @Override
