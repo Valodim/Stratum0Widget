@@ -60,11 +60,3 @@ public class SpaceStatus {
         upTimeHours = (difference)/(1000*60) / 60;
     }
 }
-
-class ParseException extends Exception {
-    public ParseException(Throwable e) {
-        super(e);
-    }
-}
-
-
