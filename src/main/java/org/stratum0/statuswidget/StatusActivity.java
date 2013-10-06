@@ -21,6 +21,7 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 
 import static org.stratum0.statuswidget.GlobalVars.TAG;
+import static org.stratum0.statuswidget.GlobalVars.setStatusUrl;
 
 /**
  * Created by tsuro on 9/1/13.
@@ -165,7 +166,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
         }
 
         try {
-            u = new URL("http://auge-faust.de/trixie/say/sudo%20" + new_status);
+            u = new URL(setStatusUrl + new_status);
             URLConnection c = u.openConnection();
             c.connect();
             c.getContent();

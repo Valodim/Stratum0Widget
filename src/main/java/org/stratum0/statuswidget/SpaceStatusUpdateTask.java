@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import static org.stratum0.statuswidget.GlobalVars.TAG;
-import static org.stratum0.statuswidget.GlobalVars.url;
+import static org.stratum0.statuswidget.GlobalVars.getStatusUrl;
 
 /**
  * Created by Matthias Uschok <dev@uschok.de on 2013-09-30.
@@ -42,7 +42,7 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
 
         DefaultHttpClient client = new DefaultHttpClient();
         try {
-            HttpResponse response = client.execute(new HttpGet(url));
+            HttpResponse response = client.execute(new HttpGet(getStatusUrl));
             if (response.getStatusLine().getStatusCode() == 200) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
                 String line;

@@ -28,7 +28,7 @@ import android.app.NotificationManager;
 import android.app.Notification;
 
 import static org.stratum0.statuswidget.GlobalVars.TAG;
-import static org.stratum0.statuswidget.GlobalVars.url;
+import static org.stratum0.statuswidget.GlobalVars.getStatusUrl;
 
 
 public class StratumsphereStatusProvider extends AppWidgetProvider implements SpaceStatusListener {
@@ -103,7 +103,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
 		String result = "";
 		DefaultHttpClient client = new DefaultHttpClient();
 		try {
-			HttpResponse response = client.execute(new HttpGet(url));
+			HttpResponse response = client.execute(new HttpGet(getStatusUrl));
 			if (response.getStatusLine().getStatusCode() == 200) {
 				BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 				String line;
