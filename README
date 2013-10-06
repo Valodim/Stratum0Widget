@@ -4,6 +4,8 @@ This is an Android app to show the status of the Stratum 0 hacker space.
 
 
 Changelog:
+1.1.5       Status updates done asynchronously
+
 1.1.3       German translation
 
 1.1.2       Inherit button
