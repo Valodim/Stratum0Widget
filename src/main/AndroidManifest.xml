@@ -22,7 +22,8 @@
         </receiver>
         <activity
             android:name=".StatusActivity"
-            android:label="Status">
+            android:label="Status"
+            android:theme="@android:style/Theme.Holo.Dialog">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
