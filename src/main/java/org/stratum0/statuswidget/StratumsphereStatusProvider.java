@@ -94,25 +94,6 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
 		super.onReceive(context, intent);
 	}
 
-    public static String getStatusFromJSON() {
-		String result = "";
-		DefaultHttpClient client = new DefaultHttpClient();
-		try {
-			HttpResponse response = client.execute(new HttpGet(getStatusUrl));
-			if (response.getStatusLine().getStatusCode() == 200) {
-				BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-				String line;
-				while ((line = br.readLine()) != null) {
-					result += line;
-				}
-			}
-		} catch (Exception e) {
-			Log.w(TAG, "Exception " + e);
-		}
-		return result;
-	}
-
-
     @Override
     public void onPreSpaceStatusUpdate(Context context) {
 
