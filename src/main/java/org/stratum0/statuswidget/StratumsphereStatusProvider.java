@@ -1,13 +1,7 @@
 package org.stratum0.statuswidget;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Calendar;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -19,12 +13,8 @@ import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.RemoteViews;
-import android.util.Log;
-import android.app.NotificationManager;
-import android.app.Notification;
 
-import static org.stratum0.statuswidget.GlobalVars.TAG;
-import static org.stratum0.statuswidget.GlobalVars.getStatusUrl;
+import java.util.Calendar;
 
 
 public class StratumsphereStatusProvider extends AppWidgetProvider implements SpaceStatusListener {
@@ -44,7 +34,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
         updateTask.addListener(this);
         updateTask.execute();
 
-		context.getSharedPreferences("preferences", Context.MODE_PRIVATE).edit().putInt("clicks", 0).commit();
+        context.getSharedPreferences("preferences", Context.MODE_PRIVATE).edit().putInt("clicks", 0).commit();
 
 	}
 
@@ -52,7 +42,16 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
 	public void onReceive(final Context context, final Intent intent) {
 		if(intent.getAction().equals("click")) {
 
-			// Increment click count for every received click intent
+            boolean firstrun = context.getSharedPreferences("preferences", Context.MODE_PRIVATE).getBoolean("firstrun", true);
+
+            if(firstrun) {
+                Intent firstrunIntent = new Intent(context, FirstRunActivity.class);
+                firstrunIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(firstrunIntent);
+                context.getSharedPreferences("preferences", Context.MODE_PRIVATE).edit().putBoolean("firstrun", false).commit();
+            }
+
+            // Increment click count for every received click intent
 			final SharedPreferences prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE);
 			int clickCount = prefs.getInt("clicks", 0);
 			prefs.edit().putInt("clicks", ++clickCount).commit();

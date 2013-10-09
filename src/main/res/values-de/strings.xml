@@ -10,7 +10,11 @@
     <string name="nNotOpenLatestEventInfo1">Achtung!</string>
     <string name="nNotOpenLatestEventInfo2">Schnell den Space als offen makieren.</string>
 
-    <!-- StratumsphereStatusProvider -->
+    <!-- FirstrunActivity.java -->
+    <string name="firstrunExplanation">Einzelklick löst ein Update aus,\nDoppelklick ermöglicht das Setzen des Spacestatus</string>
+    <string name="dismissButton">Verstanden!</string>
+
+    <!-- StratumsphereStatusProvider.java -->
     <string name="currentTime">Aktualisiert</string>
     <string name="updating">aktualisiere...\n</string>
 

@@ -28,6 +28,10 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".FirstRunActivity"
+            android:label="foobar"
+            android:theme="@android:style/Theme.Holo.Dialog"/>
     </application>
 
 </manifest>
