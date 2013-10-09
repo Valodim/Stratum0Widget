@@ -36,7 +36,6 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
 
         status = SpaceStatus.getInstance();
 
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.status_layout);
 
         openCloseButton = (ToggleButton) findViewById(R.id.openCloseButton);
