@@ -22,7 +22,7 @@
         </receiver>
         <activity
             android:name=".StatusActivity"
-            android:label="Status"
+            android:label="@string/statusActivityTitle"
             android:theme="@android:style/Theme.Holo.Dialog">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

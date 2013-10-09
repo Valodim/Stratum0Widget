@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -28,20 +29,21 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
     ToggleButton openCloseButton;
     Button inheritButton;
     TextView currentStatus;
+    ProgressBar progressBar;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         status = SpaceStatus.getInstance();
 
-
-        getWindow().requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.status_layout);
 
         openCloseButton = (ToggleButton) findViewById(R.id.openCloseButton);
         inheritButton = (Button) findViewById(R.id.inheritButton);
         nameBox = (EditText) findViewById(R.id.nameBox);
         currentStatus = (TextView) findViewById(R.id.currentStatus);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE);
 
         openCloseButton.setOnClickListener(this);
@@ -100,8 +102,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
     public void onPreSpaceStatusUpdate(Context context) {
         openCloseButton.setEnabled(false);
         inheritButton.setEnabled(false);
-        StatusActivity.this.setProgressBarIndeterminate(true);
-        StatusActivity.this.setProgressBarIndeterminateVisibility(true);
+        progressBar.setVisibility(ProgressBar.VISIBLE);
     }
 
     @Override
@@ -120,8 +121,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
             currentStatus.setText("");
         }
 
-        StatusActivity.this.setProgressBarIndeterminate(false);
-        StatusActivity.this.setProgressBarIndeterminateVisibility(false);
+        progressBar.setVisibility(ProgressBar.INVISIBLE);
     }
 
 }
