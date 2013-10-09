@@ -8,16 +8,15 @@
     <string name="nNotOpenLatestEventInfo1">Achtung!</string>
     <string name="nNotOpenLatestEventInfo2">Schnell den Space als offen makieren.</string>
 
-    <!-- Messages -->
-    <string name="updateFailed">Aktualisierung fehlgeschlagen.</string>
-
-    <!-- Labels -->
-    <string name="ImageViewDescription">Stratum0 Status</string>
-    <string name="defaultTime">Aktualisiert:\n--:--</string>
+    <!-- StratumsphereStatusProvider -->
     <string name="currentTime">Aktualisiert</string>
     <string name="updating">aktualisiere...\n</string>
 
-    <!-- Buttons -->
+    <!-- layout/main.xml -->
+    <string name="ImageViewDescription">Stratum0 Status</string>
+    <string name="defaultTime">Aktualisiert:\n--:--</string>
+
+    <!-- layout/status_layout.xml -->
     <string name="closed">Zu</string>
     <string name="open">Offen</string>
     <string name="inherit">Spacestatus übernehmen</string>
