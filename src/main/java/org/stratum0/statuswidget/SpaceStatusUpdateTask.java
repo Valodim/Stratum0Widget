@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
                     result += line;
                 }
             }
+        } catch (IOException e) {
+            Log.w(TAG, "Something went wrong getting the status, probably timeout: ", e);
         } catch (Exception e) {
             Log.w(TAG, "Error getting JSON message: " + e);
         }
