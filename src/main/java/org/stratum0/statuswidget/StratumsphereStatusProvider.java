@@ -140,9 +140,13 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
         String upTimeText = String.format("%02d     %02d", status.getUpTimeHours(), status.getUpTimeMins());
         String lastUpdateText = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime), status.getLastUpdated().get(Calendar.HOUR_OF_DAY), status.getLastUpdated().get(Calendar.MINUTE));
 
-        if (status.isOpen()) {
+        if (status.getStatus() == SpaceStatus.Status.OPEN) {
             currentImage = R.drawable.stratum0_open;
             //dismiss previous useractionrequest
+            notificationManager.cancel(nID);
+        }
+        else if (status.getStatus() == SpaceStatus.Status.UNKNOWN) {
+            currentImage = R.drawable.stratum0_unknown;
             notificationManager.cancel(nID);
         }
         else {

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -56,7 +55,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(status.isOpen()) {
+                if(status.getStatus() == SpaceStatus.Status.OPEN) {
                     inheritButton.setEnabled(!nameBox.getText().toString().equals(status.getOpenedBy()));
                 }
                 SharedPreferences.Editor editor = prefs.edit();
@@ -106,15 +105,18 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
 
     @Override
     public void onPostSpaceStatusUpdate(Context context) {
-        openCloseButton.setEnabled(true);
-        openCloseButton.setChecked(status.isOpen());
+        openCloseButton.setEnabled(status.getStatus() != SpaceStatus.Status.UNKNOWN);
+        openCloseButton.setChecked(status.getStatus() == SpaceStatus.Status.OPEN);
         if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
-            inheritButton.setEnabled(status.isOpen());
+            inheritButton.setEnabled(status.getStatus() == SpaceStatus.Status.OPEN);
         }
 
-        if(status.isOpen()) {
+        if(status.getStatus() == SpaceStatus.Status.OPEN) {
             SimpleDateFormat isodate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             currentStatus.setText(String.format("%s (%s)", isodate.format(status.getSince().getTime()), status.getOpenedBy()));
+        }
+        else if (status.getStatus() == SpaceStatus.Status.UNKNOWN) {
+            currentStatus.setText("Status unknown");
         }
         else {
             currentStatus.setText("");

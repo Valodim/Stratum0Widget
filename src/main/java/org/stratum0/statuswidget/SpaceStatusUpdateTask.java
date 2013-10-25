@@ -40,6 +40,7 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
 
         Calendar now = GregorianCalendar.getInstance();
         String result = "";
+        SpaceStatus.Status isOpen = SpaceStatus.Status.UNKNOWN;
 
         DefaultHttpClient client = new DefaultHttpClient();
         try {
@@ -64,12 +65,13 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
             Calendar since = GregorianCalendar.getInstance();
             since.setTime(f.parse(uptimeString));
 
-            Log.d(TAG, "UpdateTask: Open?  " + status.isOpen());
+            Log.d(TAG, "UpdateTask: Open?  " + status.getStatus());
             Log.d(TAG, "UpdateTask: Opened by: " + status.getOpenedBy());
             Log.d(TAG, "UpdateTask: Open since: " + status.getSince());
 
+            isOpen = jsonObject.getBoolean("isOpen") ? SpaceStatus.Status.OPEN : SpaceStatus.Status.CLOSED;
             synchronized (this) {
-                status.update(jsonObject.getBoolean("isOpen"), jsonObject.getString("openedBy"), since, now);
+                status.update(isOpen, jsonObject.getString("openedBy"), since, now);
             }
 
         } catch (JSONException e) {
