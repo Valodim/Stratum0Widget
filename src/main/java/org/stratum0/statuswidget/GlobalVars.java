@@ -1,7 +1,7 @@
 package org.stratum0.statuswidget;
 
 /**
- * Created by matthias on 9/29/13.
+ * Created by Matthias Uschok <dev@uschok.de> on 2013-09-29.
  */
 public class GlobalVars {
     public static final String TAG = "Stratum0";

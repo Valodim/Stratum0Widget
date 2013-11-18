@@ -3,7 +3,7 @@ package org.stratum0.statuswidget;
 import android.content.Context;
 
 /**
- * Created by matthias on 9/29/13.
+ * Created by Matthias Uschok <dev@uschok.de> on 2013-09-29.
  */
 public interface SpaceStatusListener {
     public void onPreSpaceStatusUpdate(Context context);

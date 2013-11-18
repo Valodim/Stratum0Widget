@@ -7,7 +7,7 @@ import android.view.Window;
 import android.widget.Button;
 
 /**
- * Created by matthias on 10/9/13.
+ * Created by Matthias Uschok <dev@uschok.de> on 2013-10-09.
  */
 public class FirstRunActivity extends Activity implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {

@@ -22,7 +22,7 @@ import static org.stratum0.statuswidget.GlobalVars.TAG;
 import static org.stratum0.statuswidget.GlobalVars.getStatusUrl;
 
 /**
- * Created by Matthias Uschok <dev@uschok.de on 2013-09-30.
+ * Created by Matthias Uschok <dev@uschok.de> on 2013-09-30.
  */
 public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
 
