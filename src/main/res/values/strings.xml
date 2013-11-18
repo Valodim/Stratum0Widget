@@ -23,8 +23,8 @@
     <string name="defaultTime">Updated:\n--:--</string>
 
     <!-- layout/status_layout.xml -->
-    <string name="closed">Closed</string>
-    <string name="open">Open</string>
+    <string name="closed">Open the space</string>
+    <string name="open">Close the space</string>
     <string name="inherit">Inherit Space Status</string>
 
 </resources>
