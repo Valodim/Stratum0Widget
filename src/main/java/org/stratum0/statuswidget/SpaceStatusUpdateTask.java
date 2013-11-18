@@ -82,8 +82,14 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, SpaceStatus.St
 
         } catch (JSONException e) {
             Log.d(TAG, "Error creating JSON object: " + e);
+            synchronized (this) {
+                status.update(SpaceStatus.Status.UNKNOWN, "", GregorianCalendar.getInstance(), GregorianCalendar.getInstance());
+            }
         } catch (java.text.ParseException e) {
             Log.d(TAG, "Could not parse status response: " + e);
+            synchronized (this) {
+                status.update(SpaceStatus.Status.UNKNOWN, "", GregorianCalendar.getInstance(), GregorianCalendar.getInstance());
+            }
         }
 
         return status.getStatus();
