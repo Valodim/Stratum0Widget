@@ -71,14 +71,14 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
             Calendar since = GregorianCalendar.getInstance();
             since.setTime(f.parse(uptimeString));
 
-            Log.d(TAG, "UpdateTask: Open?  " + status.getStatus());
-            Log.d(TAG, "UpdateTask: Opened by: " + status.getOpenedBy());
-            Log.d(TAG, "UpdateTask: Open since: " + status.getSince());
-
             isOpen = jsonObject.getBoolean("isOpen") ? SpaceStatus.Status.OPEN : SpaceStatus.Status.CLOSED;
             synchronized (this) {
                 status.update(isOpen, jsonObject.getString("openedBy"), since, now);
             }
+
+            Log.d(TAG, "UpdateTask: Open?  " + status.getStatus());
+            Log.d(TAG, "UpdateTask: Opened by: " + status.getOpenedBy());
+            Log.d(TAG, "UpdateTask: Open since: " + status.getSince());
 
         } catch (JSONException e) {
             Log.d(TAG, "Error creating JSON object: " + e);
