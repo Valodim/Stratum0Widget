@@ -7,6 +7,8 @@ import android.util.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,6 +45,10 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
         SpaceStatus.Status isOpen = SpaceStatus.Status.UNKNOWN;
 
         DefaultHttpClient client = new DefaultHttpClient();
+        final HttpParams httpParams = client.getParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
+        HttpConnectionParams.setSoTimeout(httpParams, 10000);
+
         try {
             HttpResponse response = client.execute(new HttpGet(getStatusUrl));
             if (response.getStatusLine().getStatusCode() == 200) {
