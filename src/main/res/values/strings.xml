@@ -14,6 +14,11 @@
     <string name="firstrunExplanation">Single tap triggers an update,\nDouble tap lets you change the space status</string>
     <string name="dismissButton">Got it!</string>
 
+    <!-- StatusActivity.java -->
+    <string name="yourName">&lt;your nickname&gt;</string>
+    <string name="unknownStatus">Status unknown</string>
+    <string name="attempt">Attempt</string>
+
     <!-- StratumsphereStatusProvider.java -->
     <string name="currentTime">Updated</string>
     <string name="updating">updating...\n</string>

@@ -65,7 +65,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
             }
         });
 
-        String username = prefs.getString("username", "DooRMasteR");
+        String username = prefs.getString("username", getString(R.string.yourName));
         nameBox.setText(username);
         SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(this);
         updateTask.addListener(this);
@@ -118,7 +118,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
             currentStatus.setText(String.format("%s (%s)", isodate.format(status.getSince().getTime()), status.getOpenedBy()));
         }
         else if (status.getStatus() == SpaceStatus.Status.UNKNOWN) {
-            currentStatus.setText("Status unknown");
+            currentStatus.setText(getString(R.string.unknownStatus));
         }
         else {
             currentStatus.setText("");
@@ -137,7 +137,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
             progressBar.setMax(setStatusAttempts);
         }
         progressBar.setProgress(progress);
-        currentStatus.setText("Attempt " + progress + "/" + setStatusAttempts);
+        currentStatus.setText(getString(R.string.attempt) + " " + progress + "/" + setStatusAttempts);
     }
 
 }

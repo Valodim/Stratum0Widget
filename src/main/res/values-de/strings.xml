@@ -14,6 +14,11 @@
     <string name="firstrunExplanation">Einzelklick löst ein Update aus,\nDoppelklick ermöglicht das Setzen des Spacestatus</string>
     <string name="dismissButton">Verstanden!</string>
 
+    <!-- StatusActivity.java -->
+    <string name="yourName">&lt;dein Nickname&gt;</string>
+    <string name="unknownStatus">Status unbekannt</string>
+    <string name="attempt">Versuch</string>
+
     <!-- StratumsphereStatusProvider.java -->
     <string name="currentTime">Aktualisiert</string>
     <string name="updating">aktualisiere...\n</string>
