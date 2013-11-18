@@ -26,7 +26,7 @@ import static org.stratum0.statuswidget.GlobalVars.getStatusUrl;
 /**
  * Created by Matthias Uschok <dev@uschok.de> on 2013-09-30.
  */
-public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
+public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, SpaceStatus.Status> {
 
     private ArrayList<SpaceStatusListener> receiverList = new ArrayList<SpaceStatusListener>();
     private SpaceStatus status;
@@ -38,7 +38,7 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected SpaceStatus.Status doInBackground(Void... voids) {
 
         Calendar now = GregorianCalendar.getInstance();
         String result = "";
@@ -86,7 +86,7 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
             Log.d(TAG, "Could not parse status response: " + e);
         }
 
-        return null;
+        return status.getStatus();
     }
 
     @Override
@@ -98,8 +98,8 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, Void> {
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
+    protected void onPostExecute(SpaceStatus.Status status) {
+        super.onPostExecute(status);
         for (SpaceStatusListener receiver : receiverList) {
             receiver.onPostSpaceStatusUpdate(context);
         }
