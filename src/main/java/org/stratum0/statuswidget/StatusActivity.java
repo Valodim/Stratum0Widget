@@ -15,6 +15,7 @@ import android.widget.ToggleButton;
 
 import java.text.SimpleDateFormat;
 
+import static org.stratum0.statuswidget.GlobalVars.setStatusAttempts;
 import static org.stratum0.statuswidget.GlobalVars.setStatusUrl;
 
 /**
@@ -92,7 +93,8 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
         }
 
         SpaceStatusChangeTask changeTask = new SpaceStatusChangeTask(this);
-        changeTask.execute(setStatusUrl + new_status);
+        changeTask.addListener(this);
+        changeTask.execute(new_status);
 
     }
 
@@ -123,6 +125,19 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
         }
 
         progressBar.setVisibility(ProgressBar.INVISIBLE);
+        if (!progressBar.isIndeterminate()) {
+            progressBar.setIndeterminate(true);
+        }
+    }
+
+    @Override
+    public void onProgressSpaceStatusUpdate(Context context, int progress) {
+        if (progressBar.isIndeterminate()) {
+            progressBar.setIndeterminate(false);
+            progressBar.setMax(setStatusAttempts);
+        }
+        progressBar.setProgress(progress);
+        currentStatus.setText("Attempt " + progress + "/" + setStatusAttempts);
     }
 
 }

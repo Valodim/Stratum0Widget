@@ -18,7 +18,7 @@ import static org.stratum0.statuswidget.GlobalVars.setStatusUrl;
 /**
  * Created by Matthias Uschok <dev@uschok.de> on 2013-10-06.
  */
-public class SpaceStatusChangeTask extends AsyncTask <String, Void, Void> {
+public class SpaceStatusChangeTask extends AsyncTask <String, Integer, Void> {
 
     private SpaceStatus status;
     private SpaceStatus.Status currentStatus, requestedStatus;
@@ -56,6 +56,7 @@ public class SpaceStatusChangeTask extends AsyncTask <String, Void, Void> {
                     break;
                 }
                 else {
+                    publishProgress(i+1);
                     URL ircstatus = new URL(setStatusUrl + "Status%20change%20failed.%20Trying%20again...%20%28" + (i+1) + "%20of%20" + setStatusAttempts + "%29");
                     URLConnection irc = ircstatus.openConnection();
                     irc.connect();
@@ -91,9 +92,12 @@ public class SpaceStatusChangeTask extends AsyncTask <String, Void, Void> {
         }
     }
 
-        SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(caller);
-        updateTask.addListener((SpaceStatusListener) caller);
-        updateTask.execute();
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+        for (SpaceStatusListener receiver: receiverList) {
+            receiver.onProgressSpaceStatusUpdate(context, values[0]);
+        }
     }
 
     public void addListener(SpaceStatusListener receiver) {

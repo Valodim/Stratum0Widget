@@ -183,4 +183,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
         }
 
     }
+
+    @Override
+    public void onProgressSpaceStatusUpdate(Context context, int progress) {}
 }
