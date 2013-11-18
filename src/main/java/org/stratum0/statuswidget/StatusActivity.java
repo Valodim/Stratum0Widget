@@ -86,9 +86,9 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
 
         boolean b = openCloseButton.isChecked();
         if(b) {
-            new_status = "open%20"+nameBox.getText();
+            new_status = "sudo%20open%20"+nameBox.getText();
         } else {
-            new_status = "close";
+            new_status = "sudo%20close";
         }
 
         SpaceStatusChangeTask changeTask = new SpaceStatusChangeTask(this);
