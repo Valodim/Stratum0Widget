@@ -48,7 +48,7 @@ public class SpaceStatusChangeTask extends AsyncTask <String, Integer, Void> {
                 URLConnection c = u.openConnection();
                 c.connect();
                 c.getContent();
-                Thread.sleep(1000);
+                Thread.sleep(3000);
                 SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(null);
                 updateTask.execute();
                 currentStatus = updateTask.get();
@@ -57,10 +57,12 @@ public class SpaceStatusChangeTask extends AsyncTask <String, Integer, Void> {
                 }
                 else {
                     publishProgress(i+1);
+                    /*
                     URL ircstatus = new URL(setStatusUrl + "Status%20change%20failed.%20Trying%20again...%20%28" + (i+1) + "%20of%20" + setStatusAttempts + "%29");
                     URLConnection irc = ircstatus.openConnection();
                     irc.connect();
                     irc.getContent();
+                    */
                 }
             }
         } catch (MalformedURLException e) {
