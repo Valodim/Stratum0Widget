@@ -13,8 +13,11 @@
         android:layout_margin="5dip" />
 
     <Button
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dismissButton"
-        android:id="@+id/dismissButton" />
+        android:id="@+id/dismissButton"
+        android:layout_gravity="center_horizontal"
+        style="@android:style/Widget.Holo.Button.Borderless"
+        android:background="#2d96ff" />
 </LinearLayout>
