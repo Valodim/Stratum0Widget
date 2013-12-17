@@ -21,13 +21,12 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
 	
 	private static final int nID = 1;
     private SpaceStatus status;
-    private int[] appWidgetIds;
     private AppWidgetManager appWidgetManager;
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		
-		this.appWidgetIds = appWidgetIds;
+		GlobalVars.appWidgetIds = appWidgetIds;
         this.appWidgetManager = appWidgetManager;
 
         SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(context);
@@ -101,8 +100,8 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
         String updatingText = (String) context.getText(R.string.updating);
 
         // indicate that the status is currently updating
-        for (int i=0; i<appWidgetIds.length; i++) {
-            int appWidgetId = appWidgetIds[i];
+        for (int i=0; i<GlobalVars.appWidgetIds.length; i++) {
+            int appWidgetId = GlobalVars.appWidgetIds[i];
 
             views.setTextViewText(R.id.lastUpdateTextView, updatingText);
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -165,8 +164,8 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
             }
         }
 
-        for (int i=0; i<appWidgetIds.length; i++) {
-            int appWidgetId = appWidgetIds[i];
+        for (int i=0; i<GlobalVars.appWidgetIds.length; i++) {
+            int appWidgetId = GlobalVars.appWidgetIds[i];
 
             views.setImageViewResource(R.id.statusImageView, currentImage);
             views.setTextViewText(R.id.lastUpdateTextView, lastUpdateText);
@@ -175,7 +174,7 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
             // Register an onClickListener to custom "click" intent
             Intent intent = new Intent(context, StratumsphereStatusProvider.class);
             intent.setAction("click");
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, GlobalVars.appWidgetIds);
             PendingIntent clickIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.statusImageView, clickIntent);
 

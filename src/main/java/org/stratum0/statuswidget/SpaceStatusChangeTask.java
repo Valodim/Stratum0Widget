@@ -1,6 +1,8 @@
 package org.stratum0.statuswidget;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import static org.stratum0.statuswidget.GlobalVars.TAG;
+import static org.stratum0.statuswidget.GlobalVars.appWidgetIds;
 import static org.stratum0.statuswidget.GlobalVars.setStatusAttempts;
 import static org.stratum0.statuswidget.GlobalVars.setStatusUrl;
 
@@ -74,6 +77,11 @@ public class SpaceStatusChangeTask extends AsyncTask <String, Integer, Void> {
         } catch (ExecutionException e) {
             Log.e(TAG, "Error executing update task inside change task:", e);
         }
+
+        Intent updateIntent = new Intent(context, StratumsphereStatusProvider.class);
+        updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+        context.sendBroadcast(updateIntent);
 
         return null;
     }

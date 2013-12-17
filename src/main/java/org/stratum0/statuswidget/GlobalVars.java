@@ -8,4 +8,5 @@ public class GlobalVars {
     public static final String getStatusUrl = "http://status.stratum0.org/status.json";
     public static final String setStatusUrl = "http://auge-faust.de/trixie/say/";
     public static final int setStatusAttempts = 20;
+    public static int[] appWidgetIds;
 }
