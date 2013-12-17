@@ -51,7 +51,7 @@ public class SpaceStatusChangeTask extends AsyncTask <String, Integer, Void> {
                 URLConnection c = u.openConnection();
                 c.connect();
                 c.getContent();
-                Thread.sleep(3000);
+                Thread.sleep(5000);
                 SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(null);
                 updateTask.execute();
                 currentStatus = updateTask.get();
