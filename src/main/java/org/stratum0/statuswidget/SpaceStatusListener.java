@@ -8,5 +8,4 @@ import android.content.Context;
 public interface SpaceStatusListener {
     public void onPreSpaceStatusUpdate(Context context);
     public void onPostSpaceStatusUpdate(Context context);
-    public void onProgressSpaceStatusUpdate(Context context, int progress);
 }

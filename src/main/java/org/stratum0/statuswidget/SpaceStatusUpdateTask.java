@@ -15,13 +15,12 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import static org.stratum0.statuswidget.GlobalVars.TAG;
-import static org.stratum0.statuswidget.GlobalVars.getStatusUrl;
+import static org.stratum0.statuswidget.GlobalVars.statusUrl;
 
 /**
  * Created by Matthias Uschok <dev@uschok.de> on 2013-09-30.
@@ -40,7 +39,6 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, SpaceStatus.St
     @Override
     protected SpaceStatus.Status doInBackground(Void... voids) {
 
-        Calendar now = GregorianCalendar.getInstance();
         String result = "";
         SpaceStatus.Status isOpen = SpaceStatus.Status.UNKNOWN;
 
@@ -50,7 +48,7 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, SpaceStatus.St
         HttpConnectionParams.setSoTimeout(httpParams, 10000);
 
         try {
-            HttpResponse response = client.execute(new HttpGet(getStatusUrl));
+            HttpResponse response = client.execute(new HttpGet(statusUrl + "/status.json"));
             if (response.getStatusLine().getStatusCode() == 200) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
                 String line;
@@ -65,30 +63,31 @@ public class SpaceStatusUpdateTask extends AsyncTask <Void, Void, SpaceStatus.St
         }
 
         try {
-            JSONObject jsonObject = new JSONObject(result);
-            String uptimeString = jsonObject.getString("since");
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            Calendar since = GregorianCalendar.getInstance();
-            since.setTime(f.parse(uptimeString));
+            JSONObject jsonRoot = new JSONObject(result);
+            JSONObject spaceStatus = jsonRoot.getJSONObject("state");
 
-            isOpen = jsonObject.getBoolean("isOpen") ? SpaceStatus.Status.OPEN : SpaceStatus.Status.CLOSED;
+            Calendar lastChange = GregorianCalendar.getInstance();
+            lastChange.setTimeInMillis(spaceStatus.getLong("lastchange") * 1000);
+            Calendar since = GregorianCalendar.getInstance();
+            since.setTimeInMillis(spaceStatus.getLong("ext_since") * 1000);
+
+            isOpen = spaceStatus.getBoolean("open") ? SpaceStatus.Status.OPEN : SpaceStatus.Status.CLOSED;
+
             synchronized (this) {
-                status.update(isOpen, jsonObject.getString("openedBy"), since, now);
+                status.update(isOpen, spaceStatus.getString("trigger_person"), lastChange, since);
             }
 
+            /*
             Log.d(TAG, "UpdateTask: Open?  " + status.getStatus());
             Log.d(TAG, "UpdateTask: Opened by: " + status.getOpenedBy());
             Log.d(TAG, "UpdateTask: Open since: " + status.getSince());
+            */
 
         } catch (JSONException e) {
             Log.d(TAG, "Error creating JSON object: " + e);
             synchronized (this) {
-                status.update(SpaceStatus.Status.UNKNOWN, "", GregorianCalendar.getInstance(), GregorianCalendar.getInstance());
-            }
-        } catch (java.text.ParseException e) {
-            Log.d(TAG, "Could not parse status response: " + e);
-            synchronized (this) {
-                status.update(SpaceStatus.Status.UNKNOWN, "", GregorianCalendar.getInstance(), GregorianCalendar.getInstance());
+                Calendar now = GregorianCalendar.getInstance();
+                status.update(SpaceStatus.Status.UNKNOWN, "", now, now);
             }
         }
 

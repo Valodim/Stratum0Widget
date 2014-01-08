@@ -11,12 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import java.text.SimpleDateFormat;
-
-import static org.stratum0.statuswidget.GlobalVars.setStatusAttempts;
-import static org.stratum0.statuswidget.GlobalVars.setStatusUrl;
 
 /**
  * Created by tsuro on 9/1/13.
@@ -26,9 +22,9 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
     private SharedPreferences prefs;
     private SpaceStatus status;
     EditText nameBox;
-    ToggleButton openCloseButton;
+    Button openCloseButton;
     Button inheritButton;
-    TextView currentStatus;
+    TextView currentStatusText;
     ProgressBar progressBar;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -38,10 +34,10 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
 
         setContentView(R.layout.status_layout);
 
-        openCloseButton = (ToggleButton) findViewById(R.id.openCloseButton);
+        openCloseButton = (Button) findViewById(R.id.openCloseButton);
         inheritButton = (Button) findViewById(R.id.inheritButton);
         nameBox = (EditText) findViewById(R.id.nameBox);
-        currentStatus = (TextView) findViewById(R.id.currentStatus);
+        currentStatusText = (TextView) findViewById(R.id.currentStatus);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE);
 
@@ -56,8 +52,12 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(status.getStatus() == SpaceStatus.Status.OPEN) {
-                    inheritButton.setEnabled(!nameBox.getText().toString().equals(status.getOpenedBy()));
+                if (status.getStatus() == SpaceStatus.Status.OPEN &&
+                    !nameBox.getText().toString().equals(status.getOpenedBy())) {
+                    inheritButton.setVisibility(View.VISIBLE);
+                }
+                else{
+                    inheritButton.setVisibility(View.GONE);
                 }
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putString("username", editable.toString());
@@ -83,61 +83,63 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
     @Override
     public void onClick(View view) {
 
-        String new_status;
+        String queryString = "/update?";
 
-        boolean b = openCloseButton.isChecked();
-        if(b) {
-            new_status = "sudo%20open%20"+nameBox.getText();
-        } else {
-            new_status = "sudo%20close";
+        switch (view.getId()) {
+            case R.id.openCloseButton:
+                if (status.getStatus() == SpaceStatus.Status.OPEN) {
+                    queryString += "open=false";
+                }
+                else if (status.getStatus() == SpaceStatus.Status.CLOSED) {
+                    queryString += "open=true&by=" + nameBox.getText();
+                }
+                break;
+            case R.id.inheritButton:
+                queryString += "open=true&by=" + nameBox.getText();
+                break;
         }
 
         SpaceStatusChangeTask changeTask = new SpaceStatusChangeTask(this);
         changeTask.addListener(this);
-        changeTask.execute(new_status);
+        changeTask.execute(queryString);
 
     }
 
     @Override
     public void onPreSpaceStatusUpdate(Context context) {
         openCloseButton.setEnabled(false);
-        inheritButton.setEnabled(false);
+        inheritButton.setVisibility(View.GONE);
+        currentStatusText.setVisibility(TextView.GONE);
         progressBar.setVisibility(ProgressBar.VISIBLE);
     }
 
     @Override
     public void onPostSpaceStatusUpdate(Context context) {
-        openCloseButton.setEnabled(status.getStatus() != SpaceStatus.Status.UNKNOWN);
-        openCloseButton.setChecked(status.getStatus() == SpaceStatus.Status.OPEN);
-        if(!nameBox.getText().toString().equals(status.getOpenedBy())) {
-            inheritButton.setEnabled(status.getStatus() == SpaceStatus.Status.OPEN);
-        }
-
-        if(status.getStatus() == SpaceStatus.Status.OPEN) {
-            SimpleDateFormat isodate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            currentStatus.setText(String.format("%s (%s)", isodate.format(status.getSince().getTime()), status.getOpenedBy()));
-        }
-        else if (status.getStatus() == SpaceStatus.Status.UNKNOWN) {
-            currentStatus.setText(getString(R.string.unknownStatus));
+        if(status.getStatus() == SpaceStatus.Status.UNKNOWN) {
+            currentStatusText.setText(getString(R.string.unknownStatus));
         }
         else {
-            currentStatus.setText("");
+            openCloseButton.setEnabled(true);
+
+            if(status.getStatus() == SpaceStatus.Status.OPEN) {
+                SimpleDateFormat isodate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                openCloseButton.setText(getString(R.string.open));
+                currentStatusText.setText(String.format("%s (%s)", isodate.format(status.getLastChange().getTime()), status.getOpenedBy()));
+                if (!nameBox.getText().toString().equals(status.getOpenedBy())) {
+                    inheritButton.setVisibility(View.VISIBLE);
+                }
+            }
+            else {
+                openCloseButton.setText(getString(R.string.closed));
+                currentStatusText.setText("Closed");
+            }
         }
 
+        currentStatusText.setVisibility(TextView.VISIBLE);
         progressBar.setVisibility(ProgressBar.INVISIBLE);
         if (!progressBar.isIndeterminate()) {
             progressBar.setIndeterminate(true);
         }
-    }
-
-    @Override
-    public void onProgressSpaceStatusUpdate(Context context, int progress) {
-        if (progressBar.isIndeterminate()) {
-            progressBar.setIndeterminate(false);
-            progressBar.setMax(setStatusAttempts);
-        }
-        progressBar.setProgress(progress);
-        currentStatus.setText(getString(R.string.attempt) + " " + progress + "/" + setStatusAttempts);
     }
 
 }

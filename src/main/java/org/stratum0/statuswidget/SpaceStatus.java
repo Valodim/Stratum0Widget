@@ -9,62 +9,44 @@ public class SpaceStatus {
     public enum Status {OPEN, CLOSED, UNKNOWN}
     private static final SpaceStatus instance = new SpaceStatus();
 
+    private Calendar lastUpdate;
+
     private Status status;
-    private Calendar since;
-    private Calendar lastUpdated;
     private String openedBy;
-    private long upTimeHours;
-    private long upTimeMins;
+    private Calendar lastChange;
+    private Calendar since;
 
     private SpaceStatus() {
         status = Status.UNKNOWN;
-        since = Calendar.getInstance();
-        lastUpdated = Calendar.getInstance();
         openedBy = "";
-        upTimeHours = 0;
-        upTimeMins = 0;
+        lastChange = Calendar.getInstance();
+        since = Calendar.getInstance();
     }
 
-    public static SpaceStatus getInstance() {
-        return instance;
-    }
+    public static SpaceStatus getInstance() { return instance; }
+
+    public Calendar getLastUpdate() { return lastUpdate; }
 
     public Status getStatus() {
         return status;
-    }
-
-    public Calendar getSince() {
-        return since;
     }
 
     public String getOpenedBy() {
         return openedBy;
     }
 
-    public Calendar getLastUpdated() {
-        return lastUpdated;
+    public Calendar getLastChange() {
+        return lastChange;
     }
 
-    public long getUpTimeHours() {
-        return upTimeHours;
-    }
+    public Calendar getSince() { return since; }
 
-    public long getUpTimeMins() {
-        return upTimeMins;
-    }
-
-    public String getLastUpdatedString() {
-        return String.format("%02d:%02d", lastUpdated.get(Calendar.HOUR_OF_DAY), lastUpdated.get(Calendar.MINUTE));
-    }
-
-    public void update(Status status, String openedBy, Calendar openSince, Calendar lastUpdated) {
+    public void update(Status status, String openedBy, Calendar lastChange, Calendar since) {
+        this.lastUpdate = Calendar.getInstance();
         this.status = status;
         this.openedBy = openedBy;
-        this.since = openSince;
-        this.lastUpdated = lastUpdated;
-
-        long difference = lastUpdated.getTimeInMillis() - since.getTimeInMillis();
-        upTimeMins = (difference)/(1000*60) % 60;
-        upTimeHours = (difference)/(1000*60) / 60;
+        this.lastChange = lastChange;
+        this.since = since;
     }
+
 }

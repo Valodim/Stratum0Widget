@@ -15,6 +15,7 @@ import android.os.Message;
 import android.widget.RemoteViews;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 
 public class StratumsphereStatusProvider extends AppWidgetProvider implements SpaceStatusListener {
@@ -136,8 +137,12 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
         nNotOpen.defaults = Notification.DEFAULT_ALL;
         nNotOpen.setLatestEventInfo(context, context.getText(R.string.nNotOpenLatestEventInfo1), context.getText(R.string.nNotOpenLatestEventInfo2), contentIntent);
 
-        String upTimeText = String.format("%02d     %02d", status.getUpTimeHours(), status.getUpTimeMins());
-        String lastUpdateText = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime), status.getLastUpdated().get(Calendar.HOUR_OF_DAY), status.getLastUpdated().get(Calendar.MINUTE));
+        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Berlin"));
+        long diff = now.getTimeInMillis() - status.getSince().getTimeInMillis();
+        long uptimeMinutes = (diff)/(1000*60) % 60;
+        long uptimeHours = (diff)/(1000*60) / 60;
+        String upTimeText = String.format("%02d     %02d", uptimeHours, uptimeMinutes);
+        String lastUpdateText = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime), status.getLastUpdate().get(Calendar.HOUR_OF_DAY), status.getLastUpdate().get(Calendar.MINUTE));
 
         if (status.getStatus() == SpaceStatus.Status.OPEN) {
             currentImage = R.drawable.stratum0_open;
@@ -182,7 +187,4 @@ public class StratumsphereStatusProvider extends AppWidgetProvider implements Sp
         }
 
     }
-
-    @Override
-    public void onProgressSpaceStatusUpdate(Context context, int progress) {}
 }
