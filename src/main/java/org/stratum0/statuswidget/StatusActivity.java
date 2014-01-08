@@ -65,7 +65,7 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
             }
         });
 
-        String username = prefs.getString("username", getString(R.string.yourName));
+        String username = prefs.getString("username", getString(R.string.editText_defaultName));
         nameBox.setText(username);
         SpaceStatusUpdateTask updateTask = new SpaceStatusUpdateTask(this);
         updateTask.addListener(this);
@@ -116,22 +116,22 @@ public class StatusActivity extends Activity implements Button.OnClickListener, 
     @Override
     public void onPostSpaceStatusUpdate(Context context) {
         if(status.getStatus() == SpaceStatus.Status.UNKNOWN) {
-            currentStatusText.setText(getString(R.string.unknownStatus));
+            currentStatusText.setText(getString(R.string.status_unknown));
         }
         else {
             openCloseButton.setEnabled(true);
 
             if(status.getStatus() == SpaceStatus.Status.OPEN) {
                 SimpleDateFormat isodate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                openCloseButton.setText(getString(R.string.open));
+                openCloseButton.setText(getString(R.string.button_openClose_open));
                 currentStatusText.setText(String.format("%s (%s)", isodate.format(status.getLastChange().getTime()), status.getOpenedBy()));
                 if (!nameBox.getText().toString().equals(status.getOpenedBy())) {
                     inheritButton.setVisibility(View.VISIBLE);
                 }
             }
             else {
-                openCloseButton.setText(getString(R.string.closed));
-                currentStatusText.setText("Closed");
+                openCloseButton.setText(getString(R.string.button_openClose_closed));
+                currentStatusText.setText(getString(R.string.status_closed));
             }
         }
 

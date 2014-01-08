@@ -12,12 +12,12 @@
 
     <!-- FirstrunActivity.java -->
     <string name="firstrunExplanation">Single tap triggers an update,\nDouble tap lets you change the space status</string>
-    <string name="dismissButton">Got it!</string>
+    <string name="button_dismiss">Got it!</string>
 
     <!-- StatusActivity.java -->
-    <string name="yourName">&lt;your nickname&gt;</string>
-    <string name="unknownStatus">Status unknown</string>
-    <string name="attempt">Attempt</string>
+    <string name="editText_defaultName">&lt;your nickname&gt;</string>
+    <string name="status_unknown">Status unknown</string>
+    <string name="status_closed">Closed</string>
 
     <!-- StratumsphereStatusProvider.java -->
     <string name="currentTime">Updated</string>
@@ -28,8 +28,8 @@
     <string name="defaultTime">Updated:\n--:--</string>
 
     <!-- layout/status_layout.xml -->
-    <string name="closed">Open the space</string>
-    <string name="open">Close the space</string>
-    <string name="inherit">Inherit Space Status</string>
+    <string name="button_openClose_closed">Open the space</string>
+    <string name="button_openClose_open">Close the space</string>
+    <string name="button_inherit">Inherit Space Status</string>
 
 </resources>

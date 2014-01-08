@@ -12,12 +12,12 @@
 
     <!-- FirstrunActivity.java -->
     <string name="firstrunExplanation">Einzelklick löst ein Update aus,\nDoppelklick ermöglicht das Setzen des Spacestatus</string>
-    <string name="dismissButton">Verstanden!</string>
+    <string name="button_dismiss">Verstanden!</string>
 
     <!-- StatusActivity.java -->
-    <string name="yourName">&lt;dein Nickname&gt;</string>
-    <string name="unknownStatus">Status unbekannt</string>
-    <string name="attempt">Versuch</string>
+    <string name="editText_defaultName">&lt;dein Nickname&gt;</string>
+    <string name="status_unknown">Status unbekannt</string>
+    <string name="status_closed">Geschlossen</string>
 
     <!-- StratumsphereStatusProvider.java -->
     <string name="currentTime">Aktualisiert</string>
@@ -28,8 +28,8 @@
     <string name="defaultTime">Aktualisiert:\n--:--</string>
 
     <!-- layout/status_layout.xml -->
-    <string name="closed">Space öffnen</string>
-    <string name="open">Space schließen</string>
-    <string name="inherit">Spacestatus übernehmen</string>
+    <string name="button_openClose_closed">Space öffnen</string>
+    <string name="button_openClose_open">Space schließen</string>
+    <string name="button_inherit">Spacestatus übernehmen</string>
 
 </resources>

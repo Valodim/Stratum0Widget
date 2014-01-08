@@ -19,14 +19,14 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/closed"
+        android:text="@string/button_openClose_closed"
         android:id="@+id/openCloseButton"
         android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/inherit"
+        android:text="@string/button_inherit"
         android:id="@+id/inheritButton"
         android:layout_gravity="center_horizontal"
         android:visibility="gone" />
