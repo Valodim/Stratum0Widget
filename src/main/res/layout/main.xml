@@ -45,7 +45,7 @@
 				android:gravity="center"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:padding="2dip"
+				android:padding="4dip"
 				android:background="@drawable/widget_updated_bg"
 				android:text="@string/defaultTime"
 				android:textAppearance="?android:attr/textAppearanceSmall"
