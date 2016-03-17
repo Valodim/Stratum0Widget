@@ -5,6 +5,6 @@ package org.stratum0.statuswidget;
  */
 public class GlobalVars {
     public static final String TAG = "Stratum0";
-    public static final String statusUrl = "http://stratumspherestatuswidget.stratum0.net:8766";
+    public static final String statusUrl = "http://status.stratum0.org";
     public static int[] appWidgetIds;
 }
