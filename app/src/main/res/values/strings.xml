@@ -2,13 +2,12 @@
 <resources>
 
     <!-- AndroidManifest.xml -->
-    <string name="app_name">StratumsphereStatusWidget</string>
+    <string name="app_name">Stratum 0 Widget</string>
     <string name="statusActivityTitle"> Change status</string>
 
     <!-- Notification texts -->
-    <string name="nNotOpen">You\'re at the hackerspace, don\'t forget to change the status!</string>
-    <string name="nNotOpenLatestEventInfo1">Attention!</string>
-    <string name="nNotOpenLatestEventInfo2">Change the space status to \"open\".</string>
+    <string name="notification_title">"You're in space, but it's closed!"</string>
+    <string name="notification_content">Click to open space</string>
 
     <!-- FirstrunActivity.java -->
     <string name="firstrunExplanation">Single tap triggers an update,\nDouble tap lets you change the space status</string>
@@ -21,7 +20,7 @@
 
     <!-- StratumsphereStatusProvider.java -->
     <string name="currentTime">Updated</string>
-    <string name="updating">updating...\n</string>
+    <string name="updating">Updating…</string>
 
     <!-- layout/main.xml -->
     <string name="ImageViewDescription">Stratum0 Status</string>

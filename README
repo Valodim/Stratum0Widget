@@ -1,32 +1,3 @@
-StratumsphereStatusWidget
+Kotlin rewrite of the Stratum 0 status widget
 
 This is an Android app to show the status of the Stratum 0 hacker space.
-
-
-Changelog:
-1.1.5       Status updates done asynchronously
-
-1.1.3       German translation
-
-1.1.2       Inherit button
-
-1.1.1       Double tap opens open/close activity
-
-1.1.0       Activity to open/close the space
-
-1.0.7       Semi-transparent background for "last updated" widget text
-
-1.0.6       New server URL
-
-1.0.5       Update all widget instances simultaneously
-
-1.0.4       Indicate running update
-
-1.0.3       Show notification when connected to Stratum0 WiFi and API retuns 
-            status=closed
-
-1.0.2       Show "status uptime" inside the logo
-
-1.0.1       Switched to JSON API
-
-1.0         Initial release

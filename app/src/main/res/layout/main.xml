@@ -1,55 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-	    
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent"
-	    android:orientation="vertical" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
 
-		<RelativeLayout
-		    android:id="@+id/relativeLayout1"
-		    android:layout_width="match_parent"
-		    android:layout_height="0dip"
-		    android:layout_weight="1" >
+	<FrameLayout
+		android:id="@+id/relativeLayout1"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
 
-			<ImageView
-			    android:contentDescription="@string/ImageViewDescription"
-			    android:id="@+id/statusImageView"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_centerInParent="true"
-			    android:src="@drawable/stratum0_unknown" />
+		<ImageView
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:id="@+id/statusImageView"
+			android:contentDescription="@string/ImageViewDescription"
+			android:src="@drawable/stratum0_unknown"
+			tools:src="@drawable/stratum0_open"
+			/>
 
-			<TextView
-			    android:id="@+id/spaceUptimeTextView"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_centerInParent="true"
-			    android:layout_marginBottom="16dp"
-			    android:gravity="center"
-			    android:text=""
-			    android:textAppearance="?android:attr/textAppearanceSmall"
-			    android:textColor="#000000"
-			    android:textSize="10.0dp" />
-
-		</RelativeLayout>
-
-		<LinearLayout
-			android:layout_width="fill_parent"
+		<TextView
+			android:id="@+id/spaceUptimeTextView"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:gravity="center_horizontal"
-			>
-			<TextView
-				android:id="@+id/lastUpdateTextView"
-				android:layout_weight="0.20"
-				android:gravity="center"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:padding="4dip"
-				android:background="@drawable/widget_updated_bg"
-				android:text="@string/defaultTime"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:textSize="10.0dp" />
-		</LinearLayout>
+            android:layout_gravity="center"
+			android:gravity="center"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:textColor="#000000"
+			android:textSize="10.0dp"
+            tools:text="23     42"
+            />
 
-	</LinearLayout>
+	</FrameLayout>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+		android:id="@+id/lastUpdateTextView"
+		android:gravity="center"
+		android:padding="2dp"
+		android:background="@drawable/widget_updated_bg"
+		android:text="@string/defaultTime"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:textSize="10.0dp"
+		android:maxLines="2"
+        android:textColor="?android:colorForegroundInverse"
+        android:minEms="5"
+        android:minHeight="32dp"
+        tools:text="Updated:\n09:56"
+		/>
+
+</LinearLayout>

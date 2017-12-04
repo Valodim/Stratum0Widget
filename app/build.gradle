@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "23.0.2"
-    //useLibrary "org.apache.http.legacy"
+    compileSdkVersion 27
     defaultConfig {
-        applicationId "org.stratum0.statuswidget"
-        minSdkVersion 8
-        targetSdkVersion 8
+        applicationId "horse.amazin.my.stratum0.statuswidget"
+        minSdkVersion 21
+        targetSdkVersion 27
     }
 
     buildTypes {
@@ -16,4 +16,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    compile 'com.android.support:support-compat:27.0.2'
+
+    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+
+    compile 'nz.bradcampbell:paperparcel:2.0.4'
+    compile 'nz.bradcampbell:paperparcel-kotlin:2.0.4'
+    kapt 'nz.bradcampbell:paperparcel-compiler:2.0.4'
 }
