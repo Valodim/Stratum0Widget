@@ -15,6 +15,10 @@ import java.util.*
 
 class StratumsphereStatusProvider : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        val views = RemoteViews(context.packageName, R.layout.main)
+        setOnClickListeners(context, appWidgetIds, views)
+        appWidgetManager.updateAppWidget(appWidgetIds, views)
+
         SpaceStatusService.triggerStatusRefresh(context, appWidgetIds, true)
     }
 
@@ -37,21 +41,6 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         }
 
         super.onReceive(context, intent)
-    }
-
-    private fun setOnClickListeners(context: Context, appWidgetIds: IntArray, views: RemoteViews) {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-
-        val intent = Intent(context, StratumsphereStatusProvider::class.java)
-        intent.action = ACTION_CLICK
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
-
-        for (appWidgetId in appWidgetIds) {
-            val clickIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-            views.setOnClickPendingIntent(R.id.statusImageView, clickIntent)
-        }
-
-        appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -110,20 +99,31 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     }
 
     private fun onSpaceStatusUpdated(context: Context, appWidgetIds: IntArray, statusData: SpaceStatusData) {
-        val isOnS0Wifi = Stratum0WifiManager.isOnStratum0Wifi(context)
-        if (isOnS0Wifi) {
-            val preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
-            preferences.edit().putBoolean("spottedS0Wifi", true).apply()
-        }
-
-        notificationManager.handleStatusNotification(context, statusData, isOnS0Wifi)
-
         val views = RemoteViews(context.packageName, R.layout.main)
+        setOnClickListeners(context, appWidgetIds, views)
+        setViewInfo(context, statusData, appWidgetIds, views)
 
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        appWidgetManager.updateAppWidget(appWidgetIds, views)
+
+        checkWifiAndHandleNotification(context, statusData)
+    }
+
+    private fun setOnClickListeners(context: Context, appWidgetIds: IntArray, views: RemoteViews) {
+        val intent = Intent(context, StratumsphereStatusProvider::class.java)
+        intent.action = ACTION_CLICK
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+
+        for (appWidgetId in appWidgetIds) {
+            val clickIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            views.setOnClickPendingIntent(R.id.statusImageView, clickIntent)
+        }
+    }
+
+    private fun setViewInfo(context: Context, statusData: SpaceStatusData, appWidgetIds: IntArray, views: RemoteViews) {
         val upTimeText = getUptimeText(statusData)
-
-        val lastUpdateText = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime), statusData.lastUpdate.get(Calendar.HOUR_OF_DAY), statusData.lastUpdate.get(Calendar.MINUTE))
-
+        val lastUpdateText = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime),
+                statusData.lastUpdate.get(Calendar.HOUR_OF_DAY), statusData.lastUpdate.get(Calendar.MINUTE))
         val currentImage = when (statusData.status) {
             SpaceStatus.OPEN -> R.drawable.stratum0_open
             SpaceStatus.UNKNOWN -> R.drawable.stratum0_unknown
@@ -135,9 +135,16 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
             views.setTextViewText(R.id.lastUpdateTextView, lastUpdateText)
             views.setTextViewText(R.id.spaceUptimeTextView, upTimeText)
         }
+    }
 
-        setOnClickListeners(context, appWidgetIds, views)
+    private fun checkWifiAndHandleNotification(context: Context, statusData: SpaceStatusData) {
+        val isOnS0Wifi = Stratum0WifiManager.isOnStratum0Wifi(context)
+        if (isOnS0Wifi) {
+            val preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+            preferences.edit().putBoolean("spottedS0Wifi", true).apply()
+        }
 
+        notificationManager.handleStatusNotification(context, statusData, isOnS0Wifi)
     }
 
     private fun getUptimeText(statusData: SpaceStatusData): String {
