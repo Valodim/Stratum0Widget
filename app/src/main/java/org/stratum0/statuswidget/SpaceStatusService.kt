@@ -50,7 +50,11 @@ class SpaceStatusService : IntentService("Space Status Service") {
 //        stratum0StatusUpdater.update(name)
         Thread.sleep(MIN_UPDATE_MS)
 
-        cachedSpaceStatus = SpaceStatusData.createOpenStatus("Valodim", Calendar.getInstance(), Calendar.getInstance())
+        if (name == null) {
+            cachedSpaceStatus = SpaceStatusData.createClosedStatus(Calendar.getInstance())
+        } else {
+            cachedSpaceStatus = SpaceStatusData.createOpenStatus(name, Calendar.getInstance(), Calendar.getInstance())
+        }
         sendRefreshBroadcast(appWidgetIds, cachedSpaceStatus!!)
     }
 

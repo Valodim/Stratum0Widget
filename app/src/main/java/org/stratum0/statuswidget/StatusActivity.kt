@@ -9,9 +9,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import org.stratum0.statuswidget.widget.ToolableViewAnimator
 import java.text.SimpleDateFormat
 
@@ -21,7 +21,6 @@ class StatusActivity : Activity() {
     private lateinit var prefs: SharedPreferences
 
     internal lateinit var viewAnimator: ToolableViewAnimator
-    internal lateinit var buttonSettings: TextView
     internal lateinit var buttonOpen: TextView
     internal lateinit var buttonInherit: TextView
     internal lateinit var buttonClose: TextView
@@ -31,7 +30,10 @@ class StatusActivity : Activity() {
     internal lateinit var statusIcon: ImageView
     internal lateinit var statusProgress: View
 
+    internal lateinit var settingsEditName: EditText
+
     private lateinit var username: String
+    private lateinit var lastStatusData: SpaceStatusData
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -103,7 +105,21 @@ class StatusActivity : Activity() {
 
     private fun performSpaceStatusOperation() {
         triggeredUpdate = true
-        SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, username)
+        when (lastStatusData.status) {
+            SpaceStatus.OPEN -> {
+                if (username.equals(lastStatusData.openedBy)) {
+                    SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, null)
+                } else {
+                    SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, username)
+                }
+            }
+            SpaceStatus.CLOSED -> {
+                SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, username)
+            }
+            SpaceStatus.UNKNOWN -> {
+                throw IllegalStateException()
+            }
+        }
     }
 
     private val appWidgetIds: IntArray
@@ -119,12 +135,13 @@ class StatusActivity : Activity() {
         buttonOpen = findViewById(R.id.button_open)
         buttonInherit = findViewById(R.id.button_inherit)
         buttonClose = findViewById(R.id.button_close)
-        buttonSettings = findViewById(R.id.button_settings)
 
         currentStatusText = findViewById(R.id.current_status_text)
 
         statusIcon = findViewById(R.id.set_status_icon)
         statusProgress = findViewById(R.id.set_status_progress)
+
+        settingsEditName = findViewById(R.id.settings_edit_name)
 
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
@@ -132,7 +149,40 @@ class StatusActivity : Activity() {
         buttonInherit.setOnTouchListener(onTouchListener)
         buttonClose.setOnTouchListener(onTouchListener)
 
-        username = prefs.getString("username", getString(R.string.editText_defaultName))
+        findViewById<View>(R.id.button_settings).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(view: View?) {
+                onClickSettings()
+            }
+        })
+
+        findViewById<View>(R.id.button_settings_cancel).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(view: View?) {
+                onClickSettingsCancel()
+            }
+        })
+        findViewById<View>(R.id.button_settings_save).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(view: View?) {
+                onClickSettingsSave()
+            }
+        })
+
+        username = prefs.getString("username", "")
+    }
+
+    private fun onClickSettingsSave() {
+        username = settingsEditName.text.toString()
+        prefs.edit().putString("username", username).apply()
+
+        viewAnimator.displayedChildId = R.id.layout_set_status
+    }
+
+    private fun onClickSettingsCancel() {
+        viewAnimator.displayedChildId = R.id.layout_set_status
+    }
+
+    private fun onClickSettings() {
+        settingsEditName.setText(username)
+        viewAnimator.displayedChildId = R.id.layout_edit_name
     }
 
     override fun onStart() {
@@ -162,6 +212,8 @@ class StatusActivity : Activity() {
     }
 
     fun onPostSpaceStatusUpdate(statusData: SpaceStatusData) {
+        lastStatusData = statusData
+
         viewAnimator.displayedChildId = R.id.layout_set_status
 
         when (statusData.status) {
@@ -171,6 +223,7 @@ class StatusActivity : Activity() {
                 buttonOpen.visibility = View.GONE
 
                 currentStatusText.text = getString(R.string.status_unknown)
+                statusIcon.setImageResource(R.drawable.stratum0_unknown)
             }
 
             SpaceStatus.CLOSED -> {
@@ -179,6 +232,7 @@ class StatusActivity : Activity() {
                 buttonOpen.visibility = View.VISIBLE
 
                 currentStatusText.text = getString(R.string.status_closed)
+                statusIcon.setImageResource(R.drawable.stratum0_closed)
             }
 
             SpaceStatus.OPEN -> {
@@ -194,6 +248,7 @@ class StatusActivity : Activity() {
 
                 val isodate = SimpleDateFormat("yyyy-MM-dd HH:mm")
                 currentStatusText.text = String.format("%s\nat %s", statusData.openedBy, isodate.format(statusData.lastChange!!.time))
+                statusIcon.setImageResource(R.drawable.stratum0_open)
             }
         }
 

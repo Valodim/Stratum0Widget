@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="20dp"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
             android:orientation="horizontal">
@@ -131,56 +131,54 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/layout_edit_name">
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:inputType="textPersonName"-->
-            <!--android:text="Name"-->
-            <!--android:ems="10"-->
-            <!--android:id="@+id/nameBox"-->
-            <!--android:layout_gravity="center" />-->
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_gravity="center"
+            android:id="@+id/settings_edit_name"
+            android:inputType="textPersonName"
+            android:hint="&lt;your nick&gt;"
+            android:ems="12"
+            android:gravity="center_horizontal"
+            />
 
-        <!--<Button-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Save"-->
-            <!--android:id="@buttonOpentton"-->
-            <!--android:layout_gravity="center_horizontal" />-->
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="8dp"-->
-            <!--android:src="@drawable/stratum0_open"-->
-            <!--android:id="@+id/set_status_icon"-->
-            <!--/>-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:padding="8dp"
+            style="?android:buttonBarStyle">
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_toRightOf="@+id/set_status_icon"-->
-            <!--android:layout_marginLeft="12dp"-->
-            <!--android:layout_alignTop="@+id/set_status_icon"-->
-            <!--android:layout_alignBottom="@+id/set_status_icon"-->
-            <!--android:id="@+id/set_nick_label"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:text="Your nick: "-->
-            <!--/>-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_settings_cancel"
+                android:text="Cancel"
+                style="?android:buttonBarButtonStyle"
+                />
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_toRightOf="@+id/set_nick_label"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_marginRight="12dp"-->
-            <!--android:layout_alignTop="@+id/set_status_icon"-->
-            <!--android:layout_alignBottom="@+id/set_status_icon"-->
-            <!--android:gravity="center_vertical"-->
-            <!--/>-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_settings_save"
+                android:text="Save"
+                style="?android:buttonBarButtonStyle"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 
