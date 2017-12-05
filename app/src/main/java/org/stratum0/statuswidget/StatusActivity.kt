@@ -193,6 +193,8 @@ class StatusActivity : Activity() {
 
         hideKeyboard()
         viewAnimator.displayedChildId = R.id.layout_set_status
+
+        SpaceStatusService.triggerStatusRefresh(applicationContext, appWidgetIds, false)
     }
 
     private fun onClickSettingsCancel() {
