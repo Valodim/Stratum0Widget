@@ -8,6 +8,9 @@ android {
         applicationId "horse.amazin.my.stratum0.statuswidget"
         minSdkVersion 21
         targetSdkVersion 27
+
+        versionCode 1
+        versionName "1.0.0"
     }
 
     buildTypes {
