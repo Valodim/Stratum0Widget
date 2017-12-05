@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
-import java.util.*
 
 
 class SpaceStatusService : IntentService("Space Status Service") {
@@ -47,14 +46,20 @@ class SpaceStatusService : IntentService("Space Status Service") {
     }
 
     private fun statusUpdate(appWidgetIds: IntArray, name: String?) {
-//        stratum0StatusUpdater.update(name)
-        Thread.sleep(MIN_UPDATE_MS)
+        sendRefreshInProgressBroadcast(appWidgetIds)
 
-        if (name == null) {
-            cachedSpaceStatus = SpaceStatusData.createClosedStatus(Calendar.getInstance())
-        } else {
-            cachedSpaceStatus = SpaceStatusData.createOpenStatus(name, Calendar.getInstance(), Calendar.getInstance())
+        stratum0StatusUpdater.update(name)
+
+        val expectedStatus = if (name == null) SpaceStatus.CLOSED else SpaceStatus.OPEN
+        for (i in 1..5) {
+            Thread.sleep(UPDATE_CHECK_INTERVAL_MS)
+
+            cachedSpaceStatus = stratum0StatusFetcher.fetch()
+            if (cachedSpaceStatus!!.status == expectedStatus) {
+                break
+            }
         }
+
         sendRefreshBroadcast(appWidgetIds, cachedSpaceStatus!!)
     }
 
@@ -85,7 +90,7 @@ class SpaceStatusService : IntentService("Space Status Service") {
         val EXTRA_SKIP_CACHE = "skipCache"
 
         val MIN_REFRESH_MS = 500L
-        val MIN_UPDATE_MS = 1000L
+        val UPDATE_CHECK_INTERVAL_MS = 1000L
 
         fun triggerStatusRefresh(context: Context, appWidgetIds: IntArray, skipCache: Boolean) {
             val intent = Intent(context, SpaceStatusService::class.java)

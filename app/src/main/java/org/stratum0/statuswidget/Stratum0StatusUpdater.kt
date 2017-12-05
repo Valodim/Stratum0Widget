@@ -19,9 +19,8 @@ class Stratum0StatusUpdater {
 
             val response = okHttpClient.newCall(Request.Builder().url(queryString).build()).execute()
 
-            if(response.code() == 200) {
-                Thread.sleep(500)
-                // TODO update
+            if(response.code() != 200) {
+                Log.e(Constants.TAG, "Could not update space status!")
             }
         } catch (e: IOException) {
             Log.e(Constants.TAG, "Update request: could not connect to server.", e)
