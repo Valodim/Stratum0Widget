@@ -239,6 +239,11 @@ class StatusActivity : Activity() {
     }
 
     fun onPostSpaceStatusUpdate(statusData: SpaceStatusData) {
+        if (!prefs.getBoolean("spottedS0Wifi", false)) {
+            viewAnimator.displayedChildId = R.id.layout_wifi_missing
+            return
+        }
+
         lastStatusData = statusData
 
         viewAnimator.displayedChildId = R.id.layout_set_status

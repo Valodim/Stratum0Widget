@@ -199,4 +199,19 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingBottom="16dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:id="@+id/layout_wifi_missing"
+        android:gravity="center_vertical"
+        android:text="@string/wifi_not_seen"
+        android:drawablePadding="16dp"
+        android:drawableLeft="@drawable/ic_error_outline_black_24dp"
+        android:drawableTint="#ff0000"
+        style="?android:textAppearanceMedium"
+        />
+
 </org.stratum0.statuswidget.widget.ToolableViewAnimator>

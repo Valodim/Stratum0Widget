@@ -42,5 +42,6 @@
     <string name="settings_label_nick">Nick:</string>
 
     <string name="toast_no_nick">No username configured!</string>
+    <string name="wifi_not_seen">You must have seen the Stratum\u00A00 Wifi to use this feature!</string>
 
 </resources>

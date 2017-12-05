@@ -109,7 +109,13 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     }
 
     private fun onSpaceStatusUpdated(context: Context, appWidgetIds: IntArray, statusData: SpaceStatusData) {
-        notificationManager.handleStatusNotification(context, statusData)
+        val isOnS0Wifi = Stratum0WifiManager.isOnStratum0Wifi(context)
+        if (isOnS0Wifi) {
+            val preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+            preferences.edit().putBoolean("spottedS0Wifi", true).apply()
+        }
+
+        notificationManager.handleStatusNotification(context, statusData, isOnS0Wifi)
 
         val views = RemoteViews(context.packageName, R.layout.main)
 
