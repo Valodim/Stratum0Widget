@@ -25,7 +25,7 @@
         </receiver>
         <activity
             android:name=".StatusActivity"
-            android:label="@string/statusActivityTitle"
+            android:label="Stratum 0 Space Status"
             android:theme="@android:style/Theme.Material.Light.Dialog">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

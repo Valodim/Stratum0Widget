@@ -1,33 +1,37 @@
 package org.stratum0.statuswidget
 
 
-import java.text.SimpleDateFormat
-
 import android.app.Activity
 import android.appwidget.AppWidgetManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.SharedPreferences
+import android.content.*
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnClickListener
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import org.stratum0.statuswidget.widget.ToolableViewAnimator
+import java.text.SimpleDateFormat
 
 
-class StatusActivity : Activity(), OnClickListener {
+class StatusActivity : Activity() {
 
     private lateinit var prefs: SharedPreferences
 
-    internal lateinit var nameBox: EditText
-    internal lateinit var openCloseButton: Button
-    internal lateinit var inheritButton: Button
+    internal lateinit var viewAnimator: ToolableViewAnimator
+    internal lateinit var buttonSettings: TextView
+    internal lateinit var buttonOpen: TextView
+    internal lateinit var buttonInherit: TextView
+    internal lateinit var buttonClose: TextView
+
     internal lateinit var currentStatusText: TextView
-    internal lateinit var progressBar: ProgressBar
+
+    internal lateinit var statusIcon: ImageView
+    internal lateinit var statusProgress: View
+
+    private lateinit var username: String
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -41,6 +45,67 @@ class StatusActivity : Activity(), OnClickListener {
         }
     }
 
+    private val onTouchListener = object : View.OnTouchListener {
+        override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+            when (event?.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    startFadeoutAnimation()
+                    return false
+                }
+                MotionEvent.ACTION_UP -> {
+                    abortFadeoutAnimation()
+                    return false
+                }
+            }
+            return false
+        }
+    }
+
+    var holdingButton = false
+    var triggeredUpdate = true
+
+    private fun startFadeoutAnimation() {
+        holdingButton = true
+
+        val fadeOutAnim = AnimationUtils.loadAnimation(this, R.anim.holding_fade_out)
+        val fadeOutIconAnim = AnimationUtils.loadAnimation(this, R.anim.holding_fade_out)
+
+        fadeOutAnim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationEnd(anim: Animation) {
+                if (holdingButton) {
+                    holdingButton = false
+                    performSpaceStatusOperation()
+                }
+            }
+
+            override fun onAnimationRepeat(anim: Animation) {
+            }
+
+            override fun onAnimationStart(anim: Animation) {
+            }
+        })
+
+        currentStatusText.startAnimation(fadeOutAnim)
+
+        statusIcon.startAnimation(fadeOutIconAnim)
+        statusProgress.visibility = View.VISIBLE
+    }
+
+    private fun abortFadeoutAnimation() {
+        if (holdingButton) {
+            holdingButton = false
+
+            currentStatusText.clearAnimation()
+            statusIcon.clearAnimation()
+            statusProgress.visibility = View.GONE
+        }
+    }
+
+    private fun performSpaceStatusOperation() {
+        triggeredUpdate = true
+        SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, username)
+    }
+
     private val appWidgetIds: IntArray
         get() = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
 
@@ -49,40 +114,25 @@ class StatusActivity : Activity(), OnClickListener {
 
         setContentView(R.layout.status_layout)
 
-        openCloseButton = findViewById(R.id.openCloseButton)
-        inheritButton = findViewById(R.id.inheritButton)
-        nameBox = findViewById(R.id.nameBox)
-        currentStatusText = findViewById(R.id.currentStatus)
-        progressBar = findViewById(R.id.progressBar)
+        viewAnimator = findViewById(R.id.animator)
+
+        buttonOpen = findViewById(R.id.button_open)
+        buttonInherit = findViewById(R.id.button_inherit)
+        buttonClose = findViewById(R.id.button_close)
+        buttonSettings = findViewById(R.id.button_settings)
+
+        currentStatusText = findViewById(R.id.current_status_text)
+
+        statusIcon = findViewById(R.id.set_status_icon)
+        statusProgress = findViewById(R.id.set_status_progress)
+
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
-        openCloseButton.setOnClickListener(this)
-        inheritButton.setOnClickListener(this)
-/*        nameBox.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i2: Int, i3: Int) {}
+        buttonOpen.setOnTouchListener(onTouchListener)
+        buttonInherit.setOnTouchListener(onTouchListener)
+        buttonClose.setOnTouchListener(onTouchListener)
 
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i2: Int, i3: Int) {}
-
-            override fun afterTextChanged(editable: Editable) {
-                if (status!!.status === SpaceStatus.Status.OPEN && nameBox.text.toString() != status!!.openedBy) {
-                    inheritButton.visibility = View.VISIBLE
-                } else {
-                    inheritButton.visibility = View.GONE
-                }
-                val editor = prefs.edit()
-                editor.putString("username", editable.toString())
-                editor.commit()
-            }
-        })
-*/
-
-        val username = prefs.getString("username", getString(R.string.editText_defaultName))
-        nameBox.setText(username)
-    }
-
-    override fun onClick(view: View) {
-        val userName = nameBox.text.toString()
-        SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, userName)
+        username = prefs.getString("username", getString(R.string.editText_defaultName))
     }
 
     override fun onStart() {
@@ -104,39 +154,57 @@ class StatusActivity : Activity(), OnClickListener {
     }
 
     fun onPreSpaceStatusUpdate() {
-        openCloseButton.isEnabled = false
-        inheritButton.visibility = View.GONE
-        currentStatusText.visibility = TextView.GONE
-        progressBar.visibility = ProgressBar.VISIBLE
+        if (triggeredUpdate) {
+            return
+        }
+
+        viewAnimator.displayedChildId = R.id.layout_progress
     }
 
     fun onPostSpaceStatusUpdate(statusData: SpaceStatusData) {
+        viewAnimator.displayedChildId = R.id.layout_set_status
+
         when (statusData.status) {
             SpaceStatus.UNKNOWN -> {
+                buttonClose.visibility = View.GONE
+                buttonInherit.visibility = View.GONE
+                buttonOpen.visibility = View.GONE
+
                 currentStatusText.text = getString(R.string.status_unknown)
             }
 
             SpaceStatus.CLOSED -> {
-                openCloseButton.text = getString(R.string.button_openClose_closed)
+                buttonClose.visibility = View.GONE
+                buttonInherit.visibility = View.GONE
+                buttonOpen.visibility = View.VISIBLE
+
                 currentStatusText.text = getString(R.string.status_closed)
             }
 
             SpaceStatus.OPEN -> {
-                openCloseButton.isEnabled = true
+                buttonOpen.visibility = View.GONE
+
+                if (username.equals(statusData.openedBy)) {
+                    buttonInherit.visibility = View.GONE
+                    buttonClose.visibility = View.VISIBLE
+                } else {
+                    buttonInherit.visibility = View.VISIBLE
+                    buttonClose.visibility = View.GONE
+                }
 
                 val isodate = SimpleDateFormat("yyyy-MM-dd HH:mm")
-                openCloseButton.text = getString(R.string.button_openClose_open)
-                currentStatusText.text = String.format("%s (%s)", isodate.format(statusData.lastChange!!.time), statusData.openedBy)
-                if (nameBox.text.toString() != statusData.openedBy) {
-                    inheritButton.visibility = View.VISIBLE
-                }
+                currentStatusText.text = String.format("%s\nat %s", statusData.openedBy, isodate.format(statusData.lastChange!!.time))
             }
         }
 
-        currentStatusText.visibility = TextView.VISIBLE
-        progressBar.visibility = ProgressBar.INVISIBLE
-        if (!progressBar.isIndeterminate) {
-            progressBar.isIndeterminate = true
+        if (triggeredUpdate) {
+            triggeredUpdate = false
+
+            val fadeInAnim = AnimationUtils.loadAnimation(this, R.anim.holding_fade_in)
+            statusIcon.startAnimation(fadeInAnim)
+            currentStatusText.startAnimation(fadeInAnim)
+
+            statusProgress.visibility = View.GONE
         }
     }
 

@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
+import java.util.*
 
 
 class SpaceStatusService : IntentService("Space Status Service") {
@@ -37,8 +38,8 @@ class SpaceStatusService : IntentService("Space Status Service") {
             cachedSpaceStatus = stratum0StatusFetcher.fetch()
 
             val elapsedRealtime = SystemClock.elapsedRealtime() - startRealtime
-            if (elapsedRealtime < MIN_OPERATION_MS) {
-                Thread.sleep(MIN_OPERATION_MS - elapsedRealtime)
+            if (elapsedRealtime < MIN_REFRESH_MS) {
+                Thread.sleep(MIN_REFRESH_MS - elapsedRealtime)
             }
         }
 
@@ -46,10 +47,11 @@ class SpaceStatusService : IntentService("Space Status Service") {
     }
 
     private fun statusUpdate(appWidgetIds: IntArray, name: String?) {
-        stratum0StatusUpdater.update(name)
+//        stratum0StatusUpdater.update(name)
+        Thread.sleep(MIN_UPDATE_MS)
 
-        val status = stratum0StatusFetcher.fetch()
-        sendRefreshBroadcast(appWidgetIds, status)
+        cachedSpaceStatus = SpaceStatusData.createOpenStatus("Valodim", Calendar.getInstance(), Calendar.getInstance())
+        sendRefreshBroadcast(appWidgetIds, cachedSpaceStatus!!)
     }
 
     private fun sendRefreshBroadcast(appWidgetIds: IntArray, statusData: SpaceStatusData) {
@@ -78,7 +80,8 @@ class SpaceStatusService : IntentService("Space Status Service") {
         val EXTRA_UPDATE_NAME = "updateName"
         val EXTRA_SKIP_CACHE = "skipCache"
 
-        val MIN_OPERATION_MS = 500
+        val MIN_REFRESH_MS = 500L
+        val MIN_UPDATE_MS = 1000L
 
         fun triggerStatusRefresh(context: Context, appWidgetIds: IntArray, skipCache: Boolean) {
             val intent = Intent(context, SpaceStatusService::class.java)
@@ -92,7 +95,7 @@ class SpaceStatusService : IntentService("Space Status Service") {
         fun triggerStatusUpdate(context: Context, appWidgetIds: IntArray, name: String?) {
             val intent = Intent(context, SpaceStatusService::class.java)
             intent.`package` = BuildConfig.APPLICATION_ID
-            intent.action = ACTION_REFRESH
+            intent.action = ACTION_UPDATE
             intent.putExtra(EXTRA_UPDATE_NAME, name)
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
             context.startService(intent)
