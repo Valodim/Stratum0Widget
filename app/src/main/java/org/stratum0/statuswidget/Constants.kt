@@ -1,6 +1,6 @@
 package org.stratum0.statuswidget
 
 object Constants {
-    val TAG = "Stratum0"
-    val STATUS_URL = "http://status.stratum0.org"
+    val TAG = "Stratum 0 Widget"
+    val STATUS_URL = "https://status.stratum0.org"
 }
