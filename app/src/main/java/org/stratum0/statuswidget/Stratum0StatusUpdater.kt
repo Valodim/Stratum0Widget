@@ -23,7 +23,7 @@ class Stratum0StatusUpdater {
                 Log.e(Constants.TAG, "Could not update space status!")
             }
         } catch (e: IOException) {
-            Log.e(Constants.TAG, "Update request: could not connect to server.", e)
+            Log.e(Constants.TAG, "IOException " + e.message, e)
         } catch (e: InterruptedException) {
             Log.e(Constants.TAG, "Wait for new status didn't finish:", e)
         } catch (e: ExecutionException) {

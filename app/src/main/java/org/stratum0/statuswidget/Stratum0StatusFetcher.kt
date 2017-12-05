@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -20,11 +21,16 @@ class Stratum0StatusFetcher {
                 .url(Constants.STATUS_URL + "/status.json")
                 .build()
 
-        val response = okHttpClient.newCall(request).execute()
-        if (response.code() == 200) {
-            result = response.body()!!.string()
-        } else {
-            Log.d(Constants.TAG, "Got negative http reply " + response.code())
+        try {
+            val response = okHttpClient.newCall(request).execute()
+            if (response.code() == 200) {
+                result = response.body()!!.string()
+            } else {
+                Log.d(Constants.TAG, "Got negative http reply " + response.code())
+                return SpaceStatusData.createUnknownStatus()
+            }
+        } catch (e: IOException) {
+            Log.e(Constants.TAG, "IOException: " + e.message, e)
             return SpaceStatusData.createUnknownStatus()
         }
 
