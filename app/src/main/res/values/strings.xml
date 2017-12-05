@@ -3,18 +3,16 @@
 
     <!-- AndroidManifest.xml -->
     <string name="app_name">Stratum 0 Widget</string>
-    <string name="statusActivityTitle"> Change status</string>
 
     <!-- Notification texts -->
     <string name="notification_title">"You're in space, but it's closed!"</string>
     <string name="notification_content">Click to open space</string>
 
     <!-- FirstrunActivity.java -->
-    <string name="firstrunExplanation">Single tap triggers an update. Double tap lets you change the space status.</string>
+    <string name="firstrun_explanation">Single tap triggers an update. Double tap lets you change the space status.</string>
     <string name="button_dismiss">Got it!</string>
 
     <!-- StatusActivity.java -->
-    <string name="editText_defaultName">&lt;your nickname&gt;</string>
     <string name="status_unknown">Status unknown</string>
     <string name="status_closed">Space is closed</string>
 
@@ -23,7 +21,7 @@
     <string name="updating">Updating…</string>
 
     <!-- layout/main.xml -->
-    <string name="ImageViewDescription">Stratum0 Status</string>
+    <string name="status_icon_description">Stratum0 Status</string>
     <string name="defaultTime">Updated:\n--:--</string>
 
     <!-- layout/status_layout.xml -->
@@ -41,7 +39,7 @@
     <string name="setting_name_hint"><![CDATA[<your nick>]]></string>
     <string name="settings_label_nick">Nick:</string>
 
-    <string name="toast_no_nick">No username configured!</string>
+    <string name="toast_no_nick">No nick configured!</string>
     <string name="wifi_not_seen">You must have seen the Stratum\u00A00 Wifi to use this feature!</string>
     <string name="title_status_activity">Stratum 0 Space Status</string>
 

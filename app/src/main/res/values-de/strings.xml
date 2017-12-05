@@ -2,34 +2,45 @@
 <resources>
 
     <!-- AndroidManifest.xml -->
-    <string name="app_name">StratumsphereStatusWidget</string>
-    <string name="statusActivityTitle"> Status ändern</string>
+    <string name="app_name">Stratum 0 Widget</string>
 
     <!-- Notification texts -->
-    <string name="nNotOpen">Du bist im Space, aber er ist nicht als offen gemeldet.</string>
-    <string name="nNotOpenLatestEventInfo1">Achtung!</string>
-    <string name="nNotOpenLatestEventInfo2">Schnell den Space als offen makieren.</string>
+    <string name="notification_title">"Du bist im Space, aber es ist geschlossen!"</string>
+    <string name="notification_content">Klicke um Space zu öffnen</string>
 
     <!-- FirstrunActivity.java -->
-    <string name="firstrunExplanation">Einzelklick löst ein Update aus,\nDoppelklick ermöglicht das Setzen des Spacestatus</string>
-    <string name="button_dismiss">Verstanden!</string>
+    <string name="firstrun_explanation">Ein klick updated den Status. Doppelklick erlaubt ändern des Space Status.</string>
+    <string name="button_dismiss">OK!</string>
 
     <!-- StatusActivity.java -->
-    <string name="editText_defaultName">&lt;dein Nickname&gt;</string>
     <string name="status_unknown">Status unbekannt</string>
-    <string name="status_closed">Geschlossen</string>
+    <string name="status_closed">Space ist zu</string>
 
     <!-- StratumsphereStatusProvider.java -->
-    <string name="currentTime">Aktualisiert</string>
-    <string name="updating">aktualisiere...\n</string>
+    <string name="currentTime">Updated</string>
+    <string name="updating">Update…</string>
 
     <!-- layout/main.xml -->
-    <string name="ImageViewDescription">Stratum0 Status</string>
-    <string name="defaultTime">Aktualisiert:\n--:--</string>
+    <string name="status_icon_description">Stratum 0 Status</string>
+    <string name="defaultTime">Updated:\n--:--</string>
 
     <!-- layout/status_layout.xml -->
-    <string name="button_openClose_closed">Space öffnen</string>
-    <string name="button_openClose_open">Space schließen</string>
-    <string name="button_inherit">Spacestatus übernehmen</string>
+    <string name="button_settings">Einstellungen</string>
+    <string name="button_open">Space öffnen</string>
+    <string name="button_inherit">Space übernehmen</string>
+    <string name="button_close">Space schließen</string>
+    <string name="button_save">Speichern</string>
+    <string name="button_cancel">Zurück</string>
+
+    <string name="status_progress_closing">Schließe Space…</string>
+    <string name="status_progress_inheriting">Übernehme Space…</string>
+    <string name="status_progress_opening">Öffne Space…</string>
+
+    <string name="setting_name_hint"><![CDATA[<dein nick>]]></string>
+    <string name="settings_label_nick">Nick:</string>
+
+    <string name="toast_no_nick">Kein Nick konfiguriert!</string>
+    <string name="wifi_not_seen">Du musst einmal das Stratum\u00A00 Wifi gesehen haben um dieses Feature zu nutzen!</string>
+    <string name="title_status_activity">Stratum 0 Space Status</string>
 
 </resources>

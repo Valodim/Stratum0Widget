@@ -18,7 +18,7 @@
 			android:layout_height="48dp"
 			android:layout_gravity="center"
 			android:id="@+id/statusImageView"
-			android:contentDescription="@string/ImageViewDescription"
+			android:contentDescription="@string/status_icon_description"
 			android:src="@drawable/stratum0_unknown"
 			tools:src="@drawable/stratum0_open"
 			/>
