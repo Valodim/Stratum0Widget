@@ -58,11 +58,12 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     private fun onWidgetClick(context: Context, appWidgetIds: IntArray) {
         val preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
-        if (preferences.getBoolean("firstrun", true)) {
+        if (true || preferences.getBoolean("firstrun", true)) {
             val firstrunIntent = Intent(context, FirstRunActivity::class.java)
             firstrunIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(firstrunIntent)
             preferences.edit().putBoolean("firstrun", false).commit()
+            return
         }
 
         val clickCount = preferences.getInt("clicks", 0)

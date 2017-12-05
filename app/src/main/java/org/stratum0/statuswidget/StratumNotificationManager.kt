@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.NotificationCompat
 
 class StratumNotificationManager {
 
@@ -26,7 +25,8 @@ class StratumNotificationManager {
         val notificationIntent = Intent(context, StratumsphereStatusProvider::class.java)
         val contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
 
-        val notification = NotificationCompat.Builder(context)
+
+        val notification = Notification.Builder(context)
                 .setSmallIcon(R.drawable.stratum0_unknown)
                 .setContentTitle(context.getText(R.string.notification_title))
                 .setContentText(context.getText(R.string.notification_content))
