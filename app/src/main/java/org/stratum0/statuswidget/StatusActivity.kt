@@ -9,9 +9,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import org.stratum0.statuswidget.widget.ToolableViewAnimator
 import java.text.SimpleDateFormat
 
@@ -26,6 +28,7 @@ class StatusActivity : Activity() {
     internal lateinit var buttonClose: TextView
 
     internal lateinit var currentStatusText: TextView
+    internal lateinit var currentStatusTextLoading: TextView
 
     internal lateinit var statusIcon: ImageView
     internal lateinit var statusProgress: View
@@ -67,6 +70,15 @@ class StatusActivity : Activity() {
     var triggeredUpdate = true
 
     private fun startFadeoutAnimation() {
+        if (holdingButton || triggeredUpdate) {
+            return
+        }
+
+        if (username.isEmpty()) {
+            Toast.makeText(this, getString(R.string.toast_no_nick), Toast.LENGTH_LONG).show()
+            return
+        }
+
         holdingButton = true
 
         val fadeOutAnim = AnimationUtils.loadAnimation(this, R.anim.holding_fade_out)
@@ -109,17 +121,22 @@ class StatusActivity : Activity() {
             SpaceStatus.OPEN -> {
                 if (username.equals(lastStatusData.openedBy)) {
                     SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, null)
+                    currentStatusTextLoading.text = getString(R.string.status_progress_closing)
                 } else {
                     SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, username)
+                    currentStatusTextLoading.text = getString(R.string.status_progress_inheriting)
                 }
             }
             SpaceStatus.CLOSED -> {
                 SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, username)
+                currentStatusTextLoading.text = getString(R.string.status_progress_opening)
             }
             SpaceStatus.UNKNOWN -> {
                 throw IllegalStateException()
             }
         }
+
+        currentStatusTextLoading.visibility = View.VISIBLE
     }
 
     private val appWidgetIds: IntArray
@@ -137,6 +154,7 @@ class StatusActivity : Activity() {
         buttonClose = findViewById(R.id.button_close)
 
         currentStatusText = findViewById(R.id.current_status_text)
+        currentStatusTextLoading = findViewById(R.id.current_status_text_loading)
 
         statusIcon = findViewById(R.id.set_status_icon)
         statusProgress = findViewById(R.id.set_status_progress)
@@ -173,16 +191,25 @@ class StatusActivity : Activity() {
         username = settingsEditName.text.toString()
         prefs.edit().putString("username", username).apply()
 
+        hideKeyboard()
         viewAnimator.displayedChildId = R.id.layout_set_status
     }
 
     private fun onClickSettingsCancel() {
+        hideKeyboard()
         viewAnimator.displayedChildId = R.id.layout_set_status
     }
 
     private fun onClickSettings() {
-        settingsEditName.setText(username)
+        if (holdingButton || triggeredUpdate) {
+            return
+        }
+
         viewAnimator.displayedChildId = R.id.layout_edit_name
+        settingsEditName.setText(username)
+        settingsEditName.setSelection(username.length)
+        settingsEditName.requestFocus()
+        showKeyboard(settingsEditName)
     }
 
     override fun onStart() {
@@ -247,7 +274,7 @@ class StatusActivity : Activity() {
                 }
 
                 val isodate = SimpleDateFormat("yyyy-MM-dd HH:mm")
-                currentStatusText.text = String.format("%s\nat %s", statusData.openedBy, isodate.format(statusData.lastChange!!.time))
+                currentStatusText.text = String.format("Open by %s\nat %s", statusData.openedBy, isodate.format(statusData.lastChange!!.time))
                 statusIcon.setImageResource(R.drawable.stratum0_open)
             }
         }
@@ -259,8 +286,22 @@ class StatusActivity : Activity() {
             statusIcon.startAnimation(fadeInAnim)
             currentStatusText.startAnimation(fadeInAnim)
 
+            currentStatusTextLoading.visibility = View.GONE
             statusProgress.visibility = View.GONE
         }
     }
 
+    private fun hideKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
+    }
+
+    private fun showKeyboard(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInputFromInputMethod(view.windowToken, 0)
+    }
 }
