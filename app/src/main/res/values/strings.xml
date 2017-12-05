@@ -10,7 +10,7 @@
     <string name="notification_content">Click to open space</string>
 
     <!-- FirstrunActivity.java -->
-    <string name="firstrunExplanation">Single tap triggers an update,\nDouble tap lets you change the space status</string>
+    <string name="firstrunExplanation">Single tap triggers an update. Double tap lets you change the space status.</string>
     <string name="button_dismiss">Got it!</string>
 
     <!-- StatusActivity.java -->
@@ -43,5 +43,6 @@
 
     <string name="toast_no_nick">No username configured!</string>
     <string name="wifi_not_seen">You must have seen the Stratum\u00A00 Wifi to use this feature!</string>
+    <string name="title_status_activity">Stratum 0 Space Status</string>
 
 </resources>

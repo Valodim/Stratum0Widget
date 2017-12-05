@@ -11,9 +11,8 @@ class FirstRunActivity : Activity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.requestFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.first_run)
 
-        findViewById<View>(R.id.dismissButton).setOnClickListener { finish() }
+        findViewById<View>(R.id.button_dismiss).setOnClickListener { finish() }
     }
 }
