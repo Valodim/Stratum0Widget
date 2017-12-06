@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import org.stratum0.statuswidget.util.bindView
 import org.stratum0.statuswidget.widget.ToolableViewAnimator
 import java.text.SimpleDateFormat
 
@@ -23,18 +24,19 @@ class StatusActivity : Activity() {
 
     private lateinit var prefs: SharedPreferences
 
-    internal lateinit var viewAnimator: ToolableViewAnimator
-    internal lateinit var buttonOpen: TextView
-    internal lateinit var buttonInherit: TextView
-    internal lateinit var buttonClose: TextView
+    private val viewAnimator: ToolableViewAnimator by bindView(R.id.animator)
+    private val buttonOpen: TextView by bindView(R.id.button_open)
+    private val buttonInherit: TextView by bindView(R.id.button_inherit)
+    private val buttonClose: TextView by bindView(R.id.button_close)
 
-    internal lateinit var currentStatusText: TextView
-    internal lateinit var currentStatusTextLoading: TextView
+    private val currentStatusText: TextView by bindView(R.id.current_status_text)
+    private val currentStatusTextLoading: TextView by bindView(R.id.current_status_text_loading)
 
-    internal lateinit var statusIcon: ImageView
-    internal lateinit var statusProgress: View
+    private val statusIcon: ImageView by bindView(R.id.set_status_icon)
+    private val statusProgress: View by bindView(R.id.set_status_progress)
 
-    internal lateinit var settingsEditName: EditText
+    private val settingsEditName: EditText by bindView(R.id.settings_edit_name)
+    private val settingsSshImport: View by bindView(R.id.settings_ssh_import)
 
     private lateinit var username: String
     private lateinit var lastStatusData: SpaceStatusData
@@ -148,20 +150,6 @@ class StatusActivity : Activity() {
 
         window.requestFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.status_layout)
-
-        viewAnimator = findViewById(R.id.animator)
-
-        buttonOpen = findViewById(R.id.button_open)
-        buttonInherit = findViewById(R.id.button_inherit)
-        buttonClose = findViewById(R.id.button_close)
-
-        currentStatusText = findViewById(R.id.current_status_text)
-        currentStatusTextLoading = findViewById(R.id.current_status_text_loading)
-
-        statusIcon = findViewById(R.id.set_status_icon)
-        statusProgress = findViewById(R.id.set_status_progress)
-
-        settingsEditName = findViewById(R.id.settings_edit_name)
 
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
