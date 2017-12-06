@@ -38,8 +38,9 @@
 
         <service
             android:name=".SpaceStatusService"
-            android:exported="false">
-       </service>
+            android:exported="false" />
+        <service android:name=".SpaceDoorService"
+            android:exported="false" />
     </application>
 
 </manifest>

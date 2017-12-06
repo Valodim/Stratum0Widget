@@ -70,6 +70,16 @@
                     android:id="@+id/set_status_icon"
                     />
 
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/ic_check_black_24dp"
+                    android:tint="#090"
+                    android:visibility="gone"
+                    android:id="@+id/unlocked_ok_icon"
+                    />
+
                 <ProgressBar
                     android:layout_width="48dp"
                     android:layout_height="48dp"
@@ -114,6 +124,23 @@
                     tools:text="Loading…"
                     />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/set_status_icon"
+                    android:layout_alignTop="@+id/set_status_icon"
+                    android:layout_alignBottom="@+id/set_status_icon"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:id="@+id/current_status_text_unlocked"
+                    android:gravity="center_vertical"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:visibility="gone"
+                    android:text="@string/unlock_ok"
+                    />
+
             </RelativeLayout>
 
             <LinearLayout
@@ -122,6 +149,20 @@
                 android:padding="8dp"
                 android:gravity="end"
                 style="?android:buttonBarStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_unlock"
+                    android:text="@string/button_unlock"
+                    style="?android:buttonBarButtonStyle"
+                    />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -279,6 +320,49 @@
                 android:drawableTint="#ff0000"
                 style="?android:textAppearanceMedium"
                 />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="36dp"
+            android:orientation="vertical"
+            android:id="@+id/layout_unlock_error"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="28dp"
+                android:paddingBottom="16dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:drawablePadding="16dp"
+                android:drawableLeft="@drawable/ic_error_outline_black_24dp"
+                android:drawableTint="#ff0000"
+                android:id="@+id/text_unlock_error"
+                android:gravity="center_vertical"
+                style="?android:textAppearanceMedium"
+                tools:text="Unlock failed: You're not connected to the Stratum 0 Wifi!"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                style="?android:buttonBarStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_error_back"
+                    android:text="@string/button_back"
+                    style="?android:buttonBarButtonStyle"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 

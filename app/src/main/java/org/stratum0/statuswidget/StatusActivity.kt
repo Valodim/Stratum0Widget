@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
 import android.view.Window
@@ -30,16 +31,21 @@ class StatusActivity : Activity() {
     private val buttonOpen: TextView by bindView(R.id.button_open)
     private val buttonInherit: TextView by bindView(R.id.button_inherit)
     private val buttonClose: TextView by bindView(R.id.button_close)
+    private val buttonUnlock: TextView by bindView(R.id.button_unlock)
 
     private val currentStatusText: TextView by bindView(R.id.current_status_text)
+    private val currentStatusTextUnlocked: TextView by bindView(R.id.current_status_text_unlocked)
     private val currentStatusTextLoading: TextView by bindView(R.id.current_status_text_loading)
 
     private val statusIcon: ImageView by bindView(R.id.set_status_icon)
     private val statusProgress: View by bindView(R.id.set_status_progress)
+    private val statusUnlockedOk: ImageView by bindView(R.id.unlocked_ok_icon)
 
     private val settingsEditName: EditText by bindView(R.id.settings_edit_name)
     private val settingsSshStatus: TextView by bindView(R.id.settings_ssh_status)
     private val settingsSshImport: View by bindView(R.id.settings_ssh_import)
+
+    private val textUnlockError: TextView by bindView(R.id.text_unlock_error)
 
     private lateinit var username: String
     private lateinit var lastStatusData: SpaceStatusData
@@ -54,15 +60,25 @@ class StatusActivity : Activity() {
                     val status = intent.getParcelableExtra<SpaceStatusData>(SpaceStatusService.EXTRA_STATUS)
                     onPostSpaceStatusUpdate(status)
                 }
+                SpaceDoorService.EVENT_UNLOCK_STATUS -> {
+                    val statusOk = intent.getBooleanExtra(SpaceDoorService.EXTRA_STATUS, false)
+                    val errorRes = if (!statusOk) {
+                         intent.getIntExtra(SpaceDoorService.EXTRA_ERROR_RES, 0)
+                    } else {
+                        null
+                    }
+                    onDoorUnlockStatusEvent(errorRes)
+                }
             }
         }
     }
 
     private val onTouchListener = object : View.OnTouchListener {
-        override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+        override fun onTouch(view: View, event: MotionEvent?): Boolean {
+            val isUnlockButton = view.id == R.id.button_unlock
             when (event?.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
-                    startFadeoutAnimation()
+                    startFadeoutAnimation(isUnlockButton)
                     return false
                 }
                 MotionEvent.ACTION_UP -> {
@@ -75,14 +91,15 @@ class StatusActivity : Activity() {
     }
 
     var holdingButton = false
-    var triggeredUpdate = true
+    var triggeredUpdate = false
+    var triggeredUnlock = false
 
-    private fun startFadeoutAnimation() {
-        if (holdingButton || triggeredUpdate) {
+    private fun startFadeoutAnimation(isUnlock: Boolean) {
+        if (holdingButton || triggeredUpdate || triggeredUnlock) {
             return
         }
 
-        if (username.isEmpty()) {
+        if (!isUnlock && username.isEmpty()) {
             Toast.makeText(this, getString(R.string.toast_no_nick), Toast.LENGTH_LONG).show()
             return
         }
@@ -90,13 +107,16 @@ class StatusActivity : Activity() {
         holdingButton = true
 
         val fadeOutAnim = AnimationUtils.loadAnimation(this, R.anim.holding_fade_out)
-        val fadeOutIconAnim = AnimationUtils.loadAnimation(this, R.anim.holding_fade_out)
 
         fadeOutAnim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationEnd(anim: Animation) {
                 if (holdingButton) {
                     holdingButton = false
-                    performSpaceStatusOperation()
+                    if (isUnlock) {
+                        performDoorUnlockOperation()
+                    } else {
+                        performSpaceStatusOperation()
+                    }
                 }
             }
 
@@ -108,8 +128,8 @@ class StatusActivity : Activity() {
         })
 
         currentStatusText.startAnimation(fadeOutAnim)
+        statusIcon.startAnimation(fadeOutAnim)
 
-        statusIcon.startAnimation(fadeOutIconAnim)
         statusProgress.visibility = View.VISIBLE
     }
 
@@ -147,6 +167,15 @@ class StatusActivity : Activity() {
         currentStatusTextLoading.visibility = View.VISIBLE
     }
 
+    private fun performDoorUnlockOperation() {
+        triggeredUnlock = true
+
+        currentStatusTextLoading.text = getString(R.string.status_progress_unlock)
+        currentStatusTextLoading.visibility = View.VISIBLE
+
+        SpaceDoorService.triggerDoorUnlock(applicationContext)
+    }
+
     private val appWidgetIds: IntArray
         get() = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
 
@@ -162,6 +191,7 @@ class StatusActivity : Activity() {
         buttonOpen.setOnTouchListener(onTouchListener)
         buttonInherit.setOnTouchListener(onTouchListener)
         buttonClose.setOnTouchListener(onTouchListener)
+        buttonUnlock.setOnTouchListener(onTouchListener)
 
         findViewById<View>(R.id.button_settings).setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View?) {
@@ -179,6 +209,13 @@ class StatusActivity : Activity() {
                 onClickSettingsSave()
             }
         })
+        findViewById<View>(R.id.button_error_back).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(view: View?) {
+                onClickBack()
+            }
+        })
+
+        buttonUnlock.isEnabled = sshKeyStorage.hasKey()
 
         settingsSshImport.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
@@ -247,12 +284,18 @@ class StatusActivity : Activity() {
         updateSshStatus()
     }
 
+    private fun onClickBack() {
+        displayStatus(false)
+    }
+
     private fun updateSshStatus() {
         if (sshKeyStorage.hasKey()) {
             settingsSshStatus.text = "Ok"
         } else {
             settingsSshStatus.text = "Not configured"
         }
+
+        buttonUnlock.isEnabled = sshKeyStorage.hasKey()
     }
 
     override fun onStart() {
@@ -261,6 +304,7 @@ class StatusActivity : Activity() {
         val filter = IntentFilter()
         filter.addAction(SpaceStatusService.EVENT_REFRESH_IN_PROGRESS)
         filter.addAction(SpaceStatusService.EVENT_REFRESH)
+        filter.addAction(SpaceDoorService.EVENT_UNLOCK_STATUS)
 
         registerReceiver(receiver, filter)
     }
@@ -279,6 +323,29 @@ class StatusActivity : Activity() {
         viewAnimator.displayedChildId = R.id.layout_progress
     }
 
+    private fun onDoorUnlockStatusEvent(errorRes: Int?) {
+        if (errorRes == null) {
+            val fadeInAnim = AnimationUtils.loadAnimation(this, R.anim.holding_fade_in)
+            statusUnlockedOk.startAnimation(fadeInAnim)
+            currentStatusTextUnlocked.startAnimation(fadeInAnim)
+            statusUnlockedOk.visibility = View.VISIBLE
+            currentStatusTextUnlocked.visibility = View.VISIBLE
+
+            statusProgress.visibility = View.GONE
+            currentStatusTextLoading.visibility = View.GONE
+
+            Handler().postDelayed(Runnable {
+                triggeredUnlock = false
+                displayStatus(true)
+            }, 1000)
+        } else {
+            triggeredUnlock = false
+
+            textUnlockError.text = getText(errorRes)
+            viewAnimator.displayedChildId = R.id.layout_unlock_error
+        }
+    }
+
     fun onPostSpaceStatusUpdate(statusData: SpaceStatusData) {
         if (!prefs.getBoolean("spottedS0Wifi", false) && !BuildConfig.DEBUG) {
             viewAnimator.displayedChildId = R.id.layout_wifi_missing
@@ -287,9 +354,16 @@ class StatusActivity : Activity() {
 
         lastStatusData = statusData
 
+        val animate = triggeredUpdate
+        triggeredUpdate = false
+
+        displayStatus(animate)
+    }
+
+    private fun displayStatus(animate: Boolean) {
         viewAnimator.displayedChildId = R.id.layout_set_status
 
-        when (statusData.status) {
+        when (lastStatusData.status) {
             SpaceStatus.UNKNOWN -> {
                 buttonClose.visibility = View.GONE
                 buttonInherit.visibility = View.GONE
@@ -311,7 +385,7 @@ class StatusActivity : Activity() {
             SpaceStatus.OPEN -> {
                 buttonOpen.visibility = View.GONE
 
-                if (username.equals(statusData.openedBy)) {
+                if (username.equals(lastStatusData.openedBy)) {
                     buttonInherit.visibility = View.GONE
                     buttonClose.visibility = View.VISIBLE
                 } else {
@@ -320,21 +394,27 @@ class StatusActivity : Activity() {
                 }
 
                 val isodate = SimpleDateFormat("yyyy-MM-dd HH:mm")
-                currentStatusText.text = String.format("Open by %s\nat %s", statusData.openedBy, isodate.format(statusData.lastChange!!.time))
+                currentStatusText.text = String.format("Open by %s\nat %s", lastStatusData.openedBy, isodate.format(lastStatusData.lastChange!!.time))
                 statusIcon.setImageResource(R.drawable.stratum0_open)
             }
         }
 
-        if (triggeredUpdate) {
-            triggeredUpdate = false
-
+        if (animate) {
             val fadeInAnim = AnimationUtils.loadAnimation(this, R.anim.holding_fade_in)
             statusIcon.startAnimation(fadeInAnim)
             currentStatusText.startAnimation(fadeInAnim)
-
-            currentStatusTextLoading.visibility = View.GONE
-            statusProgress.visibility = View.GONE
+        } else {
+            statusIcon.clearAnimation()
+            currentStatusText.clearAnimation()
         }
+
+        currentStatusTextLoading.visibility = View.GONE
+        statusProgress.visibility = View.GONE
+
+        currentStatusTextUnlocked.clearAnimation()
+        statusUnlockedOk.clearAnimation()
+        currentStatusTextUnlocked.visibility = View.GONE
+        statusUnlockedOk.visibility = View.GONE
     }
 
     private fun hideKeyboard() {

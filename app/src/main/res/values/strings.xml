@@ -29,12 +29,15 @@
     <string name="button_open">Open Space</string>
     <string name="button_inherit">Inherit Space</string>
     <string name="button_close">Close Space</string>
+    <string name="button_unlock">Unlock Space</string>
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
+    <string name="button_back">Back</string>
 
     <string name="status_progress_closing">Closing…</string>
     <string name="status_progress_inheriting">Inheriting…</string>
     <string name="status_progress_opening">Opening…</string>
+    <string name="status_progress_unlock">Unlocking…</string>
 
     <string name="setting_name_hint"><![CDATA[<your nick>]]></string>
     <string name="settings_label_nick">Nick:</string>
@@ -43,5 +46,8 @@
     <string name="toast_no_nick">No nick configured!</string>
     <string name="wifi_not_seen">You must have seen the Stratum\u00A00 Wifi to use this feature!</string>
     <string name="title_status_activity">Stratum 0 Space Status</string>
+
+    <string name="unlock_ok">Welcome!</string>
+    <string name="unlock_error_wifi">"Unlock failed: You're not connected to the Stratum\u00A00 Wifi!"</string>
 
 </resources>
