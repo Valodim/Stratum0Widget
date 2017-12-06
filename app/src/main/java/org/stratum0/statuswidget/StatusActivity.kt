@@ -193,7 +193,10 @@ class StatusActivity : Activity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        overridePendingTransition(0, 0)
+
         window.requestFeature(Window.FEATURE_NO_TITLE)
+        setFinishOnTouchOutside(true)
         setContentView(R.layout.status_layout)
 
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE)
@@ -248,6 +251,12 @@ class StatusActivity : Activity() {
 
         viewAnimator.displayedChildId = R.id.layout_progress
         SpaceStatusService.triggerStatusRefresh(applicationContext, appWidgetIds, false)
+    }
+
+    override fun finish() {
+        super.finish()
+
+        overridePendingTransition(0, 0)
     }
 
     private fun onClickSshImport() {
