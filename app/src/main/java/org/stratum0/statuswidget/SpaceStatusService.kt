@@ -55,7 +55,7 @@ class SpaceStatusService : IntentService("Space Status Service") {
             Thread.sleep(UPDATE_CHECK_INTERVAL_MS)
 
             cachedSpaceStatus = stratum0StatusFetcher.fetch()
-            if (cachedSpaceStatus!!.status == expectedStatus) {
+            if (cachedSpaceStatus?.status == expectedStatus && cachedSpaceStatus?.openedBy.equals(name)) {
                 break
             }
         }
