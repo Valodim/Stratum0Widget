@@ -4,6 +4,7 @@ package org.stratum0.statuswidget
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.*
+import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat
 
 
 class StatusActivity : Activity() {
+    val REQUEST_CODE_IMPORT_SSH = 1
 
     private lateinit var prefs: SharedPreferences
 
@@ -36,10 +38,13 @@ class StatusActivity : Activity() {
     private val statusProgress: View by bindView(R.id.set_status_progress)
 
     private val settingsEditName: EditText by bindView(R.id.settings_edit_name)
+    private val settingsSshStatus: TextView by bindView(R.id.settings_ssh_status)
     private val settingsSshImport: View by bindView(R.id.settings_ssh_import)
 
     private lateinit var username: String
     private lateinit var lastStatusData: SpaceStatusData
+
+    private lateinit var sshKeyStorage: SshKeyStorage
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -152,6 +157,7 @@ class StatusActivity : Activity() {
         setContentView(R.layout.status_layout)
 
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        sshKeyStorage = SshKeyStorage(applicationContext)
 
         buttonOpen.setOnTouchListener(onTouchListener)
         buttonInherit.setOnTouchListener(onTouchListener)
@@ -174,7 +180,42 @@ class StatusActivity : Activity() {
             }
         })
 
+        settingsSshImport.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                onClickSshImport()
+            }
+        })
+
         username = prefs.getString("username", "")
+
+        SpaceStatusService.triggerStatusRefresh(applicationContext, appWidgetIds, false)
+    }
+
+    private fun onClickSshImport() {
+        sshKeyStorage.clearKey()
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.type = "*/*"
+        startActivityForResult(intent, REQUEST_CODE_IMPORT_SSH)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode != REQUEST_CODE_IMPORT_SSH) {
+            super.onActivityResult(requestCode, resultCode, data)
+            return
+        }
+
+        if (resultCode == RESULT_OK && data != null) {
+            val keyData = readSshKeyData(data.data)
+            if (keyData != null) {
+                sshKeyStorage.setKey(keyData)
+            }
+        }
+
+        updateSshStatus()
+    }
+
+    private fun readSshKeyData(uri: Uri): String? {
+        return contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
     }
 
     private fun onClickSettingsSave() {
@@ -202,6 +243,16 @@ class StatusActivity : Activity() {
         settingsEditName.setSelection(username.length)
         settingsEditName.requestFocus()
         showKeyboard(settingsEditName)
+
+        updateSshStatus()
+    }
+
+    private fun updateSshStatus() {
+        if (sshKeyStorage.hasKey()) {
+            settingsSshStatus.text = "Ok"
+        } else {
+            settingsSshStatus.text = "Not configured"
+        }
     }
 
     override fun onStart() {
@@ -212,8 +263,6 @@ class StatusActivity : Activity() {
         filter.addAction(SpaceStatusService.EVENT_REFRESH)
 
         registerReceiver(receiver, filter)
-
-        SpaceStatusService.triggerStatusRefresh(applicationContext, appWidgetIds, false)
     }
 
     override fun onStop() {

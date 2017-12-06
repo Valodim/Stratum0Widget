@@ -38,6 +38,7 @@
 
     <string name="setting_name_hint"><![CDATA[<your nick>]]></string>
     <string name="settings_label_nick">Nick:</string>
+    <string name="settings_label_ssh_key">SSH Key:</string>
 
     <string name="toast_no_nick">No nick configured!</string>
     <string name="wifi_not_seen">You must have seen the Stratum\u00A00 Wifi to use this feature!</string>
