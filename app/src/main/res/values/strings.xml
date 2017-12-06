@@ -39,9 +39,16 @@
     <string name="status_progress_opening">Opening…</string>
     <string name="status_progress_unlock">Unlocking…</string>
 
-    <string name="setting_name_hint"><![CDATA[<your nick>]]></string>
+    <string name="settings_hint_name"><![CDATA[<your nick>]]></string>
     <string name="settings_label_nick">Nick:</string>
-    <string name="settings_label_ssh_key">SSH Key:</string>
+    <string name="settings_label_ssh_key">Ssh Key:</string>
+    <string name="settings_label_ssh_password">Ssh Pass:</string>
+    <string name="settings_hint_password"><![CDATA[<password>]]></string>
+
+    <string name="settings_ssh_status_ok">Configured</string>
+    <string name="settings_ssh_status_unconfigured">Not configured</string>
+
+    <string name="settings_error_bad_password">Incorrect password!</string>
 
     <string name="toast_no_nick">No nick configured!</string>
     <string name="wifi_not_seen">You must have seen the Stratum\u00A00 Wifi to use this feature!</string>
@@ -55,5 +62,4 @@
     <string name="unlock_error_identity">Unlock failed: Problem with your private key!</string>
     <string name="unlock_error_no_key">Unlock failed: No private key configured!</string>
     <string name="unlock_error_auth">Unlock failed: Authentication error!</string>
-
 </resources>

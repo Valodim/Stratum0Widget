@@ -44,6 +44,7 @@ class StatusActivity : Activity() {
     private val settingsEditName: EditText by bindView(R.id.settings_edit_name)
     private val settingsSshStatus: TextView by bindView(R.id.settings_ssh_status)
     private val settingsSshImport: View by bindView(R.id.settings_ssh_import)
+    private val settingsSshPass: EditText by bindView(R.id.settings_ssh_pass)
 
     private val textUnlockError: TextView by bindView(R.id.text_unlock_error)
 
@@ -213,6 +214,16 @@ class StatusActivity : Activity() {
                 onClickBack()
             }
         })
+        findViewById<View>(R.id.button_settings_ssh_save).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(view: View?) {
+                onClickSettingsSshSave()
+            }
+        })
+        findViewById<View>(R.id.button_settings_ssh_cancel).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(view: View?) {
+                onClickSettingsSshCancel()
+            }
+        })
 
         buttonUnlock.isEnabled = sshKeyStorage.hasKey()
 
@@ -244,11 +255,49 @@ class StatusActivity : Activity() {
         if (resultCode == RESULT_OK && data != null) {
             val keyData = readSshKeyData(data.data)
             if (keyData != null) {
-                sshKeyStorage.setKey(keyData)
+                if (!sshKeyStorage.looksLikeKey(keyData)) {
+                    Toast.makeText(this, "This does not look like a key", Toast.LENGTH_LONG).show()
+                } else if (sshKeyStorage.isMatchingPassword(keyData, null)) {
+                    sshKeyStorage.setKey(keyData, "")
+                } else {
+                    displayPassphraseInput(keyData)
+                }
             }
         }
 
         updateSshStatus()
+    }
+
+    var candidateKeyData: String? = null
+
+    private fun displayPassphraseInput(keyData: String) {
+        settingsSshPass.setText("")
+
+        candidateKeyData = keyData
+
+        viewAnimator.displayedChildId = R.id.layout_ssh_password
+    }
+
+    private fun onClickSettingsSshSave() {
+        val passphrase = settingsSshPass.text.toString()
+
+        if (sshKeyStorage.isMatchingPassword(candidateKeyData!!, passphrase)) {
+            sshKeyStorage.setKey(candidateKeyData!!, passphrase)
+            candidateKeyData = null
+
+            updateSshStatus()
+            viewAnimator.displayedChildId = R.id.layout_settings
+        } else {
+            settingsSshPass.error = getString(R.string.settings_error_bad_password)
+        }
+    }
+
+    private fun onClickSettingsSshCancel() {
+        candidateKeyData = null
+        settingsSshPass.setText("")
+
+        updateSshStatus()
+        viewAnimator.displayedChildId = R.id.layout_settings
     }
 
     private fun readSshKeyData(uri: Uri): String? {
@@ -275,7 +324,7 @@ class StatusActivity : Activity() {
             return
         }
 
-        viewAnimator.displayedChildId = R.id.layout_edit_name
+        viewAnimator.displayedChildId = R.id.layout_settings
         settingsEditName.setText(username)
         settingsEditName.setSelection(username.length)
         settingsEditName.requestFocus()
@@ -290,9 +339,9 @@ class StatusActivity : Activity() {
 
     private fun updateSshStatus() {
         if (sshKeyStorage.hasKey()) {
-            settingsSshStatus.text = "Ok"
+            settingsSshStatus.text = getString(R.string.settings_ssh_status_ok)
         } else {
-            settingsSshStatus.text = "Not configured"
+            settingsSshStatus.text = getString(R.string.settings_ssh_status_unconfigured)
         }
 
         buttonUnlock.isEnabled = sshKeyStorage.hasKey()
@@ -355,6 +404,8 @@ class StatusActivity : Activity() {
     }
 
     private fun displayStatus(animate: Boolean) {
+        hideKeyboard()
+
         viewAnimator.displayedChildId = R.id.layout_set_status
 
         statusIcon.visibility = View.VISIBLE

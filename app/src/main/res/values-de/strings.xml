@@ -36,7 +36,7 @@
     <string name="status_progress_inheriting">Übernehme Space…</string>
     <string name="status_progress_opening">Öffne Space…</string>
 
-    <string name="setting_name_hint"><![CDATA[<dein nick>]]></string>
+    <string name="settings_hint_name"><![CDATA[<dein nick>]]></string>
     <string name="settings_label_nick">Nick:</string>
 
     <string name="toast_no_nick">Kein Nick konfiguriert!</string>
