@@ -49,7 +49,7 @@
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:textSize="10.0dp"
 		android:maxLines="2"
-        android:textColor="?android:colorForegroundInverse"
+		android:textColor="#ffffff"
         android:minEms="5"
         android:minHeight="32dp"
         tools:text="Updated:\n09:56"
