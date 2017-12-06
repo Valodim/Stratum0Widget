@@ -19,6 +19,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         setOnClickListeners(context, appWidgetIds, views)
         appWidgetManager.updateAppWidget(appWidgetIds, views)
 
+        onSpaceStatusUpdateInProgress(context, appWidgetIds)
         SpaceStatusService.triggerStatusRefresh(context, appWidgetIds, true)
     }
 
@@ -87,15 +88,12 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         val views = RemoteViews(context.packageName, R.layout.main)
         val updatingText = context.getText(R.string.updating)
 
-        // indicate that the status is currently updating
         for (i in appWidgetIds.indices) {
-            val appWidgetId = appWidgetIds[i]
-
             views.setTextViewText(R.id.lastUpdateTextView, updatingText)
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            appWidgetManager!!.updateAppWidget(appWidgetId, views)
         }
 
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
 
     private fun onSpaceStatusUpdated(context: Context, appWidgetIds: IntArray, statusData: SpaceStatusData) {
