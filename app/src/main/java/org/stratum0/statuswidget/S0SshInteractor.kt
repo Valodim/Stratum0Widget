@@ -7,6 +7,7 @@ import com.jcraft.jsch.JSchException
 import com.jcraft.jsch.Session
 import java.io.ByteArrayOutputStream
 import java.net.ConnectException
+import java.net.SocketException
 
 class S0SshInteractor {
     val MAX_CONNECTION_TIME = 3500
@@ -54,8 +55,14 @@ class S0SshInteractor {
             if (e.cause is ConnectException) {
                 return R.string.unlock_error_connect
             }
-            when (e.message) {
-                "Auth fail" -> return R.string.unlock_error_auth
+            if (e.cause is SocketException) {
+                return R.string.unlock_error_network
+            }
+            if (e.message == "Auth fail") {
+                return R.string.unlock_error_auth
+            }
+            if (e.message?.contains("timeout") ?: false) {
+                return R.string.unlock_error_timeout
             }
             return R.string.unlock_error_unknown
         }

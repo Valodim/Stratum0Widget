@@ -29,22 +29,22 @@ class SpaceDoorService : IntentService("Space Door Service") {
     private fun doorUnlock() {
         val startRealtime = SystemClock.elapsedRealtime()
 
-        var error: Int? = null
-        if (!Stratum0WifiManager.isOnStratum0Wifi(applicationContext)) {
-            error = R.string.unlock_error_wifi
-        } else if (!sshKeyStorage.hasKey()) {
-            error = R.string.unlock_error_no_key
-        } else if (!sshKeyStorage.isKeyOk()) {
-            error = R.string.unlock_error_privkey
-        } else {
-            val sshPrivateKey = sshKeyStorage.getKey()
-            val sshPassword = sshKeyStorage.getPassword()
-            try {
-                error = s0SshInteractor.open(sshPrivateKey, sshPassword)
-            } catch (e: Exception) {
-                error = R.string.unlock_error_unknown
+        val error: Int? =
+            if (!BuildConfig.DEBUG && !Stratum0WifiManager.isOnStratum0Wifi(applicationContext)) {
+                R.string.unlock_error_wifi
+            } else if (!sshKeyStorage.hasKey()) {
+                R.string.unlock_error_no_key
+            } else if (!sshKeyStorage.isKeyOk()) {
+                R.string.unlock_error_privkey
+            } else {
+                val sshPrivateKey = sshKeyStorage.getKey()
+                val sshPassword = sshKeyStorage.getPassword()
+                try {
+                    s0SshInteractor.open(sshPrivateKey, sshPassword)
+                } catch (e: Exception) {
+                    R.string.unlock_error_unknown
+                }
             }
-        }
 
         val elapsedRealtime = SystemClock.elapsedRealtime() - startRealtime
         if (elapsedRealtime < MIN_UNLOCK_MS) {
