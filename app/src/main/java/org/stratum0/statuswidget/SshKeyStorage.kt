@@ -3,7 +3,6 @@ package org.stratum0.statuswidget
 import android.content.Context
 import android.content.SharedPreferences
 import com.jcraft.jsch.JSch
-import com.jcraft.jsch.JSchException
 import com.jcraft.jsch.KeyPair
 
 class SshKeyStorage(context: Context) {
@@ -46,7 +45,11 @@ class SshKeyStorage(context: Context) {
         return prefs.getString("ssh-privkey-data", null)
     }
 
-    fun getPassphrase(): String {
+    fun getPassword(): String {
         return prefs.getString("ssh-privkey-pass", null)
+    }
+
+    fun isKeyOk(): Boolean {
+        return isMatchingPassword(getKey(), getPassword())
     }
 }

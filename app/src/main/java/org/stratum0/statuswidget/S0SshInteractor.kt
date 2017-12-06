@@ -11,7 +11,7 @@ import java.net.ConnectException
 class S0SshInteractor {
     val MAX_CONNECTION_TIME = 3500
 
-    fun open(sshPrivateKey: String): Int? {
+    fun open(sshPrivateKey: String, sshPassword: String): Int? {
         val user = "auf"
         val server = if (BuildConfig.DEBUG) "192.168.178.21" else "powerberry"
 
@@ -19,7 +19,7 @@ class S0SshInteractor {
         JSch.setConfig("StrictHostKeyChecking", "no")
 
         try {
-            jsch.addIdentity("id_rsa", sshPrivateKey.toByteArray(), null, "".toByteArray())
+            jsch.addIdentity("id_rsa", sshPrivateKey.toByteArray(), null, sshPassword.toByteArray())
         } catch (e: JSchException) {
             e.printStackTrace()
             return R.string.unlock_error_identity
@@ -54,8 +54,8 @@ class S0SshInteractor {
             if (e.cause is ConnectException) {
                 return R.string.unlock_error_connect
             }
-            if (e.message == "Auth fail") {
-                return R.string.unlock_error_auth
+            when (e.message) {
+                "Auth fail" -> return R.string.unlock_error_auth
             }
             return R.string.unlock_error_unknown
         }

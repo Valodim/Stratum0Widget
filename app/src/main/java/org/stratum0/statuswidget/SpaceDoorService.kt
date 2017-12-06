@@ -34,10 +34,13 @@ class SpaceDoorService : IntentService("Space Door Service") {
             error = R.string.unlock_error_wifi
         } else if (!sshKeyStorage.hasKey()) {
             error = R.string.unlock_error_no_key
+        } else if (!sshKeyStorage.isKeyOk()) {
+            error = R.string.unlock_error_privkey
         } else {
             val sshPrivateKey = sshKeyStorage.getKey()
+            val sshPassword = sshKeyStorage.getPassword()
             try {
-                error = s0SshInteractor.open(sshPrivateKey)
+                error = s0SshInteractor.open(sshPrivateKey, sshPassword)
             } catch (e: Exception) {
                 error = R.string.unlock_error_unknown
             }

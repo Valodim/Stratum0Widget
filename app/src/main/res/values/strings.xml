@@ -62,4 +62,6 @@
     <string name="unlock_error_identity">Unlock failed: Problem with your private key!</string>
     <string name="unlock_error_no_key">Unlock failed: No private key configured!</string>
     <string name="unlock_error_auth">Unlock failed: Authentication error!</string>
+    <string name="unlock_error_privkey">Unlock failed: Problem with private key!</string>
+
 </resources>
