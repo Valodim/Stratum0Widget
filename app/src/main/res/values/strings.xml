@@ -51,6 +51,8 @@
     <string name="settings_error_bad_password">Incorrect password!</string>
 
     <string name="toast_no_nick">No nick configured!</string>
+    <string name="toast_press_longer">Press longer to perform action</string>
+
     <string name="wifi_not_seen">You must have seen the Stratum\u00A00 Wifi to use this feature!</string>
     <string name="title_status_activity">Stratum 0 Space Status</string>
 

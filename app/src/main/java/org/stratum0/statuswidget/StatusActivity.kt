@@ -7,6 +7,7 @@ import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
 import android.view.Window
@@ -24,6 +25,7 @@ import java.text.SimpleDateFormat
 
 class StatusActivity : Activity() {
     val REQUEST_CODE_IMPORT_SSH = 1
+    val PRESS_LONGER_HINT_TIMEOUT = 90
 
     private lateinit var prefs: SharedPreferences
 
@@ -94,10 +96,13 @@ class StatusActivity : Activity() {
     var triggeredUpdate = false
     var triggeredUnlock = false
 
+    var lastButtonDown: Long? = null
+
     private fun startFadeoutAnimation(isUnlock: Boolean) {
         if (holdingButton || triggeredUpdate || triggeredUnlock) {
             return
         }
+        lastButtonDown = SystemClock.elapsedRealtime()
 
         if (!isUnlock && username.isEmpty()) {
             Toast.makeText(this, getString(R.string.toast_no_nick), Toast.LENGTH_LONG).show()
@@ -140,6 +145,12 @@ class StatusActivity : Activity() {
             currentStatusText.clearAnimation()
             statusIcon.clearAnimation()
             statusProgress.visibility = View.GONE
+
+            val timeSinceButtonDown = SystemClock.elapsedRealtime() - (lastButtonDown?:0L)
+            if (timeSinceButtonDown < PRESS_LONGER_HINT_TIMEOUT) {
+                Toast.makeText(this, getString(R.string.toast_press_longer), Toast.LENGTH_SHORT).show()
+            }
+            lastButtonDown = null
         }
     }
 
