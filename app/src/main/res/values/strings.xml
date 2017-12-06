@@ -50,4 +50,10 @@
     <string name="unlock_ok">Welcome!</string>
     <string name="unlock_error_wifi">"Unlock failed: You're not connected to the Stratum\u00A00 Wifi!"</string>
 
+    <string name="unlock_error_unknown">Unlock failed: Unknown error!</string>
+    <string name="unlock_error_connect">Unlock failed: Could not connect to server!</string>
+    <string name="unlock_error_identity">Unlock failed: Problem with your private key!</string>
+    <string name="unlock_error_no_key">Unlock failed: No private key configured!</string>
+    <string name="unlock_error_auth">Unlock failed: Authentication error!</string>
+
 </resources>

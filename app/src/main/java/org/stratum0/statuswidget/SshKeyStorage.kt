@@ -17,4 +17,8 @@ class SshKeyStorage(context: Context) {
     fun clearKey() {
         prefs.edit().remove("ssh-privkey-data").apply()
     }
+
+    fun getKey(): String {
+        return prefs.getString("ssh-privkey-data", null)
+    }
 }

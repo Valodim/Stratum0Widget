@@ -8,6 +8,7 @@ import android.support.annotation.StringRes
 
 class SpaceDoorService : IntentService("Space Door Service") {
     private lateinit var sshKeyStorage: SshKeyStorage
+    val s0SshInteractor = S0SshInteractor()
 
     override fun onCreate() {
         super.onCreate()
@@ -29,8 +30,17 @@ class SpaceDoorService : IntentService("Space Door Service") {
         val startRealtime = SystemClock.elapsedRealtime()
 
         var error: Int? = null
-        if (false && !Stratum0WifiManager.isOnStratum0Wifi(applicationContext)) {
+        if (!Stratum0WifiManager.isOnStratum0Wifi(applicationContext)) {
             error = R.string.unlock_error_wifi
+        } else if (!sshKeyStorage.hasKey()) {
+            error = R.string.unlock_error_no_key
+        } else {
+            val sshPrivateKey = sshKeyStorage.getKey()
+            try {
+                error = s0SshInteractor.open(sshPrivateKey)
+            } catch (e: Exception) {
+                error = R.string.unlock_error_unknown
+            }
         }
 
         val elapsedRealtime = SystemClock.elapsedRealtime() - startRealtime
