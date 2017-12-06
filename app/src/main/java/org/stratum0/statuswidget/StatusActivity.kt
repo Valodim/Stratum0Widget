@@ -55,7 +55,6 @@ class StatusActivity : Activity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                SpaceStatusService.EVENT_REFRESH_IN_PROGRESS -> onPreSpaceStatusUpdate()
                 SpaceStatusService.EVENT_REFRESH -> {
                     val status = intent.getParcelableExtra<SpaceStatusData>(SpaceStatusService.EXTRA_STATUS)
                     onPostSpaceStatusUpdate(status)
@@ -225,6 +224,7 @@ class StatusActivity : Activity() {
 
         username = prefs.getString("username", "")
 
+        viewAnimator.displayedChildId = R.id.layout_progress
         SpaceStatusService.triggerStatusRefresh(applicationContext, appWidgetIds, false)
     }
 
@@ -260,8 +260,8 @@ class StatusActivity : Activity() {
         prefs.edit().putString("username", username).apply()
 
         hideKeyboard()
-        viewAnimator.displayedChildId = R.id.layout_set_status
 
+        viewAnimator.displayedChildId = R.id.layout_progress
         SpaceStatusService.triggerStatusRefresh(applicationContext, appWidgetIds, false)
     }
 
@@ -302,7 +302,6 @@ class StatusActivity : Activity() {
         super.onStart()
 
         val filter = IntentFilter()
-        filter.addAction(SpaceStatusService.EVENT_REFRESH_IN_PROGRESS)
         filter.addAction(SpaceStatusService.EVENT_REFRESH)
         filter.addAction(SpaceDoorService.EVENT_UNLOCK_STATUS)
 
@@ -313,14 +312,6 @@ class StatusActivity : Activity() {
         super.onStop()
 
         unregisterReceiver(receiver)
-    }
-
-    fun onPreSpaceStatusUpdate() {
-        if (triggeredUpdate) {
-            return
-        }
-
-        viewAnimator.displayedChildId = R.id.layout_progress
     }
 
     private fun onDoorUnlockStatusEvent(errorRes: Int?) {
@@ -340,6 +331,9 @@ class StatusActivity : Activity() {
             }, 1000)
         } else {
             triggeredUnlock = false
+
+            statusIcon.visibility = View.INVISIBLE
+            currentStatusText.visibility = View.INVISIBLE
 
             textUnlockError.text = getText(errorRes)
             viewAnimator.displayedChildId = R.id.layout_unlock_error
@@ -362,6 +356,9 @@ class StatusActivity : Activity() {
 
     private fun displayStatus(animate: Boolean) {
         viewAnimator.displayedChildId = R.id.layout_set_status
+
+        statusIcon.visibility = View.VISIBLE
+        currentStatusText.visibility = View.VISIBLE
 
         when (lastStatusData.status) {
             SpaceStatus.UNKNOWN -> {
