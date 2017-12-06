@@ -1,217 +1,248 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.stratum0.statuswidget.widget.ToolableViewAnimator
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/animator"
-    android:inAnimation="@anim/fade_in_delayed"
-    android:outAnimation="@anim/fade_out_delayed"
     android:minWidth="320dp"
-    custom:initialView="1">
+    >
 
-    <ProgressBar
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:text="@string/title_status_activity"
         android:layout_margin="24dp"
-        android:indeterminate="true"
-        android:id="@+id/layout_progress"
+        style="@android:style/TextAppearance.Material.DialogWindowTitle"
         />
 
-    <LinearLayout
+    <org.stratum0.statuswidget.widget.ToolableViewAnimator
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/layout_set_status"
-        android:orientation="vertical">
+        android:id="@+id/animator"
+        android:inAnimation="@anim/fade_in_delayed"
+        android:outAnimation="@anim/fade_out_delayed"
+        android:measureAllChildren="true"
+        custom:initialView="1"
+        tools:minHeight="200dp">
 
-        <RelativeLayout
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="36dp"
+            android:indeterminate="true"
+            android:id="@+id/layout_progress"
+            />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="12dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginRight="24dp"
-            android:orientation="horizontal">
+            android:id="@+id/layout_set_status"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:src="@drawable/stratum0_open"
-                android:id="@+id/set_status_icon"
-                />
-
-            <ProgressBar
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:id="@+id/set_status_progress"
-                android:indeterminate="true"
-                android:visibility="gone"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/set_status_icon"
-                android:layout_alignTop="@+id/set_status_icon"
-                android:layout_alignBottom="@+id/set_status_icon"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:id="@+id/current_status_text"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:gravity="center_vertical"
-                android:ellipsize="end"
-                tools:text="Valodim\nsince 16:33"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/set_status_icon"
-                android:layout_alignTop="@+id/set_status_icon"
-                android:layout_alignBottom="@+id/set_status_icon"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:id="@+id/current_status_text_loading"
-                android:gravity="center_vertical"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:visibility="gone"
-                tools:text="Loading…"
-                />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:padding="8dp"
-            style="?android:buttonBarStyle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="14dp"
+                android:layout_marginRight="4dp"
                 android:id="@+id/button_settings"
-                android:text="@string/button_settings"
+                android:src="@drawable/ic_settings_black_24dp"
+                android:tint="#999999"
                 style="?android:buttonBarButtonStyle"
                 />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/button_open"
-                android:text="@string/button_open"
-                style="?android:buttonBarButtonStyle"
-                />
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/button_inherit"
-                android:text="@string/button_inherit"
-                android:visibility="gone"
-                style="?android:buttonBarButtonStyle"
-                />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/stratum0_open"
+                    android:id="@+id/set_status_icon"
+                    />
 
-            <TextView
-                android:layout_width="wrap_content"
+                <ProgressBar
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="8dp"
+                    android:padding="8dp"
+                    android:id="@+id/set_status_progress"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/set_status_icon"
+                    android:layout_alignTop="@+id/set_status_icon"
+                    android:layout_alignBottom="@+id/set_status_icon"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:id="@+id/current_status_text"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:gravity="center_vertical"
+                    android:ellipsize="end"
+                    tools:text="Valodim\nsince 16:33"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/set_status_icon"
+                    android:layout_alignTop="@+id/set_status_icon"
+                    android:layout_alignBottom="@+id/set_status_icon"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:id="@+id/current_status_text_loading"
+                    android:gravity="center_vertical"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:visibility="gone"
+                    tools:text="Loading…"
+                    />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/button_close"
-                android:text="@string/button_close"
-                android:visibility="gone"
-                style="?android:buttonBarButtonStyle"
-                />
+                android:padding="8dp"
+                android:gravity="end"
+                style="?android:buttonBarStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_open"
+                    android:text="@string/button_open"
+                    style="?android:buttonBarButtonStyle"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_inherit"
+                    android:text="@string/button_inherit"
+                    android:visibility="gone"
+                    style="?android:buttonBarButtonStyle"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_close"
+                    android:text="@string/button_close"
+                    android:visibility="gone"
+                    style="?android:buttonBarButtonStyle"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/layout_edit_name">
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginRight="24dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="36dp"
+            android:id="@+id/layout_edit_name">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_weight="1"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="8dp"
+                    android:text="@string/settings_label_nick"
+                    style="?android:textAppearanceMedium"
+                    />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/settings_edit_name"
+                    android:inputType="textPersonName"
+                    android:hint="@string/setting_name_hint"
+                    android:ems="12"
+                    android:gravity="center_horizontal"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:padding="8dp"
+                style="?android:buttonBarStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_settings_cancel"
+                    android:text="@string/button_cancel"
+                    style="?android:buttonBarButtonStyle"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_settings_save"
+                    android:text="@string/button_save"
+                    style="?android:buttonBarButtonStyle"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="36dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:id="@+id/layout_wifi_missing"
             >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="8dp"
-                android:text="@string/settings_label_nick"
+                android:paddingBottom="16dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/wifi_not_seen"
+                android:drawablePadding="16dp"
+                android:drawableLeft="@drawable/ic_error_outline_black_24dp"
+                android:drawableTint="#ff0000"
                 style="?android:textAppearanceMedium"
                 />
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:id="@+id/settings_edit_name"
-                android:inputType="textPersonName"
-                android:hint="@string/setting_name_hint"
-                android:ems="12"
-                android:gravity="center_horizontal"
-                />
-
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:padding="8dp"
-            style="?android:buttonBarStyle">
+    </org.stratum0.statuswidget.widget.ToolableViewAnimator>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/button_settings_cancel"
-                android:text="@string/button_cancel"
-                style="?android:buttonBarButtonStyle"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/button_settings_save"
-                android:text="@string/button_save"
-                style="?android:buttonBarButtonStyle"
-                />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingBottom="16dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:id="@+id/layout_wifi_missing"
-        android:gravity="center_vertical"
-        android:text="@string/wifi_not_seen"
-        android:drawablePadding="16dp"
-        android:drawableLeft="@drawable/ic_error_outline_black_24dp"
-        android:drawableTint="#ff0000"
-        style="?android:textAppearanceMedium"
-        />
-
-</org.stratum0.statuswidget.widget.ToolableViewAnimator>
+</FrameLayout>

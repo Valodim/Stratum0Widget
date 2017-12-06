@@ -7,6 +7,7 @@ import android.content.*
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.Window
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
@@ -145,6 +146,7 @@ class StatusActivity : Activity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        window.requestFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.status_layout)
 
         viewAnimator = findViewById(R.id.animator)
