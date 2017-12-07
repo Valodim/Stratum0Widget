@@ -15,6 +15,7 @@
     <!-- StatusActivity.java -->
     <string name="status_unknown">Status unknown</string>
     <string name="status_closed">Space is closed</string>
+    <string name="status_open_format">Opened by %s\nsince %s</string>
 
     <!-- StratumsphereStatusProvider.java -->
     <string name="currentTime">Updated</string>

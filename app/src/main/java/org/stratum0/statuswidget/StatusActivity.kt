@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
+import android.text.format.DateUtils
 import android.view.MotionEvent
 import android.view.View
 import android.view.Window
@@ -20,7 +21,6 @@ import android.widget.TextView
 import android.widget.Toast
 import org.stratum0.statuswidget.util.bindView
 import org.stratum0.statuswidget.widget.ToolableViewAnimator
-import java.text.SimpleDateFormat
 
 
 class StatusActivity : Activity() {
@@ -394,7 +394,7 @@ class StatusActivity : Activity() {
             statusProgress.visibility = View.GONE
             currentStatusTextLoading.visibility = View.GONE
 
-            Handler().postDelayed(Runnable {
+            Handler().postDelayed({
                 triggeredUnlock = false
                 displayStatus(true)
             }, 1000)
@@ -461,8 +461,14 @@ class StatusActivity : Activity() {
                     buttonClose.visibility = View.GONE
                 }
 
-                val isodate = SimpleDateFormat("yyyy-MM-dd HH:mm")
-                currentStatusText.text = String.format("Open by %s\nat %s", lastStatusData.openedBy, isodate.format(lastStatusData.lastChange!!.time))
+                val timestamp = lastStatusData.lastChange!!.time.time
+                val readableTime =
+                        if (timestamp > System.currentTimeMillis() - 10000)
+                            "just now"
+                        else
+                            DateUtils.getRelativeDateTimeString(applicationContext, timestamp,
+                                    DateUtils.MINUTE_IN_MILLIS, DateUtils.DAY_IN_MILLIS, 0)
+                currentStatusText.text = getString(R.string.status_open_format, lastStatusData.openedBy, readableTime)
                 statusIcon.setImageResource(R.drawable.stratum0_open)
             }
         }

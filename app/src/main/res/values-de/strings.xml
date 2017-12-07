@@ -15,6 +15,7 @@
     <!-- StatusActivity.java -->
     <string name="status_unknown">Status unbekannt</string>
     <string name="status_closed">Space ist zu</string>
+    <string name="status_open_format">Geöffnet von %s\nseit %s</string>
 
     <!-- StratumsphereStatusProvider.java -->
     <string name="currentTime">Updated</string>
@@ -62,5 +63,4 @@
     <string name="unlock_ok">Willkommen!</string>
     <string name="settings_ssh_status_unconfigured">Unkonfiguriert</string>
     <string name="toast_press_longer">Länger drücken zum Durchzuführen</string>
-
 </resources>
