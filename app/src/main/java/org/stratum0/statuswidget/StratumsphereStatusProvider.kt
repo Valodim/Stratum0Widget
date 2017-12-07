@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Handler
 import android.os.Message
 import android.widget.RemoteViews
@@ -14,13 +15,32 @@ import java.util.*
 
 
 class StratumsphereStatusProvider : AppWidgetProvider() {
+    private val stratum0StatusFetcher = Stratum0StatusFetcher()
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val views = RemoteViews(context.packageName, R.layout.main)
         setOnClickListeners(context, appWidgetIds, views)
         appWidgetManager.updateAppWidget(appWidgetIds, views)
 
         onSpaceStatusUpdateInProgress(context, appWidgetIds)
-        SpaceStatusService.triggerStatusRefresh(context, appWidgetIds, true)
+
+        asyncRefreshSpaceStatus(context, appWidgetIds)
+    }
+
+    private fun asyncRefreshSpaceStatus(context: Context, appWidgetIds: IntArray) {
+        object : AsyncTask<Void, Void, SpaceStatusData>() {
+            override fun onPreExecute() {
+                onSpaceStatusUpdateInProgress(context, appWidgetIds)
+            }
+
+            override fun doInBackground(vararg p0: Void?): SpaceStatusData {
+                return stratum0StatusFetcher.fetch()
+            }
+
+            override fun onPostExecute(result: SpaceStatusData) {
+                onSpaceStatusUpdated(context, appWidgetIds, result)
+            }
+        }.execute()
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -33,11 +53,6 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         when (intent.action) {
             ACTION_CLICK -> {
                 onWidgetClick(context, appWidgetIds)
-            }
-            SpaceStatusService.EVENT_REFRESH_IN_PROGRESS -> onSpaceStatusUpdateInProgress(context, appWidgetIds)
-            SpaceStatusService.EVENT_REFRESH -> {
-                val status = intent.getParcelableExtra<SpaceStatusData>(SpaceStatusService.EXTRA_STATUS)
-                onSpaceStatusUpdated(context, appWidgetIds, status)
             }
         }
 

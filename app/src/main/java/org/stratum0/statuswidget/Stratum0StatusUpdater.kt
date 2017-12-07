@@ -14,6 +14,12 @@ class Stratum0StatusUpdater {
             Constants.STATUS_URL + "/update?open=false"
         }
 
+        if (BuildConfig.DEBUG) {
+            Thread.sleep(500)
+            Log.d(Constants.TAG, "Skipping actual status update in debug build")
+            return
+        }
+
         try {
             val okHttpClient = OkHttpClient()
 

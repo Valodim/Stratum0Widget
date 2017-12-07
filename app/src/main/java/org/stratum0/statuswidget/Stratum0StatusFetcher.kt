@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit
 
 class Stratum0StatusFetcher {
     private val okHttpClient = OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(3, TimeUnit.SECONDS)
+            .readTimeout(3, TimeUnit.SECONDS)
             .build()
 
     fun fetch(): SpaceStatusData {

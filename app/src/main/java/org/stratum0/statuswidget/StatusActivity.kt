@@ -5,6 +5,7 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.*
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
@@ -24,9 +25,10 @@ import org.stratum0.statuswidget.widget.ToolableViewAnimator
 
 
 class StatusActivity : Activity() {
-    val REQUEST_CODE_IMPORT_SSH = 1
-    val PRESS_LONGER_HINT_TIMEOUT = 90
-    val NICK_PATTERN = Regex("[a-zA-Z_\\[\\]{}^`|][a-zA-Z0-9_\\[\\]{}^`|-]+")
+    private val REQUEST_CODE_IMPORT_SSH = 1
+    private val PRESS_LONGER_HINT_TIMEOUT = 90
+    private val NICK_PATTERN = Regex("[a-zA-Z_\\[\\]{}^`|][a-zA-Z0-9_\\[\\]{}^`|-]+")
+    private val stratum0StatusFetcher = Stratum0StatusFetcher()
 
     private lateinit var prefs: SharedPreferences
 
@@ -59,7 +61,7 @@ class StatusActivity : Activity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                SpaceStatusService.EVENT_REFRESH -> {
+                SpaceStatusService.EVENT_UPDATE_RESULT -> {
                     val status = intent.getParcelableExtra<SpaceStatusData>(SpaceStatusService.EXTRA_STATUS)
                     onPostSpaceStatusUpdate(status)
                 }
@@ -251,7 +253,8 @@ class StatusActivity : Activity() {
         username = prefs.getString("username", "")
 
         viewAnimator.displayedChildId = R.id.layout_progress
-        SpaceStatusService.triggerStatusRefresh(applicationContext, appWidgetIds, false)
+
+        refreshStatus()
     }
 
     override fun finish() {
@@ -342,7 +345,7 @@ class StatusActivity : Activity() {
         hideKeyboard()
 
         viewAnimator.displayedChildId = R.id.layout_progress
-        SpaceStatusService.triggerStatusRefresh(applicationContext, appWidgetIds, false)
+        refreshStatus()
     }
 
     private fun onClickSettingsCancel() {
@@ -382,7 +385,7 @@ class StatusActivity : Activity() {
         super.onStart()
 
         val filter = IntentFilter()
-        filter.addAction(SpaceStatusService.EVENT_REFRESH)
+        filter.addAction(SpaceStatusService.EVENT_UPDATE_RESULT)
         filter.addAction(SpaceDoorService.EVENT_UNLOCK_STATUS)
 
         registerReceiver(receiver, filter)
@@ -418,6 +421,18 @@ class StatusActivity : Activity() {
             textUnlockError.text = getText(errorRes)
             viewAnimator.displayedChildId = R.id.layout_unlock_error
         }
+    }
+
+    private fun refreshStatus() {
+        object : AsyncTask<Void, Void, SpaceStatusData>() {
+            override fun doInBackground(vararg p0: Void?): SpaceStatusData {
+                return stratum0StatusFetcher.fetch()
+            }
+
+            override fun onPostExecute(result: SpaceStatusData) {
+                onPostSpaceStatusUpdate(result)
+            }
+        }.execute()
     }
 
     fun onPostSpaceStatusUpdate(statusData: SpaceStatusData) {

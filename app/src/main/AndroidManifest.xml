@@ -13,10 +13,6 @@
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 				<action android:name="android.net.wifi.STATE_CHANGED" />
 			</intent-filter>
-            <intent-filter>
-                <action android:name="SpaceStatus.event.refreshInProgress" />
-                <action android:name="SpaceStatus.event.refresh" />
-            </intent-filter>
 
 			<meta-data
                 android:name="android.appwidget.provider"
