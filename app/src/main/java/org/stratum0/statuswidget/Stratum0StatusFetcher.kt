@@ -42,7 +42,8 @@ class Stratum0StatusFetcher {
             lastChange.timeInMillis = spaceStatus.getLong("lastchange") * 1000
 
             if (spaceStatus.getBoolean("open")) {
-                val openedBy = spaceStatus.getString("trigger_person")
+                val rawOpenedBy = spaceStatus.getString("trigger_person")
+                val openedBy = rawOpenedBy.substringBeforeLast("[mx]")
 
                 val since = GregorianCalendar.getInstance()
                 since.timeInMillis = spaceStatus.getLong("ext_since") * 1000
