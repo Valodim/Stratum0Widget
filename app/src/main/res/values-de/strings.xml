@@ -63,4 +63,6 @@
     <string name="unlock_ok">Willkommen!</string>
     <string name="settings_ssh_status_unconfigured">Unkonfiguriert</string>
     <string name="toast_press_longer">Länger drücken zum Durchzuführen</string>
+    <string name="settings_error_nick_short">Nick ist zu kurz!</string>
+    <string name="settings_error_nick_pattern"><![CDATA[[a-zA-Z0-9_\\[\\]{}^`|-]+]]></string>
 </resources>

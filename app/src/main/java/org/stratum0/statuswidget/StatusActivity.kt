@@ -26,6 +26,7 @@ import org.stratum0.statuswidget.widget.ToolableViewAnimator
 class StatusActivity : Activity() {
     val REQUEST_CODE_IMPORT_SSH = 1
     val PRESS_LONGER_HINT_TIMEOUT = 90
+    val NICK_PATTERN = Regex("[a-zA-Z_\\[\\]{}^`|][a-zA-Z0-9_\\[\\]{}^`|-]+")
 
     private lateinit var prefs: SharedPreferences
 
@@ -325,8 +326,18 @@ class StatusActivity : Activity() {
     }
 
     private fun onClickSettingsSave() {
-        username = settingsEditName.text.toString()
+        val username = settingsEditName.text.toString()
+        if (username.length < 3) {
+            settingsEditName.error = getString(R.string.settings_error_nick_short)
+            return
+        }
+        if (!NICK_PATTERN.matches(username)) {
+            settingsEditName.error = getString(R.string.settings_error_nick_pattern)
+            return
+        }
+
         prefs.edit().putString("username", username).apply()
+        this.username = username
 
         hideKeyboard()
 

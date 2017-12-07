@@ -50,6 +50,8 @@
     <string name="settings_ssh_status_unconfigured">Not configured</string>
 
     <string name="settings_error_bad_password">Incorrect password!</string>
+    <string name="settings_error_nick_pattern"><![CDATA[[a-zA-Z0-9_\\[\\]{}^`|-]+]]></string>
+    <string name="settings_error_nick_short">"Nick too short!"</string>
 
     <string name="toast_no_nick">No nick configured!</string>
     <string name="toast_press_longer">Press longer to perform action</string>
