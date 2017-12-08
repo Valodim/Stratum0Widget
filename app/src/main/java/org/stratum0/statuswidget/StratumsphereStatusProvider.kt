@@ -86,23 +86,20 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         }
 
         val clickCount = preferences.getInt("clicks", 0)
+        preferences.edit().putInt("clicks", clickCount + 1).commit()
 
-        if (clickCount == 0) {
-            preferences.edit().putInt("clicks", clickCount + 1).commit()
-            sendWidgetUpdateIntent(context, appWidgetIds)
-
+        if (clickCount > 0) {
+            startStatusActivity(context)
+        } else {
             object : Handler() {
                 override fun handleMessage(msg: Message) {
+                    val delayedClickCount = preferences.getInt("clicks", 0)
                     preferences.edit().putInt("clicks", 0).commit()
+                    if (delayedClickCount == 1) {
+                        sendWidgetUpdateIntent(context, appWidgetIds)
+                    }
                 }
-            }.sendEmptyMessageDelayed(0, 500)
-        } else {
-            val activityIntent = Intent(context, StatusActivity::class.java)
-            activityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            activityIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
-            context.startActivity(activityIntent)
-            preferences.edit().putInt("clicks", 0).commit()
-            return
+            }.sendEmptyMessageDelayed(0, 180)
         }
     }
 
@@ -111,6 +108,12 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         updateIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
         context.sendBroadcast(updateIntent)
+    }
+
+    private fun startStatusActivity(context: Context) {
+        val activityIntent = Intent(context, StatusActivity::class.java)
+        activityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(activityIntent)
     }
 
     private fun onSpaceStatusUpdateInProgress(context: Context, appWidgetIds: IntArray) {
