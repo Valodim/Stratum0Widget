@@ -56,6 +56,9 @@ class SpaceStatusJobService : JobService() {
             } else {
                 job.setPeriodic(45 * DateUtils.MINUTE_IN_MILLIS)
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                job.setRequiresBatteryNotLow(true)
+            }
 
             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
             jobScheduler.schedule(job.build())
