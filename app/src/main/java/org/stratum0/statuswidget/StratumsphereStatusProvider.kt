@@ -68,6 +68,9 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
 
                 onSpaceStatusUpdated(context, appWidgetIds, status)
             }
+            Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                SpaceStatusJobService.jobScheduleRefresh(context)
+            }
         }
 
         super.onReceive(context, intent)

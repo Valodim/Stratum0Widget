@@ -16,7 +16,9 @@
             <intent-filter>
                 <action android:name="SpaceStatus.event.refresh" />
             </intent-filter>
-
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
 			<meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/stratum0_widget_info" />
