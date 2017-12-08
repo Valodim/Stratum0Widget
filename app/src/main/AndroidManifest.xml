@@ -13,6 +13,9 @@
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 				<action android:name="android.net.wifi.STATE_CHANGED" />
 			</intent-filter>
+            <intent-filter>
+                <action android:name="SpaceStatus.event.refresh" />
+            </intent-filter>
 
 			<meta-data
                 android:name="android.appwidget.provider"
@@ -40,6 +43,8 @@
             android:exported="false" />
         <service android:name=".SpaceDoorService"
             android:exported="false" />
+        <service android:name=".SpaceStatusJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
@@ -15,7 +16,15 @@ import java.util.*
 
 
 class StratumsphereStatusProvider : AppWidgetProvider() {
-    private val stratum0StatusFetcher = Stratum0StatusFetcher()
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        SpaceStatusJobService.jobScheduleRefresh(context)
+    }
+
+    override fun onDisabled(context: Context) {
+        super.onDisabled(context)
+        SpaceStatusJobService.jobCancelRefresh(context)
+    }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val views = RemoteViews(context.packageName, R.layout.main)
@@ -23,9 +32,10 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         appWidgetManager.updateAppWidget(appWidgetIds, views)
 
         onSpaceStatusUpdateInProgress(context, appWidgetIds)
-
         asyncRefreshSpaceStatus(context, appWidgetIds)
     }
+
+    private val stratum0StatusFetcher = Stratum0StatusFetcher()
 
     private fun asyncRefreshSpaceStatus(context: Context, appWidgetIds: IntArray) {
         object : AsyncTask<Void, Void, SpaceStatusData>() {
@@ -44,15 +54,19 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
-        if (appWidgetIds == null) {
-            super.onReceive(context, intent)
-            return
-        }
-
         when (intent.action) {
             ACTION_CLICK -> {
+                val appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
                 onWidgetClick(context, appWidgetIds)
+            }
+            SpaceStatusJobService.EVENT_REFRESH -> {
+                val status = intent.getParcelableExtra<SpaceStatusData>(SpaceStatusService.EXTRA_STATUS)
+
+                val appWidgetManager = AppWidgetManager.getInstance(context)
+                val appWidgetIds = appWidgetManager.getAppWidgetIds(
+                        ComponentName(context, StratumsphereStatusProvider::class.java))
+
+                onSpaceStatusUpdated(context, appWidgetIds, status)
             }
         }
 

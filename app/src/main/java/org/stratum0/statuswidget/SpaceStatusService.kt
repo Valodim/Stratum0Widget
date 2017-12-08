@@ -2,7 +2,6 @@ package org.stratum0.statuswidget
 
 
 import android.app.IntentService
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 
@@ -42,10 +41,10 @@ class SpaceStatusService : IntentService("Space Status Service") {
             cachedSpaceStatus = SpaceStatusData.createUnknownStatus()
         }
 
-        sendRefreshBroadcast(cachedSpaceStatus)
+        sendUpdateResultBroadcast(cachedSpaceStatus)
     }
 
-    private fun sendRefreshBroadcast(statusData: SpaceStatusData) {
+    private fun sendUpdateResultBroadcast(statusData: SpaceStatusData) {
         val intent = Intent(EVENT_UPDATE_RESULT)
         intent.`package` = BuildConfig.APPLICATION_ID
         intent.putExtra(EXTRA_STATUS, statusData)
@@ -62,12 +61,11 @@ class SpaceStatusService : IntentService("Space Status Service") {
 
         val UPDATE_CHECK_INTERVAL_MS = 1000L
 
-        fun triggerStatusUpdate(context: Context, appWidgetIds: IntArray, name: String?) {
+        fun triggerStatusUpdate(context: Context, name: String?) {
             val intent = Intent(context, SpaceStatusService::class.java)
             intent.`package` = BuildConfig.APPLICATION_ID
             intent.action = ACTION_UPDATE
             intent.putExtra(EXTRA_UPDATE_NAME, name)
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
             context.startService(intent)
         }
     }

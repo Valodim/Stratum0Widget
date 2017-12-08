@@ -162,15 +162,15 @@ class StatusActivity : Activity() {
         when (lastStatusData.status) {
             SpaceStatus.OPEN -> {
                 if (username.equals(lastStatusData.openedBy)) {
-                    SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, null)
+                    SpaceStatusService.triggerStatusUpdate(applicationContext, null)
                     currentStatusTextLoading.text = getString(R.string.status_progress_closing)
                 } else {
-                    SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, username)
+                    SpaceStatusService.triggerStatusUpdate(applicationContext, username)
                     currentStatusTextLoading.text = getString(R.string.status_progress_inheriting)
                 }
             }
             SpaceStatus.CLOSED -> {
-                SpaceStatusService.triggerStatusUpdate(applicationContext, appWidgetIds, username)
+                SpaceStatusService.triggerStatusUpdate(applicationContext, username)
                 currentStatusTextLoading.text = getString(R.string.status_progress_opening)
             }
             SpaceStatus.UNKNOWN -> {
@@ -189,9 +189,6 @@ class StatusActivity : Activity() {
 
         SpaceDoorService.triggerDoorUnlock(applicationContext)
     }
-
-    private val appWidgetIds: IntArray
-        get() = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
