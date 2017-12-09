@@ -160,7 +160,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
 
     private fun setViewInfo(context: Context, statusData: SpaceStatusData, appWidgetIds: IntArray, views: RemoteViews) {
         val upTimeText = getUptimeText(statusData)
-        val lastUpdateText = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime),
+        val lastUpdateText = String.format("%s: %02d:%02d", context.getText(R.string.currentTime),
                 statusData.lastUpdate.get(Calendar.HOUR_OF_DAY), statusData.lastUpdate.get(Calendar.MINUTE))
         val statusBackgroundColor = when (statusData.status) {
             SpaceStatus.OPEN -> R.color.status_open
