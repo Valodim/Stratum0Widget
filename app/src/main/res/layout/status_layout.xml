@@ -62,13 +62,32 @@
                 android:layout_marginRight="24dp"
                 android:orientation="horizontal">
 
-                <ImageView
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:src="@drawable/stratum0_open"
                     android:id="@+id/set_status_icon"
-                    />
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:id="@+id/set_status_icon_background"
+                        android:contentDescription="@string/status_icon_description"
+                        android:src="@drawable/ic_stratum0_background"
+                        android:tint="@color/status_unknown"
+                        />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/status_icon_description"
+                        android:src="@drawable/ic_stratum0_cutout"
+                        />
+
+                </FrameLayout>
 
                 <ImageView
                     android:layout_width="48dp"

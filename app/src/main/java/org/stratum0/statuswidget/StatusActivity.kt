@@ -2,7 +2,6 @@ package org.stratum0.statuswidget
 
 
 import android.app.Activity
-import android.appwidget.AppWidgetManager
 import android.content.*
 import android.net.Uri
 import android.os.AsyncTask
@@ -42,7 +41,8 @@ class StatusActivity : Activity() {
     private val currentStatusTextUnlocked: TextView by bindView(R.id.current_status_text_unlocked)
     private val currentStatusTextLoading: TextView by bindView(R.id.current_status_text_loading)
 
-    private val statusIcon: ImageView by bindView(R.id.set_status_icon)
+    private val statusIcon: View by bindView(R.id.set_status_icon)
+    private val statusIconBackground: ImageView by bindView(R.id.set_status_icon_background)
     private val statusProgress: View by bindView(R.id.set_status_progress)
     private val statusUnlockedOk: ImageView by bindView(R.id.unlocked_ok_icon)
 
@@ -461,7 +461,7 @@ class StatusActivity : Activity() {
                 buttonOpen.visibility = View.GONE
 
                 currentStatusText.text = getString(R.string.status_unknown)
-                statusIcon.setImageResource(R.drawable.stratum0_unknown)
+                statusIconBackground.setColorFilter(resources.getColor(R.color.status_unknown))
             }
 
             SpaceStatus.CLOSED -> {
@@ -470,7 +470,7 @@ class StatusActivity : Activity() {
                 buttonOpen.visibility = View.VISIBLE
 
                 currentStatusText.text = getString(R.string.status_closed)
-                statusIcon.setImageResource(R.drawable.stratum0_closed)
+                statusIconBackground.setColorFilter(resources.getColor(R.color.status_closed))
             }
 
             SpaceStatus.OPEN -> {
@@ -492,7 +492,7 @@ class StatusActivity : Activity() {
                             DateUtils.getRelativeDateTimeString(applicationContext, timestamp,
                                     DateUtils.MINUTE_IN_MILLIS, DateUtils.DAY_IN_MILLIS, 0)
                 currentStatusText.text = getString(R.string.status_open_format, lastStatusData.openedBy, readableTime)
-                statusIcon.setImageResource(R.drawable.stratum0_open)
+                statusIconBackground.setColorFilter(resources.getColor(R.color.status_open))
             }
         }
 
