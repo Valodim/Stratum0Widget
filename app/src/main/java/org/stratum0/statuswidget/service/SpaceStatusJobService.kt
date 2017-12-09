@@ -1,4 +1,4 @@
-package org.stratum0.statuswidget
+package org.stratum0.statuswidget.service
 
 import android.app.job.JobInfo
 import android.app.job.JobParameters
@@ -11,12 +11,14 @@ import android.os.AsyncTask
 import android.os.Build
 import android.text.format.DateUtils
 import android.util.Log
+import org.stratum0.statuswidget.*
+import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
 
 class SpaceStatusJobService : JobService() {
     private val stratum0StatusFetcher = Stratum0StatusFetcher()
 
     override fun onStartJob(params: JobParameters): Boolean {
-        object : AsyncTask<Void,Void,SpaceStatusData>() {
+        object : AsyncTask<Void,Void, SpaceStatusData>() {
             override fun doInBackground(vararg p0: Void?): SpaceStatusData {
                 return stratum0StatusFetcher.fetch()
             }

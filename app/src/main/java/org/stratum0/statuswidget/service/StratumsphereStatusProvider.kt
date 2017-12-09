@@ -1,4 +1,4 @@
-package org.stratum0.statuswidget
+package org.stratum0.statuswidget.service
 
 
 import android.annotation.SuppressLint
@@ -12,6 +12,11 @@ import android.os.AsyncTask
 import android.os.Handler
 import android.os.Message
 import android.widget.RemoteViews
+import org.stratum0.statuswidget.*
+import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
+import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
+import org.stratum0.statuswidget.ui.FirstRunActivity
+import org.stratum0.statuswidget.ui.StatusActivity
 import java.util.*
 
 
@@ -173,13 +178,11 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     }
 
     private fun checkWifiAndHandleNotification(context: Context, statusData: SpaceStatusData) {
-        val isOnS0Wifi = Stratum0WifiManager.isOnStratum0Wifi(context)
+        val isOnS0Wifi = Stratum0WifiInteractor.isOnStratum0Wifi(context)
         if (isOnS0Wifi) {
             val preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
             preferences.edit().putBoolean("spottedS0Wifi", true).apply()
         }
-
-        notificationManager.handleStatusNotification(context, statusData, isOnS0Wifi)
     }
 
     private fun getUptimeText(statusData: SpaceStatusData): String {
@@ -199,8 +202,6 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     }
 
     companion object {
-        val notificationManager = StratumNotificationManager()
-
         val ACTION_CLICK = "click"
     }
 }

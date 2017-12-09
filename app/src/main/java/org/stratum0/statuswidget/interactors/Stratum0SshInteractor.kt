@@ -1,15 +1,17 @@
-package org.stratum0.statuswidget
+package org.stratum0.statuswidget.interactors
 
 import android.os.SystemClock
 import android.util.Log
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.JSchException
 import com.jcraft.jsch.Session
+import org.stratum0.statuswidget.BuildConfig
+import org.stratum0.statuswidget.R
 import java.io.ByteArrayOutputStream
 import java.net.ConnectException
 import java.net.SocketException
 
-class S0SshInteractor {
+class Stratum0SshInteractor {
     val MAX_CONNECTION_TIME = 3500
 
     fun open(sshPrivateKey: String, sshPassword: String): Int? {

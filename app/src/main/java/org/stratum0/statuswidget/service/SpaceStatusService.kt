@@ -1,9 +1,12 @@
-package org.stratum0.statuswidget
+package org.stratum0.statuswidget.service
 
 
 import android.app.IntentService
 import android.content.Context
 import android.content.Intent
+import org.stratum0.statuswidget.*
+import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
+import org.stratum0.statuswidget.interactors.Stratum0StatusUpdater
 
 
 class SpaceStatusService : IntentService("Space Status Service") {

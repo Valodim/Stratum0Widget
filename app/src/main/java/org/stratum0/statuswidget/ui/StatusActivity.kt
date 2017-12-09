@@ -1,4 +1,4 @@
-package org.stratum0.statuswidget
+package org.stratum0.statuswidget.ui
 
 
 import android.app.Activity
@@ -19,8 +19,14 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import org.stratum0.statuswidget.util.bindView
-import org.stratum0.statuswidget.widget.ToolableViewAnimator
+import org.stratum0.statuswidget.BuildConfig
+import org.stratum0.statuswidget.R
+import org.stratum0.statuswidget.SpaceStatus
+import org.stratum0.statuswidget.SpaceStatusData
+import org.stratum0.statuswidget.interactors.SshKeyStorage
+import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
+import org.stratum0.statuswidget.service.SpaceDoorService
+import org.stratum0.statuswidget.service.SpaceStatusService
 
 
 class StatusActivity : Activity() {

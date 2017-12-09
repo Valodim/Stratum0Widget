@@ -1,14 +1,18 @@
-package org.stratum0.statuswidget
+package org.stratum0.statuswidget.service
 
 import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
 import android.support.annotation.StringRes
+import org.stratum0.statuswidget.*
+import org.stratum0.statuswidget.interactors.Stratum0SshInteractor
+import org.stratum0.statuswidget.interactors.SshKeyStorage
+import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
 
 class SpaceDoorService : IntentService("Space Door Service") {
     private lateinit var sshKeyStorage: SshKeyStorage
-    val s0SshInteractor = S0SshInteractor()
+    val s0SshInteractor = Stratum0SshInteractor()
 
     override fun onCreate() {
         super.onCreate()
@@ -30,7 +34,7 @@ class SpaceDoorService : IntentService("Space Door Service") {
         val startRealtime = SystemClock.elapsedRealtime()
 
         val error: Int? =
-            if (!BuildConfig.DEBUG && !Stratum0WifiManager.isOnStratum0Wifi(applicationContext)) {
+            if (!BuildConfig.DEBUG && !Stratum0WifiInteractor.isOnStratum0Wifi(applicationContext)) {
                 R.string.unlock_error_wifi
             } else if (!sshKeyStorage.hasKey()) {
                 R.string.unlock_error_no_key

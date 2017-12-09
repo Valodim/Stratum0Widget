@@ -1,4 +1,6 @@
-package org.stratum0.statuswidget.util
+@file:Suppress("unused")
+
+package org.stratum0.statuswidget.ui
 
 import android.app.Activity
 import android.app.Dialog
@@ -72,7 +74,7 @@ private fun <T, V : View> required(id: Int, finder: T.(Int) -> View?)
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> optional(id: Int, finder: T.(Int) -> View?)
-        = Lazy { t: T, desc ->  t.finder(id) as V? }
+        = Lazy { t: T, desc -> t.finder(id) as V? }
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> required(ids: IntArray, finder: T.(Int) -> View?)

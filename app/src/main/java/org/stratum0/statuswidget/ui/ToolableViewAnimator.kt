@@ -1,4 +1,4 @@
-package org.stratum0.statuswidget.widget
+package org.stratum0.statuswidget.ui
 
 import android.content.Context
 import android.util.AttributeSet

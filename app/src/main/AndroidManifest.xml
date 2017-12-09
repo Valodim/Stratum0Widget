@@ -8,7 +8,7 @@
     <application
         android:icon="@drawable/ic_stratum0_cutout"
         android:label="@string/app_name">
-        <receiver android:name="StratumsphereStatusProvider">
+        <receiver android:name=".service.StratumsphereStatusProvider">
         	<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 				<action android:name="android.net.wifi.STATE_CHANGED" />
@@ -24,7 +24,7 @@
                 android:resource="@xml/stratum0_widget_info" />
         </receiver>
         <activity
-            android:name=".StatusActivity"
+            android:name=".ui.StatusActivity"
             android:label="@string/title_status_activity"
             android:theme="@android:style/Theme.Material.Light.Dialog"
             android:excludeFromRecents="true"
@@ -34,18 +34,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FirstRunActivity"
+            android:name=".ui.FirstRunActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Material.Light.Dialog"
             android:excludeFromRecents="true"
             />
 
         <service
-            android:name=".SpaceStatusService"
+            android:name=".service.SpaceStatusService"
             android:exported="false" />
-        <service android:name=".SpaceDoorService"
+        <service android:name=".service.SpaceDoorService"
             android:exported="false" />
-        <service android:name=".SpaceStatusJobService"
+        <service android:name=".service.SpaceStatusJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 

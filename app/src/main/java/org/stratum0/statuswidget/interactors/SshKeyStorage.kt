@@ -1,4 +1,4 @@
-package org.stratum0.statuswidget
+package org.stratum0.statuswidget.interactors
 
 import android.content.Context
 import android.content.SharedPreferences

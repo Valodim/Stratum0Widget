@@ -16,7 +16,7 @@
         style="@android:style/TextAppearance.Material.DialogWindowTitle"
         />
 
-    <org.stratum0.statuswidget.widget.ToolableViewAnimator
+    <org.stratum0.statuswidget.ui.ToolableViewAnimator
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/animator"
@@ -455,6 +455,6 @@
 
         </LinearLayout>
 
-    </org.stratum0.statuswidget.widget.ToolableViewAnimator>
+    </org.stratum0.statuswidget.ui.ToolableViewAnimator>
 
 </FrameLayout>

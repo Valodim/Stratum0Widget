@@ -1,9 +1,9 @@
-package org.stratum0.statuswidget
+package org.stratum0.statuswidget.interactors
 
 import android.content.Context
 import android.net.wifi.WifiManager
 
-object Stratum0WifiManager {
+object Stratum0WifiInteractor {
     val WIFI_SSID_S0 = "Stratum0"
 
     fun isOnStratum0Wifi(context: Context): Boolean {

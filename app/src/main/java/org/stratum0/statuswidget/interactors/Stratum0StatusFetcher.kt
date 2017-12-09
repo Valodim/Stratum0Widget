@@ -1,10 +1,13 @@
-package org.stratum0.statuswidget
+package org.stratum0.statuswidget.interactors
 
 import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONException
 import org.json.JSONObject
+import org.stratum0.statuswidget.BuildConfig
+import org.stratum0.statuswidget.Constants
+import org.stratum0.statuswidget.SpaceStatusData
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
