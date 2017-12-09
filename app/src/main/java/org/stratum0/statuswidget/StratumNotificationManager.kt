@@ -27,7 +27,7 @@ class StratumNotificationManager {
 
 
         val notification = Notification.Builder(context)
-                .setSmallIcon(R.drawable.stratum0_unknown)
+                .setSmallIcon(R.drawable.ic_stratum0_cutout)
                 .setContentTitle(context.getText(R.string.notification_title))
                 .setContentText(context.getText(R.string.notification_content))
                 .setWhen(System.currentTimeMillis())
