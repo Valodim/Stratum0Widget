@@ -29,7 +29,7 @@ class Stratum0StatusFetcher {
                 debugListIndex = 0
             } else {
                 Thread.sleep(200)
-                debugListIndex = debugListIndex + 1
+                debugListIndex += 1
                 return DEBUG_STATUS_LIST[debugListIndex - 1]
             }
         }

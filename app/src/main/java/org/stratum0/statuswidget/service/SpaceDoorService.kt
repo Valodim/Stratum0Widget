@@ -12,7 +12,7 @@ import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
 
 class SpaceDoorService : IntentService("Space Door Service") {
     private lateinit var sshKeyStorage: SshKeyStorage
-    val s0SshInteractor = Stratum0SshInteractor()
+    private val s0SshInteractor = Stratum0SshInteractor()
 
     override fun onCreate() {
         super.onCreate()

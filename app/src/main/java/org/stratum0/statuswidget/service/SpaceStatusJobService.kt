@@ -11,7 +11,10 @@ import android.os.AsyncTask
 import android.os.Build
 import android.text.format.DateUtils
 import android.util.Log
-import org.stratum0.statuswidget.*
+import org.stratum0.statuswidget.BuildConfig
+import org.stratum0.statuswidget.Constants
+import org.stratum0.statuswidget.SpaceStatus
+import org.stratum0.statuswidget.SpaceStatusData
 import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
 
 class SpaceStatusJobService : JobService() {

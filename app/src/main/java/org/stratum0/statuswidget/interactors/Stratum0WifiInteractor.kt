@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.wifi.WifiManager
 
 object Stratum0WifiInteractor {
-    val WIFI_SSID_S0 = "Stratum0"
+    private val WIFI_SSID_S0 = "Stratum0"
 
     fun isOnStratum0Wifi(context: Context): Boolean {
         val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager

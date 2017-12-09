@@ -144,7 +144,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         appWidgetManager.updateAppWidget(appWidgetIds, views)
 
-        checkWifiAndHandleNotification(context, statusData)
+        checkWifiAndHandleNotification(context)
     }
 
     private fun setOnClickListeners(context: Context, appWidgetIds: IntArray, views: RemoteViews) {
@@ -177,7 +177,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         }
     }
 
-    private fun checkWifiAndHandleNotification(context: Context, statusData: SpaceStatusData) {
+    private fun checkWifiAndHandleNotification(context: Context) {
         val isOnS0Wifi = Stratum0WifiInteractor.isOnStratum0Wifi(context)
         if (isOnS0Wifi) {
             val preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)

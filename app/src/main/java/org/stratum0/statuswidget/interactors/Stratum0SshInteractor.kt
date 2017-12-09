@@ -12,8 +12,6 @@ import java.net.ConnectException
 import java.net.SocketException
 
 class Stratum0SshInteractor {
-    val MAX_CONNECTION_TIME = 3500
-
     fun open(sshPrivateKey: String, sshPassword: String): Int? {
         val user = "auf"
         val server = if (BuildConfig.DEBUG) "192.168.178.21" else "powerberry"
@@ -40,11 +38,11 @@ class Stratum0SshInteractor {
             sshSession.connect(3000)
 
             val channel = sshSession.openChannel("shell")
-            channel.setOutputStream(baos)
+            channel.outputStream = baos
             channel.connect(3000)
 
             val startTime = SystemClock.elapsedRealtime()
-            while (channel.isConnected()) {
+            while (channel.isConnected) {
                 if (SystemClock.elapsedRealtime() - startTime > MAX_CONNECTION_TIME) {
                     channel.disconnect()
                     break
@@ -63,7 +61,7 @@ class Stratum0SshInteractor {
             if (e.message == "Auth fail") {
                 return R.string.unlock_error_auth
             }
-            if (e.message?.contains("timeout") ?: false) {
+            if (e.message?.contains("timeout") == true) {
                 return R.string.unlock_error_timeout
             }
             return R.string.unlock_error_unknown
@@ -72,6 +70,10 @@ class Stratum0SshInteractor {
         Log.d(this.javaClass.name, "Connect successful")
 
         return null
+    }
+
+    companion object {
+        private val MAX_CONNECTION_TIME = 3500
     }
 
 }

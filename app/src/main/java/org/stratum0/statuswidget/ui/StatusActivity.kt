@@ -1,13 +1,12 @@
 package org.stratum0.statuswidget.ui
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.net.Uri
-import android.os.AsyncTask
-import android.os.Bundle
-import android.os.Handler
-import android.os.SystemClock
+import android.os.*
+import android.support.annotation.ColorRes
 import android.text.format.DateUtils
 import android.view.MotionEvent
 import android.view.View
@@ -29,19 +28,23 @@ import org.stratum0.statuswidget.service.SpaceDoorService
 import org.stratum0.statuswidget.service.SpaceStatusService
 
 
+@SuppressLint("ClickableViewAccessibility")
 class StatusActivity : Activity() {
-    private val REQUEST_CODE_IMPORT_SSH = 1
-    private val PRESS_LONGER_HINT_TIMEOUT = 90
-    private val NICK_PATTERN = Regex("[a-zA-Z_\\[\\]{}^`|][a-zA-Z0-9_\\[\\]{}^`|-]+")
+    companion object {
+        private val REQUEST_CODE_IMPORT_SSH = 1
+        private val PRESS_LONGER_HINT_TIMEOUT = 90
+        private val NICK_PATTERN = Regex("[a-zA-Z_\\[\\]{}^`|][a-zA-Z0-9_\\[\\]{}^`|-]+")
+    }
+
     private val stratum0StatusFetcher = Stratum0StatusFetcher()
 
     private lateinit var prefs: SharedPreferences
 
     private val viewAnimator: ToolableViewAnimator by bindView(R.id.animator)
-    private val buttonOpen: TextView by bindView(R.id.button_open)
-    private val buttonInherit: TextView by bindView(R.id.button_inherit)
-    private val buttonClose: TextView by bindView(R.id.button_close)
-    private val buttonUnlock: TextView by bindView(R.id.button_unlock)
+    private val buttonOpen: View by bindView(R.id.button_open)
+    private val buttonInherit: View by bindView(R.id.button_inherit)
+    private val buttonClose: View by bindView(R.id.button_close)
+    private val buttonUnlock: View by bindView(R.id.button_unlock)
 
     private val currentStatusText: TextView by bindView(R.id.current_status_text)
     private val currentStatusTextUnlocked: TextView by bindView(R.id.current_status_text_unlocked)
@@ -84,28 +87,27 @@ class StatusActivity : Activity() {
         }
     }
 
-    private val onTouchListener = object : View.OnTouchListener {
-        override fun onTouch(view: View, event: MotionEvent?): Boolean {
-            val isUnlockButton = view.id == R.id.button_unlock
-            when (event?.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    startFadeoutAnimation(isUnlockButton)
-                    return false
-                }
-                MotionEvent.ACTION_UP -> {
-                    abortFadeoutAnimation()
-                    return false
-                }
+    private val onTouchListener = View.OnTouchListener { view, event ->
+        val isUnlockButton = view.id == R.id.button_unlock
+        when (event?.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                startFadeoutAnimation(isUnlockButton)
+                return@OnTouchListener false
             }
-            return false
+            MotionEvent.ACTION_UP -> {
+                abortFadeoutAnimation()
+                view.performClick()
+                return@OnTouchListener false
+            }
         }
+        false
     }
 
-    var holdingButton = false
-    var triggeredUpdate = false
-    var triggeredUnlock = false
+    private var holdingButton = false
+    private var triggeredUpdate = false
+    private var triggeredUnlock = false
 
-    var lastButtonDown: Long? = null
+    private var lastButtonDown: Long? = null
 
     private fun startFadeoutAnimation(isUnlock: Boolean) {
         if (holdingButton || triggeredUpdate || triggeredUnlock) {
@@ -167,7 +169,7 @@ class StatusActivity : Activity() {
         triggeredUpdate = true
         when (lastStatusData.status) {
             SpaceStatus.OPEN -> {
-                if (username.equals(lastStatusData.openedBy)) {
+                if (username == lastStatusData.openedBy) {
                     SpaceStatusService.triggerStatusUpdate(applicationContext, null)
                     currentStatusTextLoading.text = getString(R.string.status_progress_closing)
                 } else {
@@ -213,45 +215,16 @@ class StatusActivity : Activity() {
         buttonClose.setOnTouchListener(onTouchListener)
         buttonUnlock.setOnTouchListener(onTouchListener)
 
-        findViewById<View>(R.id.button_settings).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
-                onClickSettings()
-            }
-        })
-
-        findViewById<View>(R.id.button_settings_cancel).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
-                onClickSettingsCancel()
-            }
-        })
-        findViewById<View>(R.id.button_settings_save).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
-                onClickSettingsSave()
-            }
-        })
-        findViewById<View>(R.id.button_error_back).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
-                onClickBack()
-            }
-        })
-        findViewById<View>(R.id.button_settings_ssh_save).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
-                onClickSettingsSshSave()
-            }
-        })
-        findViewById<View>(R.id.button_settings_ssh_cancel).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
-                onClickSettingsSshCancel()
-            }
-        })
+        findViewById<View>(R.id.button_settings).setOnClickListener { onClickSettings() }
+        findViewById<View>(R.id.button_settings_cancel).setOnClickListener { onClickSettingsCancel() }
+        findViewById<View>(R.id.button_settings_save).setOnClickListener { onClickSettingsSave() }
+        findViewById<View>(R.id.button_error_back).setOnClickListener { onClickBack() }
+        findViewById<View>(R.id.button_settings_ssh_save).setOnClickListener { onClickSettingsSshSave() }
+        findViewById<View>(R.id.button_settings_ssh_cancel).setOnClickListener { onClickSettingsSshCancel() }
 
         buttonUnlock.isEnabled = sshKeyStorage.hasKey()
 
-        settingsSshImport.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                onClickSshImport()
-            }
-        })
+        settingsSshImport.setOnClickListener { onClickSshImport() }
 
         username = prefs.getString("username", "")
 
@@ -295,7 +268,7 @@ class StatusActivity : Activity() {
         updateSshStatus()
     }
 
-    var candidateKeyData: String? = null
+    private var candidateKeyData: String? = null
 
     private fun displayPassphraseInput(keyData: String) {
         settingsSshPass.setText("")
@@ -460,14 +433,16 @@ class StatusActivity : Activity() {
         statusIcon.visibility = View.VISIBLE
         currentStatusText.visibility = View.VISIBLE
 
+        val statusText: String
+        @ColorRes val statusColor: Int
         when (lastStatusData.status) {
             SpaceStatus.UNKNOWN -> {
                 buttonClose.visibility = View.GONE
                 buttonInherit.visibility = View.GONE
                 buttonOpen.visibility = View.GONE
 
-                currentStatusText.text = getString(R.string.status_unknown)
-                statusIconBackground.setColorFilter(resources.getColor(R.color.status_unknown))
+                statusText = getString(R.string.status_unknown)
+                statusColor = R.color.status_unknown
             }
 
             SpaceStatus.CLOSED -> {
@@ -475,14 +450,14 @@ class StatusActivity : Activity() {
                 buttonInherit.visibility = View.GONE
                 buttonOpen.visibility = View.VISIBLE
 
-                currentStatusText.text = getString(R.string.status_closed)
-                statusIconBackground.setColorFilter(resources.getColor(R.color.status_closed))
+                statusText = getString(R.string.status_closed)
+                statusColor = R.color.status_closed
             }
 
             SpaceStatus.OPEN -> {
                 buttonOpen.visibility = View.GONE
 
-                if (username.equals(lastStatusData.openedBy)) {
+                if (username == lastStatusData.openedBy) {
                     buttonInherit.visibility = View.GONE
                     buttonClose.visibility = View.VISIBLE
                 } else {
@@ -497,9 +472,17 @@ class StatusActivity : Activity() {
                         else
                             DateUtils.getRelativeDateTimeString(applicationContext, timestamp,
                                     DateUtils.MINUTE_IN_MILLIS, DateUtils.DAY_IN_MILLIS, 0)
-                currentStatusText.text = getString(R.string.status_open_format, lastStatusData.openedBy, readableTime)
-                statusIconBackground.setColorFilter(resources.getColor(R.color.status_open))
+                statusText = getString(R.string.status_open_format, lastStatusData.openedBy, readableTime)
+                statusColor = R.color.status_open
             }
+        }
+
+        currentStatusText.text = statusText
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusIconBackground.setColorFilter(resources.getColor(statusColor, null))
+        } else {
+            @Suppress("DEPRECATION")
+            statusIconBackground.setColorFilter(resources.getColor(statusColor))
         }
 
         if (animate) {
