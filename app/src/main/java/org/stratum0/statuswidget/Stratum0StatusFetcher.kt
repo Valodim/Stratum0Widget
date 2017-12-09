@@ -21,6 +21,16 @@ class Stratum0StatusFetcher {
                 .url(Constants.STATUS_URL + "/status.json")
                 .build()
 
+        if (false && BuildConfig.DEBUG) {
+            if (debugListIndex == DEBUG_STATUS_LIST.size) {
+                debugListIndex = 0
+            } else {
+                Thread.sleep(200)
+                debugListIndex = debugListIndex + 1
+                return DEBUG_STATUS_LIST[debugListIndex - 1]
+            }
+        }
+
         try {
             val response = okHttpClient.newCall(request).execute()
             if (response.code() == 200) {
@@ -57,6 +67,14 @@ class Stratum0StatusFetcher {
             return SpaceStatusData.createUnknownStatus()
         }
 
+    }
+
+    companion object {
+        val DEBUG_STATUS_LIST: Array<SpaceStatusData> = arrayOf(
+                SpaceStatusData.createUnknownStatus(),
+                SpaceStatusData.createClosedStatus(Calendar.getInstance()),
+                SpaceStatusData.createOpenStatus("Valodim", Calendar.getInstance(), Calendar.getInstance()))
+        private var debugListIndex = DEBUG_STATUS_LIST.size
     }
 
 }
