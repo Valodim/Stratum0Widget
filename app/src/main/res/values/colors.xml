@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="status_unknown">#607D8B</color>
+    <color name="status_open">#00C853</color>
+    <color name="status_closed">#d50000</color>
+</resources>

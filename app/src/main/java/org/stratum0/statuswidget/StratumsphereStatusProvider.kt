@@ -149,7 +149,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
 
         for (appWidgetId in appWidgetIds) {
             val clickIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-            views.setOnClickPendingIntent(R.id.statusImageView, clickIntent)
+            views.setOnClickPendingIntent(R.id.widget_root, clickIntent)
         }
     }
 
@@ -157,14 +157,16 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         val upTimeText = getUptimeText(statusData)
         val lastUpdateText = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime),
                 statusData.lastUpdate.get(Calendar.HOUR_OF_DAY), statusData.lastUpdate.get(Calendar.MINUTE))
-        val currentImage = when (statusData.status) {
-            SpaceStatus.OPEN -> R.drawable.stratum0_open
-            SpaceStatus.UNKNOWN -> R.drawable.stratum0_unknown
-            SpaceStatus.CLOSED -> R.drawable.stratum0_closed
+        val statusBackgroundColor = when (statusData.status) {
+            SpaceStatus.OPEN -> R.color.status_open
+            SpaceStatus.CLOSED -> R.color.status_closed
+            SpaceStatus.UNKNOWN -> R.color.status_unknown
         }
 
+        @Suppress("deprecation") // we don't want to involve support lib for this
+        val color = context.resources.getColor(statusBackgroundColor)
         for (i in appWidgetIds.indices) {
-            views.setImageViewResource(R.id.statusImageView, currentImage)
+            views.setInt(R.id.statusImageBackground, "setColorFilter", color)
             views.setTextViewText(R.id.lastUpdateTextView, lastUpdateText)
             views.setTextViewText(R.id.spaceUptimeTextView, upTimeText)
         }
@@ -193,7 +195,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
             uptimeHours = 99
         }
 
-        return String.format("%02d     %02d", uptimeHours, uptimeMinutes)
+        return String.format("%02d      %02d", uptimeHours, uptimeMinutes)
     }
 
     companion object {

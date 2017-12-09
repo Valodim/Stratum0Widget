@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/widget_root"
     tools:layout_width="wrap_content"
     tools:layout_height="wrap_content">
 
     <FrameLayout
-        android:id="@+id/relativeLayout1"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -18,10 +18,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:id="@+id/statusImageView"
+            android:id="@+id/statusImageBackground"
             android:contentDescription="@string/status_icon_description"
-            android:src="@drawable/stratum0_unknown"
-            tools:src="@drawable/stratum0_open"
+            android:src="@drawable/ic_stratum0_background"
+            android:tint="@color/status_unknown"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/status_icon_description"
+            android:src="@drawable/ic_stratum0_cutout"
             />
 
         <TextView
@@ -33,7 +41,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000"
             android:textSize="10.0dp"
-            tools:text="23     42"
+            tools:text="23      42"
             />
 
     </FrameLayout>
