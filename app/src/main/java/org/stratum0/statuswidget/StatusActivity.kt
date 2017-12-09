@@ -486,7 +486,7 @@ class StatusActivity : Activity() {
 
                 val timestamp = lastStatusData.lastChange!!.time.time
                 val readableTime =
-                        if (timestamp > System.currentTimeMillis() - 10000)
+                        if (timestamp > System.currentTimeMillis() - DateUtils.MINUTE_IN_MILLIS)
                             "just now"
                         else
                             DateUtils.getRelativeDateTimeString(applicationContext, timestamp,
