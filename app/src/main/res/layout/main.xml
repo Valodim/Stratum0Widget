@@ -10,7 +10,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:paddingBottom="3dp"
@@ -39,10 +39,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:autoSizeMaxTextSize="15dp"
+            android:autoSizeMinTextSize="2dp"
+            android:autoSizeTextType="uniform"
             android:gravity="center"
+            android:maxLines="1"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000"
-            android:textSize="10sp"
             tools:text="23      42" />
 
     </FrameLayout>
@@ -52,22 +57,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="5dp"
         android:autoSizeMaxTextSize="10dp"
-        android:autoSizeMinTextSize="9dp"
+        android:autoSizeMinTextSize="5dp"
         android:autoSizeTextType="uniform"
-        android:background="@drawable/widget_updated_bg"
+        android:background="@drawable/ic_rounded_corners"
         android:gravity="center"
         android:maxLines="1"
-        android:minEms="3"
-        android:paddingBottom="4dp"
-        android:paddingLeft="3dp"
-        android:paddingRight="3dp"
-        android:paddingTop="4dp"
         android:text="@string/defaultTime"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#ffffff"
-        android:textSize="12.0dp"
         tools:text="Updated:\n09:56" />
 
 </LinearLayout>
