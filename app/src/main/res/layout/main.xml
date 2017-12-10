@@ -9,62 +9,63 @@
     tools:layout_height="wrap_content">
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        android:layout_gravity="center_horizontal">
+        android:paddingBottom="3dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:id="@+id/statusImageBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:contentDescription="@string/status_icon_description"
             android:src="@drawable/ic_stratum0_background"
-            android:tint="@color/status_unknown"
-            />
+            android:tint="@color/status_unknown" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:contentDescription="@string/status_icon_description"
-            android:src="@drawable/ic_stratum0_cutout"
-            />
+            android:src="@drawable/ic_stratum0_cutout" />
 
         <TextView
             android:id="@+id/spaceUptimeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:autoSizeMaxTextSize="15dp"
+            android:autoSizeMinTextSize="2dp"
+            android:autoSizeTextType="uniform"
             android:gravity="center"
+            android:maxLines="1"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000"
-            android:textSize="10.0dp"
-            tools:text="23      42"
-            />
+            tools:text="23      42" />
 
     </FrameLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/lastUpdateTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/lastUpdateTextView"
+        android:autoSizeMaxTextSize="10dp"
+        android:autoSizeMinTextSize="5dp"
+        android:autoSizeTextType="uniform"
+        android:background="@drawable/ic_rounded_corners"
         android:gravity="center"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:background="@drawable/widget_updated_bg"
+        android:maxLines="1"
         android:text="@string/defaultTime"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="10.0dp"
-        android:maxLines="2"
         android:textColor="#ffffff"
-        android:minEms="5"
-        android:minHeight="32dp"
-        tools:text="Updated:\n09:56"
-        />
+        tools:text="Updated:\n09:56" />
 
 </LinearLayout>
