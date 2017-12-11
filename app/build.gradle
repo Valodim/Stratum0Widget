@@ -19,10 +19,23 @@ android {
         }
 
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    flavorDimensions "freedom"
+    productFlavors {
+        foss {
+            dimension "freedom"
+            versionNameSuffix "-foss"
+        }
+        fcm {
+            dimension "freedom"
+            versionNameSuffix "-play"
+        }
+    }
+
 }
 repositories {
     mavenCentral()
@@ -38,7 +51,9 @@ dependencies {
     compile 'nz.bradcampbell:paperparcel-kotlin:2.0.4'
     kapt 'nz.bradcampbell:paperparcel-compiler:2.0.4'
 
-    compile 'com.google.firebase:firebase-messaging:11.6.0'
+    fcmCompile 'com.google.firebase:firebase-messaging:11.6.2'
 }
 
-apply plugin: 'com.google.gms.google-services'
+if (getGradle().getStartParameter().getTaskRequests().toString().contains("Fcm")) {
+    apply plugin: 'com.google.gms.google-services'
+}

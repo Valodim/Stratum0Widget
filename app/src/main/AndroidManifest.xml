@@ -48,7 +48,7 @@
         <service android:name=".service.SpaceStatusJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <service android:name=".fcm.Stratum0FcmService">
+        <service android:name=".push.Stratum0FcmService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

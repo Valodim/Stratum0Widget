@@ -1,4 +1,4 @@
-package org.stratum0.statuswidget.fcm
+package org.stratum0.statuswidget.push
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
