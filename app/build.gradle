@@ -37,4 +37,8 @@ dependencies {
     compile 'nz.bradcampbell:paperparcel:2.0.4'
     compile 'nz.bradcampbell:paperparcel-kotlin:2.0.4'
     kapt 'nz.bradcampbell:paperparcel-compiler:2.0.4'
+
+    compile 'com.google.firebase:firebase-messaging:11.6.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
