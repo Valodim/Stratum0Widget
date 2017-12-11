@@ -13,6 +13,7 @@ import android.os.Handler
 import android.os.Message
 import android.widget.RemoteViews
 import org.stratum0.statuswidget.*
+import org.stratum0.statuswidget.fcm.Stratum0FcmService
 import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
 import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
 import org.stratum0.statuswidget.ui.FirstRunActivity
@@ -24,11 +25,13 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
         SpaceStatusJobService.jobScheduleRefresh(context)
+        Stratum0FcmService.subscribeToStatusUpdates()
     }
 
     override fun onDisabled(context: Context) {
         super.onDisabled(context)
         SpaceStatusJobService.jobCancelRefresh(context)
+        Stratum0FcmService.unsubscribeFromStatusUpdates()
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
@@ -75,6 +78,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 SpaceStatusJobService.jobScheduleRefresh(context)
+                Stratum0FcmService.subscribeToStatusUpdates()
             }
         }
 

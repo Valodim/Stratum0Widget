@@ -51,6 +51,17 @@ class SpaceStatusJobService : JobService() {
     companion object {
         val EVENT_REFRESH = "SpaceStatus.event.refresh"
 
+        fun jobRefreshNow(context: Context) {
+            val serviceComponent = ComponentName(context, SpaceStatusJobService::class.java)
+
+            val job = JobInfo.Builder(Constants.JOB_ID_SPACE_STATUS_REFRESH_NOW, serviceComponent)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setOverrideDeadline(5000L)
+
+            val jobScheduler = context.getSystemService(android.content.Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+            jobScheduler.schedule(job.build())
+        }
+
         fun jobScheduleRefresh(context: Context) {
             val serviceComponent = ComponentName(context, SpaceStatusJobService::class.java)
 
