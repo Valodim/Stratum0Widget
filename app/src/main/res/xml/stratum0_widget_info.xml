@@ -4,7 +4,7 @@
     android:initialLayout="@layout/main"
     android:minHeight="48dp"
     android:minWidth="48dp"
-    android:updatePeriodMillis="0"
+    android:updatePeriodMillis="1800000"
 	android:widgetCategory="home_screen"
 	>
 </appwidget-provider>

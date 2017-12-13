@@ -1,66 +1,43 @@
 package org.stratum0.statuswidget.service
 
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
-import android.os.Handler
-import android.os.Message
+import android.os.Bundle
+import android.text.format.DateUtils
 import android.widget.RemoteViews
+import org.stratum0.statuswidget.BuildConfig
 import org.stratum0.statuswidget.R
 import org.stratum0.statuswidget.SpaceStatus
 import org.stratum0.statuswidget.SpaceStatusData
-import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
 import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
-import org.stratum0.statuswidget.push.Stratum0Push
-import org.stratum0.statuswidget.ui.FirstRunActivity
+import org.stratum0.statuswidget.push.Stratum0StatusUpdater
 import org.stratum0.statuswidget.ui.StatusActivity
-import java.util.*
 
 
 class StratumsphereStatusProvider : AppWidgetProvider() {
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
-        SpaceStatusJobService.jobScheduleRefresh(context)
-        Stratum0Push.subscribeToPush()
+        Stratum0StatusUpdater.initializeBackgroundUpdates(context)
     }
 
     override fun onDisabled(context: Context) {
         super.onDisabled(context)
-        SpaceStatusJobService.jobCancelRefresh(context)
-        Stratum0Push.unsubscribeFromPush()
+        Stratum0StatusUpdater.stopBackgroundUpdates(context)
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val views = RemoteViews(context.packageName, R.layout.main)
         setOnClickListeners(context, appWidgetIds, views)
+
+        val statusData = getCachedSpaceStatusData(appWidgetManager, appWidgetIds)
+        setViewInfo(context, statusData, appWidgetIds, views)
+
         appWidgetManager.updateAppWidget(appWidgetIds, views)
-
-        onSpaceStatusUpdateInProgress(context, appWidgetIds)
-        asyncRefreshSpaceStatus(context, appWidgetIds)
-    }
-
-    private val stratum0StatusFetcher = Stratum0StatusFetcher()
-
-    private fun asyncRefreshSpaceStatus(context: Context, appWidgetIds: IntArray) {
-        object : AsyncTask<Void, Void, SpaceStatusData>() {
-            override fun onPreExecute() {
-                onSpaceStatusUpdateInProgress(context, appWidgetIds)
-            }
-
-            override fun doInBackground(vararg p0: Void?): SpaceStatusData {
-                return stratum0StatusFetcher.fetch()
-            }
-
-            override fun onPostExecute(result: SpaceStatusData) {
-                onSpaceStatusUpdated(context, appWidgetIds, result)
-            }
-        }.execute()
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -69,52 +46,38 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
                 val appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
                 onWidgetClick(context, appWidgetIds)
             }
-            SpaceStatusJobService.EVENT_REFRESH -> {
+            EVENT_REFRESH -> {
                 val status = intent.getParcelableExtra<SpaceStatusData>(SpaceStatusService.EXTRA_STATUS)
-
-                val appWidgetManager = AppWidgetManager.getInstance(context)
-                val appWidgetIds = appWidgetManager.getAppWidgetIds(
-                        ComponentName(context, StratumsphereStatusProvider::class.java))
-
-                onSpaceStatusUpdated(context, appWidgetIds, status)
+                onSpaceStatusUpdated(context, status)
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
-                SpaceStatusJobService.jobScheduleRefresh(context)
-                Stratum0Push.subscribeToPush()
+                Stratum0StatusUpdater.initializeBackgroundUpdates(context)
             }
         }
 
         super.onReceive(context, intent)
     }
 
-    @SuppressLint("ApplySharedPref")
     private fun onWidgetClick(context: Context, appWidgetIds: IntArray) {
-        val preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
-
-        if (preferences.getBoolean("firstrun", true)) {
-            val firstrunIntent = Intent(context, FirstRunActivity::class.java)
-            firstrunIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(firstrunIntent)
-            preferences.edit().putBoolean("firstrun", false).apply()
-            return
-        }
-
-        val clickCount = preferences.getInt("clicks", 0)
-        preferences.edit().putInt("clicks", clickCount + 1).commit()
-
-        if (clickCount > 0) {
-            startStatusActivity(context)
+        val cachedSpaceStatusData = getCachedSpaceStatusData(context)
+        if (cachedSpaceStatusData.status == SpaceStatus.UNKNOWN) {
+            showUpdatingMessage(context, appWidgetIds)
+            // TODO SpaceStatusJobService.jobRefreshNow(context)
         } else {
-            object : Handler() {
-                override fun handleMessage(msg: Message) {
-                    val delayedClickCount = preferences.getInt("clicks", 0)
-                    preferences.edit().putInt("clicks", 0).commit()
-                    if (delayedClickCount == 1) {
-                        sendWidgetUpdateIntent(context, appWidgetIds)
-                    }
-                }
-            }.sendEmptyMessageDelayed(0, 180)
+            startStatusActivity(context)
         }
+    }
+
+    private fun showUpdatingMessage(context: Context, appWidgetIds: IntArray) {
+        val views = RemoteViews(context.packageName, R.layout.main)
+        val updatingText = context.getText(R.string.updating)
+
+        for (i in appWidgetIds.indices) {
+            views.setTextViewText(R.id.lastUpdateTextView, updatingText)
+        }
+
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
 
     private fun sendWidgetUpdateIntent(context: Context, appWidgetIds: IntArray) {
@@ -130,27 +93,44 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         context.startActivity(activityIntent)
     }
 
-    private fun onSpaceStatusUpdateInProgress(context: Context, appWidgetIds: IntArray) {
-        val views = RemoteViews(context.packageName, R.layout.main)
-        val updatingText = context.getText(R.string.updating)
-
-        for (i in appWidgetIds.indices) {
-            views.setTextViewText(R.id.lastUpdateTextView, updatingText)
-        }
-
+    private fun onSpaceStatusUpdated(context: Context, statusData: SpaceStatusData) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        appWidgetManager.updateAppWidget(appWidgetIds, views)
-    }
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(
+                ComponentName(context, StratumsphereStatusProvider::class.java))
 
-    private fun onSpaceStatusUpdated(context: Context, appWidgetIds: IntArray, statusData: SpaceStatusData) {
-        val views = RemoteViews(context.packageName, R.layout.main)
-        setOnClickListeners(context, appWidgetIds, views)
-        setViewInfo(context, statusData, appWidgetIds, views)
-
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        appWidgetManager.updateAppWidget(appWidgetIds, views)
+        setCachedSpaceStatusData(statusData, appWidgetIds, appWidgetManager)
+        sendWidgetUpdateIntent(context, appWidgetIds)
 
         checkWifiAndHandleNotification(context)
+    }
+
+    private fun setCachedSpaceStatusData(
+            statusData: SpaceStatusData, appWidgetIds: IntArray, appWidgetManager: AppWidgetManager) {
+        val options = Bundle()
+        options.putParcelable("status", statusData)
+        val wrap = Bundle()
+        wrap.putParcelable("data", options)
+        for (appWidgetId in appWidgetIds) {
+            appWidgetManager.updateAppWidgetOptions(appWidgetId, wrap)
+        }
+    }
+
+    private fun getCachedSpaceStatusData(context: Context): SpaceStatusData {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(
+                ComponentName(context, StratumsphereStatusProvider::class.java))
+        return getCachedSpaceStatusData(appWidgetManager, appWidgetIds)
+    }
+
+    private fun getCachedSpaceStatusData(appWidgetManager: AppWidgetManager, appWidgetIds: IntArray): SpaceStatusData {
+        val appWidgetOptions = appWidgetManager.getAppWidgetOptions(appWidgetIds.first())
+        val statusDataWrapper: Bundle? = appWidgetOptions.getParcelable("data")
+        if (statusDataWrapper != null) {
+            statusDataWrapper.classLoader = javaClass.classLoader
+            return statusDataWrapper.getParcelable<SpaceStatusData>("status")
+        }
+
+        return SpaceStatusData.createUnknownStatus()
     }
 
     private fun setOnClickListeners(context: Context, appWidgetIds: IntArray, views: RemoteViews) {
@@ -165,9 +145,22 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     }
 
     private fun setViewInfo(context: Context, statusData: SpaceStatusData, appWidgetIds: IntArray, views: RemoteViews) {
-        val upTimeText = getUptimeText(statusData)
-        val lastUpdateText = String.format("%s:\n%02d:%02d", context.getText(R.string.currentTime),
-                statusData.lastUpdate.get(Calendar.HOUR_OF_DAY), statusData.lastUpdate.get(Calendar.MINUTE))
+        val lastUpdateText = when (statusData.status) {
+            SpaceStatus.OPEN -> {
+                val timeInMillis = statusData.since!!.timeInMillis
+                val date = when {
+                    DateUtils.isToday(timeInMillis) -> "Today"
+                    DateUtils.isToday(timeInMillis + DateUtils.DAY_IN_MILLIS) -> "Yesterday"
+                    else -> DateUtils.formatDateTime(context, timeInMillis,
+                            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_ALL)
+                }
+                val time = DateUtils.formatDateTime(context, timeInMillis - 86400,
+                        DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL)
+                context.getString(R.string.status_since, date, time)
+            }
+            SpaceStatus.CLOSED -> context.getString(R.string.status_closed_short)
+            SpaceStatus.UNKNOWN -> context.getString(R.string.status_unknown_short)
+        }
         val statusBackgroundColor = when (statusData.status) {
             SpaceStatus.OPEN -> R.color.status_open
             SpaceStatus.CLOSED -> R.color.status_closed
@@ -179,7 +172,6 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         for (i in appWidgetIds.indices) {
             views.setInt(R.id.statusImageBackground, "setColorFilter", color)
             views.setTextViewText(R.id.lastUpdateTextView, lastUpdateText)
-            views.setTextViewText(R.id.spaceUptimeTextView, upTimeText)
         }
     }
 
@@ -191,23 +183,16 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         }
     }
 
-    private fun getUptimeText(statusData: SpaceStatusData): String {
-        val uptimeSeconds = statusData.uptimeSeconds
-        if (uptimeSeconds == null) {
-            return ""
-        }
-
-        var uptimeMinutes = uptimeSeconds / 60 % 60
-        var uptimeHours = uptimeSeconds / 60 / 60
-        if (uptimeHours > 99) {
-            uptimeMinutes = 99
-            uptimeHours = 99
-        }
-
-        return String.format("%02d      %02d", uptimeHours, uptimeMinutes)
-    }
-
     companion object {
         val ACTION_CLICK = "click"
+
+        val EVENT_REFRESH = "SpaceStatus.event.refresh"
+
+        fun sendRefreshBroadcast(context: Context, statusData: SpaceStatusData) {
+            val intent = Intent(EVENT_REFRESH)
+            intent.`package` = BuildConfig.APPLICATION_ID
+            intent.putExtra(SpaceStatusService.EXTRA_STATUS, statusData)
+            context.sendBroadcast(intent)
+        }
     }
 }

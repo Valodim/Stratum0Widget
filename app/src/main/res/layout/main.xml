@@ -32,18 +32,6 @@
             android:src="@drawable/ic_stratum0_cutout"
             />
 
-        <TextView
-            android:id="@+id/spaceUptimeTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#000000"
-            android:textSize="10.0dp"
-            tools:text="23      42"
-            />
-
     </FrameLayout>
 
     <TextView
@@ -57,14 +45,13 @@
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         android:background="@drawable/ic_rounded_corners"
-        android:text="@string/defaultTime"
+        android:text="@string/status_unknown_short"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="10.0dp"
         android:maxLines="2"
         android:textColor="#ffffff"
         android:minEms="5"
         android:minHeight="32dp"
-        tools:text="Updated:\n09:56"
         />
 
 </LinearLayout>

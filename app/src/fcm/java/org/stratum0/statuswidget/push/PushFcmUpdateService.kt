@@ -3,14 +3,15 @@ package org.stratum0.statuswidget.push
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import org.stratum0.statuswidget.service.SpaceStatusJobService
+import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
+import org.stratum0.statuswidget.service.StratumsphereStatusProvider
 
-class Stratum0FcmService : FirebaseMessagingService() {
+class PushFcmUpdateService : FirebaseMessagingService() {
+    private val stratum0StatusFetcher = Stratum0StatusFetcher()
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        super.onMessageReceived(remoteMessage)
-
-        SpaceStatusJobService.jobRefreshNow(applicationContext)
+        val status = stratum0StatusFetcher.fetch()
+        StratumsphereStatusProvider.sendRefreshBroadcast(applicationContext, status)
     }
 
     companion object {

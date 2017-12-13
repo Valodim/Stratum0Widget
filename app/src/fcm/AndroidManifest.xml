@@ -6,7 +6,7 @@
     <application>
         <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
 
-        <service android:name=".push.Stratum0FcmService"
+        <service android:name=".push.PushFcmUpdateService"
             tools:ignore="ExportedService"> <!-- the firebase service class takes care of permission checks -->
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
