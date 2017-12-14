@@ -18,7 +18,6 @@
     <string name="status_open_format">Geöffnet von %s\nseit %s</string>
 
     <!-- StratumsphereStatusProvider.java -->
-    <string name="currentTime">Updated</string>
     <string name="updating">Update…</string>
 
     <!-- layout/main.xml -->
@@ -65,4 +64,10 @@
     <string name="toast_press_longer">Länger drücken zum Durchzuführen</string>
     <string name="settings_error_nick_short">Nick ist zu kurz!</string>
     <string name="settings_error_nick_pattern"><![CDATA[[a-zA-Z0-9_\\[\\]{}^`|-]+]]></string>
+    <string name="status_closed_short">Zu</string>
+    <string name="status_unknown_short">Unbekannt</string>
+    <string name="status_since">\\u00A0%s\n%s</string>
+    <string name="time_today">Heute</string>
+    <string name="time_yesterday">Gestern</string>
+    <string name="time_just_now">gerade eben</string>
 </resources>
