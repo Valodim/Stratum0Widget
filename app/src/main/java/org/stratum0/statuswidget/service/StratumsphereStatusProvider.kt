@@ -62,7 +62,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
 
     private fun onWidgetClick(context: Context, appWidgetIds: IntArray) {
         val cachedSpaceStatusData = getCachedSpaceStatusData(context)
-        if (!Stratum0StatusUpdater.hasPush() && cachedSpaceStatusData.status == SpaceStatus.UNKNOWN) {
+        if (!Stratum0StatusUpdater.hasPush(context) && cachedSpaceStatusData.status == SpaceStatus.UNKNOWN) {
             refreshStatusAsync(context, appWidgetIds)
         } else {
             startStatusActivity(context)

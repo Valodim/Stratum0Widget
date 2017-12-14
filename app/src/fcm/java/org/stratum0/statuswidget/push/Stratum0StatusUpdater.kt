@@ -3,17 +3,31 @@
 package org.stratum0.statuswidget.push
 
 import android.content.Context
+import android.content.pm.PackageManager
 
 object Stratum0StatusUpdater {
     fun initializeBackgroundUpdates(context: Context) {
-        PushFcmUpdateService.subscribeToStatusUpdates()
+        if (hasPush(context)) {
+            PushFcmUpdateService.subscribeToStatusUpdates()
+        } else {
+            PeriodicUpdateJobService.jobScheduleRefresh(context)
+        }
     }
 
     fun stopBackgroundUpdates(context: Context) {
-        PushFcmUpdateService.unsubscribeFromStatusUpdates()
+        if (hasPush(context)) {
+            PushFcmUpdateService.unsubscribeFromStatusUpdates()
+        } else {
+            PeriodicUpdateJobService.jobCancelRefresh(context)
+        }
     }
 
-    fun hasPush(): Boolean {
-        return true
+    fun hasPush(context: Context): Boolean {
+        try {
+            context.packageManager.getPackageInfo("com.google.android.gms", 0)
+            return true
+        } catch (e: PackageManager.NameNotFoundException) {
+            return false
+        }
     }
 }

@@ -11,7 +11,7 @@ object Stratum0StatusUpdater {
         PeriodicUpdateJobService.jobCancelRefresh(context)
     }
 
-    fun hasPush(): Boolean {
+    fun hasPush(context: Context): Boolean {
         return false
     }
 }
