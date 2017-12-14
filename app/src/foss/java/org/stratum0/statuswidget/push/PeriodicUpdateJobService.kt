@@ -41,16 +41,6 @@ class PeriodicUpdateJobService : JobService() {
     }
 
     companion object {
-        fun jobRefreshNow(context: Context) {
-            val serviceComponent = ComponentName(context, PeriodicUpdateJobService::class.java)
-
-            val job = JobInfo.Builder(Constants.JOB_ID_SPACE_STATUS_REFRESH_NOW, serviceComponent)
-                    .setOverrideDeadline(5000L)
-
-            val jobScheduler = context.getSystemService(android.content.Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-            jobScheduler.schedule(job.build())
-        }
-
         fun jobScheduleRefresh(context: Context) {
             val serviceComponent = ComponentName(context, PeriodicUpdateJobService::class.java)
 

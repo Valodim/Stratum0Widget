@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.widget.RemoteViews
@@ -14,6 +15,7 @@ import org.stratum0.statuswidget.BuildConfig
 import org.stratum0.statuswidget.R
 import org.stratum0.statuswidget.SpaceStatus
 import org.stratum0.statuswidget.SpaceStatusData
+import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
 import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
 import org.stratum0.statuswidget.push.Stratum0StatusUpdater
 import org.stratum0.statuswidget.ui.StatusActivity
@@ -60,12 +62,29 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
 
     private fun onWidgetClick(context: Context, appWidgetIds: IntArray) {
         val cachedSpaceStatusData = getCachedSpaceStatusData(context)
-        if (cachedSpaceStatusData.status == SpaceStatus.UNKNOWN) {
-            showUpdatingMessage(context, appWidgetIds)
-            // TODO SpaceStatusJobService.jobRefreshNow(context)
+        if (!Stratum0StatusUpdater.hasPush() && cachedSpaceStatusData.status == SpaceStatus.UNKNOWN) {
+            refreshStatusAsync(context, appWidgetIds)
         } else {
             startStatusActivity(context)
         }
+    }
+
+    private val stratum0StatusFetcher = Stratum0StatusFetcher()
+
+    private fun refreshStatusAsync(context: Context, appWidgetIds: IntArray) {
+        object : AsyncTask<Void, Void, SpaceStatusData>() {
+            override fun onPreExecute() {
+                showUpdatingMessage(context, appWidgetIds)
+            }
+
+            override fun doInBackground(vararg p0: Void?): SpaceStatusData {
+                return stratum0StatusFetcher.fetch()
+            }
+
+            override fun onPostExecute(result: SpaceStatusData) {
+                onSpaceStatusUpdated(context, result)
+            }
+        }.execute()
     }
 
     private fun showUpdatingMessage(context: Context, appWidgetIds: IntArray) {
