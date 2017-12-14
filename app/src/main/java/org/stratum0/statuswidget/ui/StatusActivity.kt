@@ -465,10 +465,10 @@ class StatusActivity : Activity() {
                     buttonClose.visibility = View.GONE
                 }
 
-                val timestamp = lastStatusData.lastChange!!.time.time
+                val timestamp = lastStatusData.since!!.time.time
                 val readableTime =
                         if (timestamp > System.currentTimeMillis() - DateUtils.MINUTE_IN_MILLIS)
-                            "just now"
+                            getString(R.string.time_just_now)
                         else
                             DateUtils.getRelativeDateTimeString(applicationContext, timestamp,
                                     DateUtils.MINUTE_IN_MILLIS, DateUtils.DAY_IN_MILLIS, 0)

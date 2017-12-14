@@ -72,5 +72,8 @@
     <string name="unlock_error_no_key">Unlock failed: No private key configured!</string>
     <string name="unlock_error_auth">Unlock failed: Authentication error!</string>
     <string name="unlock_error_privkey">Unlock failed: Problem with private key!</string>
+    <string name="time_today">Today</string>
+    <string name="time_yesterday">Yesterday</string>
+    <string name="time_just_now">just now</string>
 
 </resources>

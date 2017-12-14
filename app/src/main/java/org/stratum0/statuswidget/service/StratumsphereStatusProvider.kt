@@ -168,12 +168,12 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
             SpaceStatus.OPEN -> {
                 val timeInMillis = statusData.since!!.timeInMillis
                 val date = when {
-                    DateUtils.isToday(timeInMillis) -> "Today"
-                    DateUtils.isToday(timeInMillis + DateUtils.DAY_IN_MILLIS) -> "Yesterday"
+                    DateUtils.isToday(timeInMillis) -> context.getString(R.string.time_today)
+                    DateUtils.isToday(timeInMillis + DateUtils.DAY_IN_MILLIS) -> context.getString(R.string.time_yesterday)
                     else -> DateUtils.formatDateTime(context, timeInMillis,
                             DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_ALL)
                 }
-                val time = DateUtils.formatDateTime(context, timeInMillis - 86400,
+                val time = DateUtils.formatDateTime(context, timeInMillis,
                         DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL)
                 context.getString(R.string.status_since, date, time)
             }
