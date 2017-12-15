@@ -142,7 +142,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         setCachedSpaceStatusData(statusData, appWidgetIds, appWidgetManager)
         sendWidgetUpdateIntent(context, appWidgetIds)
 
-        checkWifiAndHandleNotification(context)
+        Stratum0WifiInteractor.checkWifi(context)
     }
 
     private fun setCachedSpaceStatusData(
@@ -212,14 +212,6 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         for (i in appWidgetIds.indices) {
             views.setInt(R.id.statusImageBackground, "setColorFilter", color)
             views.setTextViewText(R.id.lastUpdateTextView, lastUpdateText)
-        }
-    }
-
-    private fun checkWifiAndHandleNotification(context: Context) {
-        val isOnS0Wifi = Stratum0WifiInteractor.isOnStratum0Wifi(context)
-        if (isOnS0Wifi) {
-            val preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
-            preferences.edit().putBoolean("spottedS0Wifi", true).apply()
         }
     }
 

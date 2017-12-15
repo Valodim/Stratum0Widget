@@ -24,6 +24,7 @@ import org.stratum0.statuswidget.SpaceStatus
 import org.stratum0.statuswidget.SpaceStatusData
 import org.stratum0.statuswidget.interactors.SshKeyStorage
 import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
+import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
 import org.stratum0.statuswidget.service.SpaceDoorService
 import org.stratum0.statuswidget.service.SpaceStatusService
 import org.stratum0.statuswidget.service.StratumsphereStatusProvider
@@ -414,14 +415,16 @@ class StatusActivity : Activity() {
             }
 
             override fun onPostExecute(result: SpaceStatusData) {
-                StratumsphereStatusProvider.sendRefreshBroadcast(applicationContext, result)
                 onPostSpaceStatusUpdate(result)
             }
         }.execute()
     }
 
     fun onPostSpaceStatusUpdate(statusData: SpaceStatusData) {
-        if (!prefs.getBoolean("spottedS0Wifi", false) && !BuildConfig.DEBUG) {
+        StratumsphereStatusProvider.sendRefreshBroadcast(applicationContext, statusData)
+        Stratum0WifiInteractor.checkWifi(applicationContext)
+
+        if (!Stratum0WifiInteractor.hasSeenS0Wifi(applicationContext)) {
             viewAnimator.displayedChildId = R.id.layout_wifi_missing
             return
         }
