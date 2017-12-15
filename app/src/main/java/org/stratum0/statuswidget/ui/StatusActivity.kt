@@ -26,6 +26,7 @@ import org.stratum0.statuswidget.interactors.SshKeyStorage
 import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
 import org.stratum0.statuswidget.service.SpaceDoorService
 import org.stratum0.statuswidget.service.SpaceStatusService
+import org.stratum0.statuswidget.service.StratumsphereStatusProvider
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -406,6 +407,7 @@ class StatusActivity : Activity() {
             }
 
             override fun onPostExecute(result: SpaceStatusData) {
+                StratumsphereStatusProvider.sendRefreshBroadcast(applicationContext, result)
                 onPostSpaceStatusUpdate(result)
             }
         }.execute()

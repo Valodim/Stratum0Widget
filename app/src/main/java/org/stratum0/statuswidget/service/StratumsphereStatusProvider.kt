@@ -54,6 +54,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 Stratum0StatusUpdater.initializeBackgroundUpdates(context)
+                refreshStatusAsync(context, null)
             }
         }
 
@@ -71,10 +72,12 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
 
     private val stratum0StatusFetcher = Stratum0StatusFetcher()
 
-    private fun refreshStatusAsync(context: Context, appWidgetIds: IntArray) {
+    private fun refreshStatusAsync(context: Context, appWidgetIds: IntArray?) {
         object : AsyncTask<Void, Void, SpaceStatusData>() {
             override fun onPreExecute() {
-                showUpdatingMessage(context, appWidgetIds)
+                if (appWidgetIds != null) {
+                    showUpdatingMessage(context, appWidgetIds)
+                }
             }
 
             override fun doInBackground(vararg p0: Void?): SpaceStatusData {
