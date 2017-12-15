@@ -9,8 +9,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
 
-        versionCode 12
-        versionName "2.4.0"
+        versionCode 14
+        versionName "3.0.0"
     }
 
     buildTypes {
@@ -54,6 +54,6 @@ dependencies {
     fcmCompile 'com.google.firebase:firebase-messaging:11.6.2'
 }
 
-if (getGradle().getStartParameter().getTaskRequests().toString().contains("Fcm")) {
+if (!getGradle().getStartParameter().getTaskRequests().toString().contains("Foss")) {
     apply plugin: 'com.google.gms.google-services'
 }
