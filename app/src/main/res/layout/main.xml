@@ -56,7 +56,7 @@
         android:paddingBottom="0dp"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        android:background="@drawable/widget_updated_bg"
+        android:background="@drawable/ic_rounded_corners"
         android:text="@string/defaultTime"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="10.0dp"
