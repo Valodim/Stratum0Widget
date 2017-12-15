@@ -17,6 +17,7 @@
     <string name="status_closed">Space is closed</string>
     <string name="status_closed_short">Closed</string>
     <string name="status_error_short">Error</string>
+    <string name="status_unknown_short">Unknown</string>
     <string name="status_open_format">Opened by %s\nsince %s</string>
 
     <!-- StratumsphereStatusProvider.java -->

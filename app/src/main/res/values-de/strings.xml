@@ -71,4 +71,5 @@
     <string name="time_today">Heute</string>
     <string name="time_yesterday">Gestern</string>
     <string name="time_just_now">gerade eben</string>
+    <string name="status_unknown_short">Unbekannt</string>
 </resources>
