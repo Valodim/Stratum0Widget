@@ -10,7 +10,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.SystemClock
 import android.text.format.DateUtils
 import android.widget.RemoteViews
 import org.stratum0.statuswidget.BuildConfig
@@ -187,6 +186,9 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
                         val date = when {
                             DateUtils.isToday(timeInMillis) -> context.getString(R.string.time_today)
                             DateUtils.isToday(timeInMillis + DateUtils.DAY_IN_MILLIS) -> context.getString(R.string.time_yesterday)
+                            timeInMillis > (System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS * 7) ->
+                                DateUtils.formatDateTime(context, timeInMillis,
+                                        DateUtils.FORMAT_SHOW_WEEKDAY)
                             else -> DateUtils.formatDateTime(context, timeInMillis,
                                     DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_ALL)
                         }
