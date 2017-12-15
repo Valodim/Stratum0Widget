@@ -13,10 +13,10 @@
     <string name="button_dismiss">Got it!</string>
 
     <!-- StatusActivity.java -->
-    <string name="status_unknown">Status unknown</string>
+    <string name="status_error">Error fetching status</string>
     <string name="status_closed">Space is closed</string>
     <string name="status_closed_short">Closed</string>
-    <string name="status_unknown_short">Unknown</string>
+    <string name="status_error_short">Error</string>
     <string name="status_open_format">Opened by %s\nsince %s</string>
 
     <!-- StratumsphereStatusProvider.java -->
@@ -33,6 +33,7 @@
     <string name="button_inherit">Inherit Space</string>
     <string name="button_close">Close Space</string>
     <string name="button_unlock">Unlock Space</string>
+    <string name="button_refresh">Refresh</string>
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_back">Back</string>

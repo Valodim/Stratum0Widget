@@ -6,7 +6,7 @@ import paperparcel.PaperParcelable
 import java.util.*
 
 enum class SpaceStatus {
-    OPEN, CLOSED, UNKNOWN
+    OPEN, CLOSED, ERROR, UPDATING
 }
 
 @PaperParcel
@@ -23,12 +23,16 @@ data class SpaceStatusData(
             return SpaceStatusData(Calendar.getInstance(), SpaceStatus.OPEN, lastChange, openedBy, since)
         }
 
-        fun createUnknownStatus(): SpaceStatusData {
-            return SpaceStatusData(Calendar.getInstance(), SpaceStatus.UNKNOWN, null, null, null)
+        fun createErrorStatus(): SpaceStatusData {
+            return SpaceStatusData(Calendar.getInstance(), SpaceStatus.ERROR, null, null, null)
         }
 
         fun createClosedStatus(lastChange: Calendar?): SpaceStatusData {
             return SpaceStatusData(Calendar.getInstance(), SpaceStatus.CLOSED, lastChange,null, null)
+        }
+
+        fun createUpdatingStatus(): SpaceStatusData {
+            return SpaceStatusData(Calendar.getInstance(), SpaceStatus.UPDATING, null,null, null)
         }
 
         @Suppress("unused") // used by Parcelable

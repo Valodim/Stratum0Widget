@@ -13,7 +13,7 @@
     <string name="button_dismiss">OK!</string>
 
     <!-- StatusActivity.java -->
-    <string name="status_unknown">Status unbekannt</string>
+    <string name="status_error">Status unbekannt</string>
     <string name="status_closed">Space ist zu</string>
     <string name="status_open_format">Geöffnet von %s\nseit %s</string>
 
@@ -31,6 +31,7 @@
     <string name="button_close">Space schließen</string>
     <string name="button_save">Speichern</string>
     <string name="button_cancel">Zurück</string>
+    <string name="button_refresh">Refresh</string>
 
     <string name="status_progress_closing">Schließe Space…</string>
     <string name="status_progress_inheriting">Übernehme Space…</string>
@@ -65,7 +66,7 @@
     <string name="settings_error_nick_short">Nick ist zu kurz!</string>
     <string name="settings_error_nick_pattern"><![CDATA[[a-zA-Z0-9_\\[\\]{}^`|-]+]]></string>
     <string name="status_closed_short">Zu</string>
-    <string name="status_unknown_short">Unbekannt</string>
+    <string name="status_error_short">Unbekannt</string>
     <string name="status_since">\\u00A0%s\n%s</string>
     <string name="time_today">Heute</string>
     <string name="time_yesterday">Gestern</string>

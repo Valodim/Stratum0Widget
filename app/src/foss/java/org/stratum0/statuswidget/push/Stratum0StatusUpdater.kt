@@ -4,11 +4,11 @@ import android.content.Context
 
 object Stratum0StatusUpdater {
     fun initializeBackgroundUpdates(context: Context) {
-        PeriodicUpdateJobService.jobScheduleRefresh(context)
+        SpaceUpdateJobService.jobSchedulePeriodicRefresh(context)
     }
 
     fun stopBackgroundUpdates(context: Context) {
-        PeriodicUpdateJobService.jobCancelRefresh(context)
+        SpaceUpdateJobService.jobCancelPeriodicRefresh(context)
     }
 
     fun hasPush(context: Context): Boolean {

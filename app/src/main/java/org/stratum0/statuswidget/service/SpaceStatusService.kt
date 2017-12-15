@@ -41,7 +41,7 @@ class SpaceStatusService : IntentService("Space Status Service") {
         }
 
         if (cachedSpaceStatus == null) {
-            cachedSpaceStatus = SpaceStatusData.createUnknownStatus()
+            cachedSpaceStatus = SpaceStatusData.createErrorStatus()
         }
 
         sendUpdateResultBroadcast(cachedSpaceStatus)

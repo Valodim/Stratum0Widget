@@ -46,6 +46,7 @@ class StatusActivity : Activity() {
     private val buttonInherit: View by bindView(R.id.button_inherit)
     private val buttonClose: View by bindView(R.id.button_close)
     private val buttonUnlock: View by bindView(R.id.button_unlock)
+    private val buttonRefresh: View by bindView(R.id.button_refresh)
 
     private val currentStatusText: TextView by bindView(R.id.current_status_text)
     private val currentStatusTextUnlocked: TextView by bindView(R.id.current_status_text_unlocked)
@@ -182,7 +183,7 @@ class StatusActivity : Activity() {
                 SpaceStatusService.triggerStatusUpdate(applicationContext, username)
                 currentStatusTextLoading.text = getString(R.string.status_progress_opening)
             }
-            SpaceStatus.UNKNOWN -> {
+            SpaceStatus.ERROR -> {
                 throw IllegalStateException()
             }
         }
@@ -215,6 +216,7 @@ class StatusActivity : Activity() {
         buttonInherit.setOnTouchListener(onTouchListener)
         buttonClose.setOnTouchListener(onTouchListener)
         buttonUnlock.setOnTouchListener(onTouchListener)
+        buttonRefresh.setOnClickListener({ onClickRefresh() })
 
         findViewById<View>(R.id.button_settings).setOnClickListener { onClickSettings() }
         findViewById<View>(R.id.button_settings_cancel).setOnClickListener { onClickSettingsCancel() }
@@ -400,10 +402,15 @@ class StatusActivity : Activity() {
         }
     }
 
+    private fun onClickRefresh() {
+        viewAnimator.displayedChildId = R.id.layout_progress
+        refreshStatus()
+    }
+
     private fun refreshStatus() {
         object : AsyncTask<Void, Void, SpaceStatusData>() {
             override fun doInBackground(vararg p0: Void?): SpaceStatusData {
-                return stratum0StatusFetcher.fetch()
+                return stratum0StatusFetcher.fetch(700)
             }
 
             override fun onPostExecute(result: SpaceStatusData) {
@@ -438,12 +445,14 @@ class StatusActivity : Activity() {
         val statusText: String
         @ColorRes val statusColor: Int
         when (lastStatusData.status) {
-            SpaceStatus.UNKNOWN -> {
+            SpaceStatus.UPDATING,
+            SpaceStatus.ERROR -> {
                 buttonClose.visibility = View.GONE
                 buttonInherit.visibility = View.GONE
                 buttonOpen.visibility = View.GONE
+                buttonRefresh.visibility = View.VISIBLE
 
-                statusText = getString(R.string.status_unknown)
+                statusText = getString(R.string.status_error)
                 statusColor = R.color.status_unknown
             }
 

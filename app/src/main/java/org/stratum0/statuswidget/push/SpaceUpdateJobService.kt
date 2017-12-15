@@ -16,7 +16,7 @@ import org.stratum0.statuswidget.SpaceStatusData
 import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
 import org.stratum0.statuswidget.service.StratumsphereStatusProvider
 
-class PeriodicUpdateJobService : JobService() {
+class SpaceUpdateJobService : JobService() {
     private val stratum0StatusFetcher = Stratum0StatusFetcher()
 
     override fun onStartJob(params: JobParameters): Boolean {
@@ -28,7 +28,7 @@ class PeriodicUpdateJobService : JobService() {
             override fun onPostExecute(result: SpaceStatusData) {
                 StratumsphereStatusProvider.sendRefreshBroadcast(applicationContext, result)
 
-                val isSuccessful = result.status != SpaceStatus.UNKNOWN
+                val isSuccessful = result.status != SpaceStatus.ERROR
                 jobFinished(params, !isSuccessful)
             }
         }.execute()
@@ -41,10 +41,20 @@ class PeriodicUpdateJobService : JobService() {
     }
 
     companion object {
-        fun jobScheduleRefresh(context: Context) {
-            val serviceComponent = ComponentName(context, PeriodicUpdateJobService::class.java)
+        fun jobScheduleConnectivityRefresh(context: Context) {
+            val serviceComponent = ComponentName(context, SpaceUpdateJobService::class.java)
 
-            val job = JobInfo.Builder(Constants.JOB_ID_SPACE_STATUS_REFRESH, serviceComponent)
+            val job = JobInfo.Builder(Constants.JOB_ID_SPACE_STATUS_REFRESH_CONNECTIVITY, serviceComponent)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+
+            val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+            jobScheduler.schedule(job.build())
+        }
+
+        fun jobSchedulePeriodicRefresh(context: Context) {
+            val serviceComponent = ComponentName(context, SpaceUpdateJobService::class.java)
+
+            val job = JobInfo.Builder(Constants.JOB_ID_SPACE_STATUS_REFRESH_PERIODIC, serviceComponent)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 job.setPeriodic(45 * DateUtils.MINUTE_IN_MILLIS, 15 * DateUtils.MINUTE_IN_MILLIS)
@@ -61,9 +71,9 @@ class PeriodicUpdateJobService : JobService() {
             Log.d(Constants.TAG, "Job scheduled!")
         }
 
-        fun jobCancelRefresh(context: Context) {
+        fun jobCancelPeriodicRefresh(context: Context) {
             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-            jobScheduler.cancel(Constants.JOB_ID_SPACE_STATUS_REFRESH)
+            jobScheduler.cancel(Constants.JOB_ID_SPACE_STATUS_REFRESH_PERIODIC)
 
             Log.d(Constants.TAG, "Job cancelled!")
         }

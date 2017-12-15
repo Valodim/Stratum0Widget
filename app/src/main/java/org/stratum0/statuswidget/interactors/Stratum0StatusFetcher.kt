@@ -1,5 +1,6 @@
 package org.stratum0.statuswidget.interactors
 
+import android.os.SystemClock
 import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -17,6 +18,19 @@ class Stratum0StatusFetcher {
             .connectTimeout(3, TimeUnit.SECONDS)
             .readTimeout(3, TimeUnit.SECONDS)
             .build()
+
+    fun fetch(minDelay: Int): SpaceStatusData {
+        val startTime = SystemClock.elapsedRealtime();
+
+        val result = fetch()
+
+        val elapsedTime = SystemClock.elapsedRealtime() - startTime
+        if (elapsedTime < minDelay) {
+            Thread.sleep(minDelay - elapsedTime)
+        }
+
+        return result
+    }
 
     fun fetch(): SpaceStatusData {
         val result: String
@@ -40,11 +54,11 @@ class Stratum0StatusFetcher {
                 result = response.body()!!.string()
             } else {
                 Log.d(Constants.TAG, "Got negative http reply " + response.code())
-                return SpaceStatusData.createUnknownStatus()
+                return SpaceStatusData.createErrorStatus()
             }
         } catch (e: IOException) {
             Log.e(Constants.TAG, "IOException: " + e.message, e)
-            return SpaceStatusData.createUnknownStatus()
+            return SpaceStatusData.createErrorStatus()
         }
 
         try {
@@ -67,14 +81,14 @@ class Stratum0StatusFetcher {
             }
         } catch (e: JSONException) {
             Log.d(Constants.TAG, "Error creating JSON object: " + e)
-            return SpaceStatusData.createUnknownStatus()
+            return SpaceStatusData.createErrorStatus()
         }
 
     }
 
     companion object {
         val DEBUG_STATUS_LIST: Array<SpaceStatusData> = arrayOf(
-                SpaceStatusData.createUnknownStatus(),
+                SpaceStatusData.createErrorStatus(),
                 SpaceStatusData.createClosedStatus(Calendar.getInstance()),
                 SpaceStatusData.createOpenStatus("Valodim", Calendar.getInstance(), Calendar.getInstance()))
         private var debugListIndex = DEBUG_STATUS_LIST.size

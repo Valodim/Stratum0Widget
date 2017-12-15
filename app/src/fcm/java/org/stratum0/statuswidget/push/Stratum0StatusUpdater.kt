@@ -10,7 +10,7 @@ object Stratum0StatusUpdater {
         if (hasPush(context)) {
             PushFcmUpdateService.subscribeToStatusUpdates()
         } else {
-            PeriodicUpdateJobService.jobScheduleRefresh(context)
+            SpaceUpdateJobService.jobSchedulePeriodicRefresh(context)
         }
     }
 
@@ -18,7 +18,7 @@ object Stratum0StatusUpdater {
         if (hasPush(context)) {
             PushFcmUpdateService.unsubscribeFromStatusUpdates()
         } else {
-            PeriodicUpdateJobService.jobCancelRefresh(context)
+            SpaceUpdateJobService.jobCancelPeriodicRefresh(context)
         }
     }
 
