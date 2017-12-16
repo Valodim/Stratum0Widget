@@ -18,7 +18,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import org.stratum0.statuswidget.BuildConfig
 import org.stratum0.statuswidget.R
 import org.stratum0.statuswidget.SpaceStatus
 import org.stratum0.statuswidget.SpaceStatusData
@@ -184,6 +183,7 @@ class StatusActivity : Activity() {
                 SpaceStatusService.triggerStatusUpdate(applicationContext, username)
                 currentStatusTextLoading.text = getString(R.string.status_progress_opening)
             }
+            SpaceStatus.UPDATING,
             SpaceStatus.ERROR -> {
                 throw IllegalStateException()
             }
