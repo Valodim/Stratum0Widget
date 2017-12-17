@@ -47,6 +47,8 @@ dependencies {
 
     compile 'com.jcraft:jsch:0.1.54'
 
+    compile "com.jakewharton.timber:timber:4.5.1"
+
     compile 'nz.bradcampbell:paperparcel:2.0.4'
     compile 'nz.bradcampbell:paperparcel-kotlin:2.0.4'
     kapt 'nz.bradcampbell:paperparcel-compiler:2.0.4'

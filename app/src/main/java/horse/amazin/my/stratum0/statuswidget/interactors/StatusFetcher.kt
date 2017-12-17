@@ -2,14 +2,13 @@ package horse.amazin.my.stratum0.statuswidget.interactors
 
 import android.net.Uri
 import android.os.SystemClock
-import android.util.Log
+import horse.amazin.my.stratum0.statuswidget.BuildConfig
+import horse.amazin.my.stratum0.statuswidget.SpaceStatusData
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONException
 import org.json.JSONObject
-import horse.amazin.my.stratum0.statuswidget.BuildConfig
-import horse.amazin.my.stratum0.statuswidget.Constants
-import horse.amazin.my.stratum0.statuswidget.SpaceStatusData
+import timber.log.Timber
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -54,11 +53,11 @@ class StatusFetcher {
             if (response.code() == 200) {
                 result = response.body()!!.string()
             } else {
-                Log.d(Constants.TAG, "Got negative http reply " + response.code())
+                Timber.d("Got negative http reply " + response.code())
                 return SpaceStatusData.createErrorStatus()
             }
         } catch (e: IOException) {
-            Log.e(Constants.TAG, "IOException: " + e.message, e)
+            Timber.e(e, "IOException: " + e.message)
             return SpaceStatusData.createErrorStatus()
         }
 
@@ -81,7 +80,7 @@ class StatusFetcher {
                 return SpaceStatusData.createClosedStatus(lastChange)
             }
         } catch (e: JSONException) {
-            Log.d(Constants.TAG, "Error creating JSON object: " + e)
+            Timber.d(e, "Error creating JSON object")
             return SpaceStatusData.createErrorStatus()
         }
 

@@ -9,12 +9,11 @@ import android.content.Context
 import android.os.AsyncTask
 import android.os.Build
 import android.text.format.DateUtils
-import android.util.Log
-import horse.amazin.my.stratum0.statuswidget.Constants
 import horse.amazin.my.stratum0.statuswidget.SpaceStatus
 import horse.amazin.my.stratum0.statuswidget.SpaceStatusData
 import horse.amazin.my.stratum0.statuswidget.interactors.StatusFetcher
 import horse.amazin.my.stratum0.statuswidget.service.Stratum0WidgetProvider
+import timber.log.Timber
 
 class SpaceUpdateJobService : JobService() {
     private val stratum0StatusFetcher = StatusFetcher()
@@ -71,14 +70,14 @@ class SpaceUpdateJobService : JobService() {
             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
             jobScheduler.schedule(job.build())
 
-            Log.d(Constants.TAG, "Job scheduled!")
+            Timber.d("Job scheduled!")
         }
 
         fun jobCancelPeriodicRefresh(context: Context) {
             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
             jobScheduler.cancel(JOB_ID_SPACE_STATUS_REFRESH_PERIODIC)
 
-            Log.d(Constants.TAG, "Job cancelled!")
+            Timber.d("Job cancelled!")
         }
     }
 }
