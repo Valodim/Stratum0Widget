@@ -421,7 +421,10 @@ class StatusActivity : Activity() {
     }
 
     fun onPostSpaceStatusUpdate(statusData: SpaceStatusData) {
-        Stratum0WidgetProvider.sendRefreshBroadcast(applicationContext, statusData)
+        val isErrorStatus = statusData.status != SpaceStatus.ERROR
+        if (!isErrorStatus) {
+            Stratum0WidgetProvider.sendRefreshBroadcast(applicationContext, statusData)
+        }
         WifiInteractor.checkWifi(applicationContext)
 
         if (!WifiInteractor.hasSeenS0Wifi(applicationContext)) {
