@@ -48,6 +48,7 @@ class SpaceUpdateJobService : JobService() {
 
             val job = JobInfo.Builder(JOB_ID_SPACE_STATUS_REFRESH_CONNECTIVITY, serviceComponent)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setMinimumLatency(5000)
 
             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
             jobScheduler.schedule(job.build())
