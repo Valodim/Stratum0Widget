@@ -1,5 +1,6 @@
 package org.stratum0.statuswidget.interactors
 
+import android.net.Uri
 import android.os.SystemClock
 import android.util.Log
 import okhttp3.OkHttpClient
@@ -13,14 +14,14 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class Stratum0StatusFetcher {
+class StatusFetcher {
     private val okHttpClient = OkHttpClient.Builder()
             .connectTimeout(3, TimeUnit.SECONDS)
             .readTimeout(3, TimeUnit.SECONDS)
             .build()
 
     fun fetch(minDelay: Int): SpaceStatusData {
-        val startTime = SystemClock.elapsedRealtime();
+        val startTime = SystemClock.elapsedRealtime()
 
         val result = fetch()
 
@@ -35,7 +36,7 @@ class Stratum0StatusFetcher {
     fun fetch(): SpaceStatusData {
         val result: String
         val request = Request.Builder()
-                .url(Constants.STATUS_URL + "/status.json")
+                .url(STATUS_URL.toString())
                 .build()
 
         if (false && BuildConfig.DEBUG) {
@@ -87,7 +88,9 @@ class Stratum0StatusFetcher {
     }
 
     companion object {
-        val DEBUG_STATUS_LIST: Array<SpaceStatusData> = arrayOf(
+        private val STATUS_URL = Uri.parse("https://status.stratum0.org/status.json")
+
+        private val DEBUG_STATUS_LIST: Array<SpaceStatusData> = arrayOf(
                 SpaceStatusData.createErrorStatus(),
                 SpaceStatusData.createClosedStatus(Calendar.getInstance()),
                 SpaceStatusData.createOpenStatus("Valodim", Calendar.getInstance(), Calendar.getInstance()))

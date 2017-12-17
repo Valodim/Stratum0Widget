@@ -6,13 +6,13 @@ import android.content.Intent
 import android.os.SystemClock
 import android.support.annotation.StringRes
 import org.stratum0.statuswidget.*
-import org.stratum0.statuswidget.interactors.Stratum0SshInteractor
+import org.stratum0.statuswidget.interactors.SshInteractor
 import org.stratum0.statuswidget.interactors.SshKeyStorage
-import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
+import org.stratum0.statuswidget.interactors.WifiInteractor
 
-class SpaceDoorService : IntentService("Space Door Service") {
+class DoorUnlockService : IntentService("Space Door Service") {
     private lateinit var sshKeyStorage: SshKeyStorage
-    private val s0SshInteractor = Stratum0SshInteractor()
+    private val s0SshInteractor = SshInteractor()
 
     override fun onCreate() {
         super.onCreate()
@@ -34,7 +34,7 @@ class SpaceDoorService : IntentService("Space Door Service") {
         val startRealtime = SystemClock.elapsedRealtime()
 
         val error: Int? =
-            if (!BuildConfig.DEBUG && !Stratum0WifiInteractor.isOnStratum0Wifi(applicationContext)) {
+            if (!BuildConfig.DEBUG && !WifiInteractor.isOnStratum0Wifi(applicationContext)) {
                 R.string.unlock_error_wifi
             } else if (!sshKeyStorage.hasKey()) {
                 R.string.unlock_error_no_key
@@ -91,7 +91,7 @@ class SpaceDoorService : IntentService("Space Door Service") {
         val MIN_UNLOCK_MS = 500L
 
         fun triggerDoorUnlock(context: Context) {
-            val intent = Intent(context, SpaceDoorService::class.java)
+            val intent = Intent(context, DoorUnlockService::class.java)
             intent.`package` = BuildConfig.APPLICATION_ID
             intent.action = ACTION_UNLOCK
             context.startService(intent)

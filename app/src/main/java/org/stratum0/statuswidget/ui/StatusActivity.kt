@@ -22,11 +22,11 @@ import org.stratum0.statuswidget.R
 import org.stratum0.statuswidget.SpaceStatus
 import org.stratum0.statuswidget.SpaceStatusData
 import org.stratum0.statuswidget.interactors.SshKeyStorage
-import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
-import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
-import org.stratum0.statuswidget.service.SpaceDoorService
-import org.stratum0.statuswidget.service.SpaceStatusService
-import org.stratum0.statuswidget.service.StratumsphereStatusProvider
+import org.stratum0.statuswidget.interactors.StatusFetcher
+import org.stratum0.statuswidget.interactors.WifiInteractor
+import org.stratum0.statuswidget.service.DoorUnlockService
+import org.stratum0.statuswidget.service.StatusChangerService
+import org.stratum0.statuswidget.service.Stratum0WidgetProvider
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -37,7 +37,7 @@ class StatusActivity : Activity() {
         private val NICK_PATTERN = Regex("[a-zA-Z_\\[\\]{}^`|][a-zA-Z0-9_\\[\\]{}^`|-]+")
     }
 
-    private val stratum0StatusFetcher = Stratum0StatusFetcher()
+    private val stratum0StatusFetcher = StatusFetcher()
 
     private lateinit var prefs: SharedPreferences
 
@@ -72,14 +72,14 @@ class StatusActivity : Activity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                SpaceStatusService.EVENT_UPDATE_RESULT -> {
-                    val status = intent.getParcelableExtra<SpaceStatusData>(SpaceStatusService.EXTRA_STATUS)
+                StatusChangerService.EVENT_UPDATE_RESULT -> {
+                    val status = intent.getParcelableExtra<SpaceStatusData>(StatusChangerService.EXTRA_STATUS)
                     onPostSpaceStatusUpdate(status)
                 }
-                SpaceDoorService.EVENT_UNLOCK_STATUS -> {
-                    val statusOk = intent.getBooleanExtra(SpaceDoorService.EXTRA_STATUS, false)
+                DoorUnlockService.EVENT_UNLOCK_STATUS -> {
+                    val statusOk = intent.getBooleanExtra(DoorUnlockService.EXTRA_STATUS, false)
                     val errorRes = if (!statusOk) {
-                         intent.getIntExtra(SpaceDoorService.EXTRA_ERROR_RES, 0)
+                         intent.getIntExtra(DoorUnlockService.EXTRA_ERROR_RES, 0)
                     } else {
                         null
                     }
@@ -172,15 +172,15 @@ class StatusActivity : Activity() {
         when (lastStatusData.status) {
             SpaceStatus.OPEN -> {
                 if (username == lastStatusData.openedBy) {
-                    SpaceStatusService.triggerStatusUpdate(applicationContext, null)
+                    StatusChangerService.triggerStatusUpdate(applicationContext, null)
                     currentStatusTextLoading.text = getString(R.string.status_progress_closing)
                 } else {
-                    SpaceStatusService.triggerStatusUpdate(applicationContext, username)
+                    StatusChangerService.triggerStatusUpdate(applicationContext, username)
                     currentStatusTextLoading.text = getString(R.string.status_progress_inheriting)
                 }
             }
             SpaceStatus.CLOSED -> {
-                SpaceStatusService.triggerStatusUpdate(applicationContext, username)
+                StatusChangerService.triggerStatusUpdate(applicationContext, username)
                 currentStatusTextLoading.text = getString(R.string.status_progress_opening)
             }
             SpaceStatus.UPDATING,
@@ -198,7 +198,7 @@ class StatusActivity : Activity() {
         currentStatusTextLoading.text = getString(R.string.status_progress_unlock)
         currentStatusTextLoading.visibility = View.VISIBLE
 
-        SpaceDoorService.triggerDoorUnlock(applicationContext)
+        DoorUnlockService.triggerDoorUnlock(applicationContext)
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -365,8 +365,8 @@ class StatusActivity : Activity() {
         super.onStart()
 
         val filter = IntentFilter()
-        filter.addAction(SpaceStatusService.EVENT_UPDATE_RESULT)
-        filter.addAction(SpaceDoorService.EVENT_UNLOCK_STATUS)
+        filter.addAction(StatusChangerService.EVENT_UPDATE_RESULT)
+        filter.addAction(DoorUnlockService.EVENT_UNLOCK_STATUS)
 
         registerReceiver(receiver, filter)
     }
@@ -421,10 +421,10 @@ class StatusActivity : Activity() {
     }
 
     fun onPostSpaceStatusUpdate(statusData: SpaceStatusData) {
-        StratumsphereStatusProvider.sendRefreshBroadcast(applicationContext, statusData)
-        Stratum0WifiInteractor.checkWifi(applicationContext)
+        Stratum0WidgetProvider.sendRefreshBroadcast(applicationContext, statusData)
+        WifiInteractor.checkWifi(applicationContext)
 
-        if (!Stratum0WifiInteractor.hasSeenS0Wifi(applicationContext)) {
+        if (!WifiInteractor.hasSeenS0Wifi(applicationContext)) {
             viewAnimator.displayedChildId = R.id.layout_wifi_missing
             return
         }

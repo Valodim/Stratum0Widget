@@ -16,14 +16,14 @@ import org.stratum0.statuswidget.BuildConfig
 import org.stratum0.statuswidget.R
 import org.stratum0.statuswidget.SpaceStatus
 import org.stratum0.statuswidget.SpaceStatusData
-import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
-import org.stratum0.statuswidget.interactors.Stratum0WifiInteractor
+import org.stratum0.statuswidget.interactors.StatusFetcher
+import org.stratum0.statuswidget.interactors.WifiInteractor
 import org.stratum0.statuswidget.push.SpaceUpdateJobService
 import org.stratum0.statuswidget.push.Stratum0StatusUpdater
 import org.stratum0.statuswidget.ui.StatusActivity
 
 
-class StratumsphereStatusProvider : AppWidgetProvider() {
+class Stratum0WidgetProvider : AppWidgetProvider() {
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
         Stratum0StatusUpdater.initializeBackgroundUpdates(context)
@@ -79,7 +79,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
                 onWidgetClick(context)
             }
             EVENT_REFRESH -> {
-                val status = intent.getParcelableExtra<SpaceStatusData>(SpaceStatusService.EXTRA_STATUS)
+                val status = intent.getParcelableExtra<SpaceStatusData>(StatusChangerService.EXTRA_STATUS)
                 onSpaceStatusUpdated(context, status)
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
@@ -95,7 +95,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         startStatusActivity(context)
     }
 
-    private val stratum0StatusFetcher = Stratum0StatusFetcher()
+    private val stratum0StatusFetcher = StatusFetcher()
     private fun refreshStatusAsync(context: Context) {
         object : AsyncTask<Void, Void, SpaceStatusData>() {
             override fun onPreExecute() {
@@ -115,14 +115,14 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     private fun showUpdatingMessage(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(
-                ComponentName(context, StratumsphereStatusProvider::class.java))
+                ComponentName(context, Stratum0WidgetProvider::class.java))
 
         setCachedSpaceStatusData(SpaceStatusData.createUpdatingStatus(), appWidgetIds, appWidgetManager)
         sendWidgetUpdateIntent(context, appWidgetIds)
     }
 
     private fun sendWidgetUpdateIntent(context: Context, appWidgetIds: IntArray) {
-        val updateIntent = Intent(context, StratumsphereStatusProvider::class.java)
+        val updateIntent = Intent(context, Stratum0WidgetProvider::class.java)
         updateIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
         context.sendBroadcast(updateIntent)
@@ -137,12 +137,12 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     private fun onSpaceStatusUpdated(context: Context, statusData: SpaceStatusData) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(
-                ComponentName(context, StratumsphereStatusProvider::class.java))
+                ComponentName(context, Stratum0WidgetProvider::class.java))
 
         setCachedSpaceStatusData(statusData, appWidgetIds, appWidgetManager)
         sendWidgetUpdateIntent(context, appWidgetIds)
 
-        Stratum0WifiInteractor.checkWifi(context)
+        WifiInteractor.checkWifi(context)
     }
 
     private fun setCachedSpaceStatusData(
@@ -168,7 +168,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
     }
 
     private fun setOnClickListeners(context: Context, appWidgetIds: IntArray, views: RemoteViews) {
-        val intent = Intent(context, StratumsphereStatusProvider::class.java)
+        val intent = Intent(context, Stratum0WidgetProvider::class.java)
         intent.action = ACTION_CLICK
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
 
@@ -223,7 +223,7 @@ class StratumsphereStatusProvider : AppWidgetProvider() {
         fun sendRefreshBroadcast(context: Context, statusData: SpaceStatusData) {
             val intent = Intent(EVENT_REFRESH)
             intent.`package` = BuildConfig.APPLICATION_ID
-            intent.putExtra(SpaceStatusService.EXTRA_STATUS, statusData)
+            intent.putExtra(StatusChangerService.EXTRA_STATUS, statusData)
             context.sendBroadcast(intent)
         }
     }

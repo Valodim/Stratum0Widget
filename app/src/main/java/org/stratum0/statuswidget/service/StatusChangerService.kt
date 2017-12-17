@@ -5,11 +5,11 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import org.stratum0.statuswidget.*
-import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
-import org.stratum0.statuswidget.interactors.Stratum0StatusUpdater
+import org.stratum0.statuswidget.interactors.StatusFetcher
+import org.stratum0.statuswidget.interactors.StatusUpdater
 
 
-class SpaceStatusService : IntentService("Space Status Service") {
+class StatusChangerService : IntentService("Space Status Service") {
     override fun onHandleIntent(intent: Intent?) {
         if (intent == null) {
             return
@@ -23,8 +23,8 @@ class SpaceStatusService : IntentService("Space Status Service") {
         }
     }
 
-    private val stratum0StatusFetcher = Stratum0StatusFetcher()
-    private val stratum0StatusUpdater = Stratum0StatusUpdater()
+    private val stratum0StatusFetcher = StatusFetcher()
+    private val stratum0StatusUpdater = StatusUpdater()
 
     private fun statusUpdate(name: String?) {
         stratum0StatusUpdater.update(name)
@@ -65,7 +65,7 @@ class SpaceStatusService : IntentService("Space Status Service") {
         val UPDATE_CHECK_INTERVAL_MS = 1000L
 
         fun triggerStatusUpdate(context: Context, name: String?) {
-            val intent = Intent(context, SpaceStatusService::class.java)
+            val intent = Intent(context, StatusChangerService::class.java)
             intent.`package` = BuildConfig.APPLICATION_ID
             intent.action = ACTION_UPDATE
             intent.putExtra(EXTRA_UPDATE_NAME, name)

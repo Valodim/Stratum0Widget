@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream
 import java.net.ConnectException
 import java.net.SocketException
 
-class Stratum0SshInteractor {
+class SshInteractor {
     fun open(sshPrivateKey: String, sshPassword: String): Int? {
         val user = "auf"
         val server = if (BuildConfig.DEBUG) "192.168.178.21" else "powerberry"

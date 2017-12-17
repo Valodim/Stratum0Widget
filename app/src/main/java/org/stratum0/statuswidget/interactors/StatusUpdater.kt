@@ -1,5 +1,6 @@
 package org.stratum0.statuswidget.interactors
 
+import android.net.Uri
 import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -8,13 +9,13 @@ import org.stratum0.statuswidget.Constants
 import java.io.IOException
 import java.util.concurrent.ExecutionException
 
-class Stratum0StatusUpdater {
+class StatusUpdater {
     fun update(name: String?) {
         val queryString = if (name != null) {
-            Constants.STATUS_URL + "/update?open=true&by=" + name
+            UPDATE_URI.buildUpon().appendQueryParameter("open", "true").appendQueryParameter("by", name)
         } else {
-            Constants.STATUS_URL + "/update?open=false"
-        }
+            UPDATE_URI.buildUpon().appendQueryParameter("open", "false")
+        }.build().toString()
 
         if (BuildConfig.DEBUG) {
             Thread.sleep(500)
@@ -39,4 +40,7 @@ class Stratum0StatusUpdater {
         }
     }
 
+    companion object {
+        private val UPDATE_URI = Uri.parse("https://status.stratum0.org/update")
+    }
 }

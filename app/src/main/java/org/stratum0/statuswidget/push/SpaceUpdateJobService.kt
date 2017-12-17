@@ -13,11 +13,11 @@ import android.util.Log
 import org.stratum0.statuswidget.Constants
 import org.stratum0.statuswidget.SpaceStatus
 import org.stratum0.statuswidget.SpaceStatusData
-import org.stratum0.statuswidget.interactors.Stratum0StatusFetcher
-import org.stratum0.statuswidget.service.StratumsphereStatusProvider
+import org.stratum0.statuswidget.interactors.StatusFetcher
+import org.stratum0.statuswidget.service.Stratum0WidgetProvider
 
 class SpaceUpdateJobService : JobService() {
-    private val stratum0StatusFetcher = Stratum0StatusFetcher()
+    private val stratum0StatusFetcher = StatusFetcher()
 
     override fun onStartJob(params: JobParameters): Boolean {
         object : AsyncTask<Void,Void, SpaceStatusData>() {
@@ -26,7 +26,7 @@ class SpaceUpdateJobService : JobService() {
             }
 
             override fun onPostExecute(result: SpaceStatusData) {
-                StratumsphereStatusProvider.sendRefreshBroadcast(applicationContext, result)
+                Stratum0WidgetProvider.sendRefreshBroadcast(applicationContext, result)
 
                 val isSuccessful = result.status != SpaceStatus.ERROR
                 jobFinished(params, !isSuccessful)
@@ -41,10 +41,13 @@ class SpaceUpdateJobService : JobService() {
     }
 
     companion object {
+        private val JOB_ID_SPACE_STATUS_REFRESH_PERIODIC = 1
+        private val JOB_ID_SPACE_STATUS_REFRESH_CONNECTIVITY = 2
+
         fun jobScheduleConnectivityRefresh(context: Context) {
             val serviceComponent = ComponentName(context, SpaceUpdateJobService::class.java)
 
-            val job = JobInfo.Builder(Constants.JOB_ID_SPACE_STATUS_REFRESH_CONNECTIVITY, serviceComponent)
+            val job = JobInfo.Builder(JOB_ID_SPACE_STATUS_REFRESH_CONNECTIVITY, serviceComponent)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
 
             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
@@ -54,7 +57,7 @@ class SpaceUpdateJobService : JobService() {
         fun jobSchedulePeriodicRefresh(context: Context) {
             val serviceComponent = ComponentName(context, SpaceUpdateJobService::class.java)
 
-            val job = JobInfo.Builder(Constants.JOB_ID_SPACE_STATUS_REFRESH_PERIODIC, serviceComponent)
+            val job = JobInfo.Builder(JOB_ID_SPACE_STATUS_REFRESH_PERIODIC, serviceComponent)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 job.setPeriodic(45 * DateUtils.MINUTE_IN_MILLIS, 15 * DateUtils.MINUTE_IN_MILLIS)
@@ -73,7 +76,7 @@ class SpaceUpdateJobService : JobService() {
 
         fun jobCancelPeriodicRefresh(context: Context) {
             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-            jobScheduler.cancel(Constants.JOB_ID_SPACE_STATUS_REFRESH_PERIODIC)
+            jobScheduler.cancel(JOB_ID_SPACE_STATUS_REFRESH_PERIODIC)
 
             Log.d(Constants.TAG, "Job cancelled!")
         }
