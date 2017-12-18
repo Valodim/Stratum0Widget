@@ -419,7 +419,7 @@ class StatusActivity : Activity() {
     }
 
     fun onPostSpaceStatusUpdate(statusData: SpaceStatusData) {
-        val isErrorStatus = statusData.status != SpaceStatus.ERROR
+        val isErrorStatus = statusData.status == SpaceStatus.ERROR
         if (!isErrorStatus) {
             Stratum0WidgetProvider.sendRefreshBroadcast(applicationContext, statusData)
         }
