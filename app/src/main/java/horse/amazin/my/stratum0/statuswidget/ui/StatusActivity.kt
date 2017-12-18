@@ -1,7 +1,6 @@
 package horse.amazin.my.stratum0.statuswidget.ui
 
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.net.Uri
@@ -29,7 +28,6 @@ import horse.amazin.my.stratum0.statuswidget.service.StatusChangerService
 import horse.amazin.my.stratum0.statuswidget.service.Stratum0WidgetProvider
 
 
-@SuppressLint("ClickableViewAccessibility")
 class StatusActivity : Activity() {
     companion object {
         private val REQUEST_CODE_IMPORT_SSH = 1
