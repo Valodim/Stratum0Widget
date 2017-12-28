@@ -51,7 +51,7 @@
     <string name="settings_hint_password"><![CDATA[<Passwort>]]></string>
     <string name="settings_ssh_status_ok">Konfiguriert</string>
     <string name="settings_error_bad_password">Falsches Passwort!</string>
-    <string name="unlock_error_wifi">Fehler: Du bist nicht im Stratum\\u00A00 Wifi!</string>
+    <string name="unlock_error_wifi">Fehler: Du bist nicht im Stratum\u00A00 Wifi!</string>
     <string name="unlock_error_unknown">Fehler: Unbekannter Fehler!</string>
     <string name="unlock_error_connect">Fehler: Verbindung abgelehnt!</string>
     <string name="unlock_error_identity">Fehler: Problem mit Ssh-Key!</string>
@@ -67,7 +67,7 @@
     <string name="settings_error_nick_pattern"><![CDATA[[a-zA-Z0-9_\\[\\]{}^`|-]+]]></string>
     <string name="status_closed_short">Zu</string>
     <string name="status_error_short">Unbekannt</string>
-    <string name="status_since">\\u00A0%s\n%s</string>
+    <string name="status_since">\u00A0%s\n%s</string>
     <string name="time_today">Heute</string>
     <string name="time_yesterday">Gestern</string>
     <string name="time_just_now">gerade eben</string>
