@@ -3,3 +3,5 @@
 -dontwarn javax.annotation.ParametersAreNonnullByDefault
 
 -dontwarn com.jcraft.jsch.**
+-keep class com.jcraft.jsch.**
+-keep interface com.jcraft.jsch.**
