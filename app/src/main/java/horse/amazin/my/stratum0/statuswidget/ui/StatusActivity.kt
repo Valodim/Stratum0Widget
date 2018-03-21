@@ -481,12 +481,8 @@ class StatusActivity : Activity() {
                 }
 
                 val timestamp = lastStatusData.since!!.time.time
-                val readableTime =
-                        if (timestamp > System.currentTimeMillis() - DateUtils.MINUTE_IN_MILLIS)
-                            getString(R.string.time_just_now)
-                        else
-                            DateUtils.getRelativeDateTimeString(applicationContext, timestamp,
-                                    DateUtils.MINUTE_IN_MILLIS, DateUtils.DAY_IN_MILLIS, 0)
+
+                val readableTime = getReadableTime(timestamp)
                 statusText = getString(R.string.status_open_format, lastStatusData.openedBy, readableTime)
                 statusColor = R.color.status_open
             }
@@ -516,6 +512,24 @@ class StatusActivity : Activity() {
         statusUnlockedOk.clearAnimation()
         currentStatusTextUnlocked.visibility = View.GONE
         statusUnlockedOk.visibility = View.GONE
+    }
+
+    private fun getReadableTime(timestamp: Long): String? {
+        if (timestamp > System.currentTimeMillis() - DateUtils.MINUTE_IN_MILLIS)
+            return getString(R.string.time_just_now)
+        else {
+            val date = when {
+                DateUtils.isToday(timestamp) -> getString(R.string.time_today)
+                DateUtils.isToday(timestamp + DateUtils.DAY_IN_MILLIS) -> getString(R.string.time_yesterday)
+                timestamp > (System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS * 7) ->
+                    DateUtils.formatDateTime(this, timestamp, DateUtils.FORMAT_SHOW_WEEKDAY)
+                else -> DateUtils.formatDateTime(this, timestamp,
+                        DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_ALL)
+            }
+            val time = DateUtils.formatDateTime(this, timestamp,
+                    DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL)
+            return date + "\u00A0" + time
+        }
     }
 
     private fun hideKeyboard() {

@@ -18,10 +18,11 @@
     <string name="status_closed_short">Closed</string>
     <string name="status_error_short">Error</string>
     <string name="status_unknown_short">Unknown</string>
-    <string name="status_open_format">Opened by %s\nsince %s</string>
+    <string name="status_open_format">Opened by %s\n%s</string>
+    <string name="status_open_format_since">"since %s</string>
 
     <!-- StratumsphereStatusProvider.java -->
-    <string name="status_since">\u00A0%s\n%s</string>
+    <string name="status_since">%s\n%s</string>
     <string name="updating">Updating…</string>
 
     <!-- layout/main.xml -->

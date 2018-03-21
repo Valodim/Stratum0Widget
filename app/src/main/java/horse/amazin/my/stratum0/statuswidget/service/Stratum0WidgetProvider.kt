@@ -188,8 +188,7 @@ class Stratum0WidgetProvider : AppWidgetProvider() {
                             DateUtils.isToday(timeInMillis) -> context.getString(R.string.time_today)
                             DateUtils.isToday(timeInMillis + DateUtils.DAY_IN_MILLIS) -> context.getString(R.string.time_yesterday)
                             timeInMillis > (System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS * 7) ->
-                                DateUtils.formatDateTime(context, timeInMillis,
-                                        DateUtils.FORMAT_SHOW_WEEKDAY)
+                                DateUtils.formatDateTime(context, timeInMillis, DateUtils.FORMAT_SHOW_WEEKDAY)
                             else -> DateUtils.formatDateTime(context, timeInMillis,
                                     DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_ALL)
                         }

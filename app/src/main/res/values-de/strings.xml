@@ -15,7 +15,7 @@
     <!-- StatusActivity.java -->
     <string name="status_error">Status unbekannt</string>
     <string name="status_closed">Space ist zu</string>
-    <string name="status_open_format">Geöffnet von %s\nseit %s</string>
+    <string name="status_open_format">Geöffnet von %s\n%s</string>
 
     <!-- StratumsphereStatusProvider.java -->
     <string name="updating">Update…</string>
@@ -67,7 +67,7 @@
     <string name="settings_error_nick_pattern"><![CDATA[[a-zA-Z0-9_\\[\\]{}^`|-]+]]></string>
     <string name="status_closed_short">Zu</string>
     <string name="status_error_short">Unbekannt</string>
-    <string name="status_since">\u00A0%s\n%s</string>
+    <string name="status_since">%s\n%s</string>
     <string name="time_today">Heute</string>
     <string name="time_yesterday">Gestern</string>
     <string name="time_just_now">gerade eben</string>
