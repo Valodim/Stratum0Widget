@@ -19,7 +19,6 @@
     <string name="status_error_short">Error</string>
     <string name="status_unknown_short">Unknown</string>
     <string name="status_open_format">Opened by %s\n%s</string>
-    <string name="status_open_format_since">"since %s</string>
 
     <!-- StratumsphereStatusProvider.java -->
     <string name="status_since">%s\n%s</string>
@@ -78,5 +77,6 @@
     <string name="time_today">Today</string>
     <string name="time_yesterday">Yesterday</string>
     <string name="time_just_now">just now</string>
+    <string name="key_from_clipboard">Using key from clipboard</string>
 
 </resources>

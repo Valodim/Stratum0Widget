@@ -243,9 +243,48 @@ class StatusActivity : Activity() {
 
     private fun onClickSshImport() {
         sshKeyStorage.clearKey()
+        updateSshStatus()
+
+        val foundKeyInClipboard = trySshKeyFromClipboard()
+
+        if (!foundKeyInClipboard) {
+            openSshKeyFromFile()
+        }
+    }
+
+    private fun openSshKeyFromFile() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.type = "*/*"
         startActivityForResult(intent, REQUEST_CODE_IMPORT_SSH)
+    }
+
+    private fun trySshKeyFromClipboard(): Boolean {
+        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        if (!clipboardManager.hasPrimaryClip() || clipboardManager.primaryClip.itemCount == 0) {
+            return false
+        }
+
+        val clipboardText = clipboardManager.primaryClip.getItemAt(0).coerceToText(this).toString()
+        if (!sshKeyStorage.looksLikeKey(clipboardText)) {
+            return false
+        }
+
+        clipboardManager.primaryClip = ClipData.newPlainText("", "")
+
+        Toast.makeText(this, R.string.key_from_clipboard, Toast.LENGTH_LONG).show()
+        askPassphraseAndStoreKey(clipboardText)
+
+        return true
+    }
+
+    private fun askPassphraseAndStoreKey(clipboardText: String) {
+        if (sshKeyStorage.isMatchingPassword(clipboardText, null)) {
+            sshKeyStorage.setKey(clipboardText, "")
+        } else {
+            displayPassphraseInput(clipboardText)
+        }
+
+        updateSshStatus()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -257,17 +296,13 @@ class StatusActivity : Activity() {
         if (resultCode == RESULT_OK && data != null) {
             val keyData = readSshKeyData(data.data)
             if (keyData != null) {
-                if (!sshKeyStorage.looksLikeKey(keyData)) {
-                    Toast.makeText(this, "This does not look like a key", Toast.LENGTH_LONG).show()
-                } else if (sshKeyStorage.isMatchingPassword(keyData, null)) {
-                    sshKeyStorage.setKey(keyData, "")
+                if (sshKeyStorage.looksLikeKey(keyData)) {
+                    askPassphraseAndStoreKey(keyData)
                 } else {
-                    displayPassphraseInput(keyData)
+                    Toast.makeText(this, "This does not look like a key", Toast.LENGTH_LONG).show()
                 }
             }
         }
-
-        updateSshStatus()
     }
 
     private var candidateKeyData: String? = null
