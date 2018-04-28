@@ -51,7 +51,6 @@
     <string name="settings_hint_password"><![CDATA[<Passwort>]]></string>
     <string name="settings_ssh_status_ok">Konfiguriert</string>
     <string name="settings_error_bad_password">Falsches Passwort!</string>
-    <string name="unlock_error_wifi">Fehler: Du bist nicht im Stratum\u00A00 Wifi!</string>
     <string name="unlock_error_unknown">Fehler: Unbekannter Fehler!</string>
     <string name="unlock_error_connect">Fehler: Verbindung abgelehnt!</string>
     <string name="unlock_error_identity">Fehler: Problem mit Ssh-Key!</string>

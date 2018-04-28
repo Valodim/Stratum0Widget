@@ -7,7 +7,7 @@ import horse.amazin.my.stratum0.statuswidget.BuildConfig
 object WifiInteractor {
     private val WIFI_SSID_S0 = "Stratum0"
 
-    fun isOnStratum0Wifi(context: Context): Boolean {
+    private fun isOnStratum0Wifi(context: Context): Boolean {
         val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val wifiInfo = wifiManager.connectionInfo
 
@@ -15,6 +15,10 @@ object WifiInteractor {
     }
 
     fun checkWifi(context: Context) {
+        if (hasSeenS0Wifi(context)) {
+            return
+        }
+
         val isOnS0Wifi = isOnStratum0Wifi(context)
         if (isOnS0Wifi) {
             val preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)

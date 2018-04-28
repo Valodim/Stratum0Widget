@@ -64,7 +64,6 @@
     <string name="title_status_activity">Stratum 0 Space Status</string>
 
     <string name="unlock_ok">Welcome!</string>
-    <string name="unlock_error_wifi">"Unlock failed: You're not connected to the Stratum\u00A00 Wifi!"</string>
 
     <string name="unlock_error_unknown">Unlock failed: Unknown error!</string>
     <string name="unlock_error_connect">Unlock failed: Connection refused!</string>

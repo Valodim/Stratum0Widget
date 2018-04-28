@@ -35,9 +35,7 @@ class DoorUnlockService : IntentService("Space Door Service") {
         val startRealtime = SystemClock.elapsedRealtime()
 
         val error: Int? =
-            if (!BuildConfig.DEBUG && !WifiInteractor.isOnStratum0Wifi(applicationContext)) {
-                R.string.unlock_error_wifi
-            } else if (!sshKeyStorage.hasKey()) {
+            if (!sshKeyStorage.hasKey()) {
                 R.string.unlock_error_no_key
             } else if (!sshKeyStorage.isKeyOk()) {
                 R.string.unlock_error_privkey

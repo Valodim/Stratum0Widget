@@ -1,8 +1,10 @@
 package horse.amazin.my.stratum0.statuswidget.ui
 
 
+import android.Manifest
 import android.app.Activity
 import android.content.*
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.*
 import android.support.annotation.ColorRes
@@ -91,7 +93,7 @@ class StatusActivity : Activity() {
         val isUnlockButton = view.id == R.id.button_unlock
         when (event?.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                startFadeoutAnimation(isUnlockButton)
+                checkPermissionAndStartFadeout(isUnlockButton)
                 return@OnTouchListener false
             }
             MotionEvent.ACTION_UP -> {
@@ -101,6 +103,30 @@ class StatusActivity : Activity() {
             }
         }
         false
+    }
+
+    private fun checkPermissionAndStartFadeout(isUnlockButton: Boolean) {
+        WifiInteractor.checkWifi(applicationContext)
+
+        if (!WifiInteractor.hasSeenS0Wifi(applicationContext)) {
+            // only need this permission starting sdk level 27
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 &&
+                    checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 1)
+                return
+            }
+
+            viewAnimator.displayedChildId = R.id.layout_wifi_missing
+            return
+        }
+
+        startFadeoutAnimation(isUnlockButton)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray) {
+        if (grantResults.count() < 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            viewAnimator.displayedChildId = R.id.layout_wifi_missing
+        }
     }
 
     private var holdingButton = false
@@ -221,6 +247,7 @@ class StatusActivity : Activity() {
         findViewById<View>(R.id.button_settings_cancel).setOnClickListener { onClickSettingsCancel() }
         findViewById<View>(R.id.button_settings_save).setOnClickListener { onClickSettingsSave() }
         findViewById<View>(R.id.button_error_back).setOnClickListener { onClickBack() }
+        findViewById<View>(R.id.button_permission_back).setOnClickListener { onClickBack() }
         findViewById<View>(R.id.button_settings_ssh_save).setOnClickListener { onClickSettingsSshSave() }
         findViewById<View>(R.id.button_settings_ssh_cancel).setOnClickListener { onClickSettingsSshCancel() }
 
@@ -457,12 +484,6 @@ class StatusActivity : Activity() {
         val isErrorStatus = statusData.status == SpaceStatus.ERROR
         if (!isErrorStatus) {
             Stratum0WidgetProvider.sendRefreshBroadcast(applicationContext, statusData)
-        }
-        WifiInteractor.checkWifi(applicationContext)
-
-        if (!WifiInteractor.hasSeenS0Wifi(applicationContext)) {
-            viewAnimator.displayedChildId = R.id.layout_wifi_missing
-            return
         }
 
         lastStatusData = statusData
