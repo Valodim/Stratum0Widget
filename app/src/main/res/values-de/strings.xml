@@ -32,6 +32,7 @@
     <string name="button_save">Speichern</string>
     <string name="button_cancel">Zurück</string>
     <string name="button_refresh">Refresh</string>
+    <string name="button_i_am_in_space">Ich bin Space!</string>
 
     <string name="status_progress_closing">Schließe Space…</string>
     <string name="status_progress_inheriting">Übernehme Space…</string>
@@ -41,7 +42,7 @@
     <string name="settings_label_nick">Nick:</string>
 
     <string name="toast_no_nick">Kein Nick konfiguriert!</string>
-    <string name="wifi_not_seen">Du musst einmal das Stratum\u00A00 Wifi gesehen haben um dieses Feature zu nutzen!</string>
+    <string name="space_must_have_been">Du musst einmal das Stratum\u00A00 Wifi gesehen haben um dieses Feature zu nutzen!</string>
     <string name="title_status_activity">Stratum 0 Space Status</string>
     <string name="settings_label_ssh_password">Ssh Pass:</string>
     <string name="settings_label_ssh_key">Ssh Key:</string>
@@ -72,4 +73,8 @@
     <string name="time_just_now">gerade eben</string>
     <string name="status_unknown_short">Unbekannt</string>
     <string name="key_from_clipboard">Verwende Key aus Zwischenablage</string>
+
+    <string name="location_check_ok">Du bist Space!</string>
+    <string name="location_check_failed">Sieht nicht so aus…</string>
+    <string name="location_check_permission">Kein Zugriff? :(</string>
 </resources>

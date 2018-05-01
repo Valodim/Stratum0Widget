@@ -17,7 +17,6 @@ import horse.amazin.my.stratum0.statuswidget.R
 import horse.amazin.my.stratum0.statuswidget.SpaceStatus
 import horse.amazin.my.stratum0.statuswidget.SpaceStatusData
 import horse.amazin.my.stratum0.statuswidget.interactors.StatusFetcher
-import horse.amazin.my.stratum0.statuswidget.interactors.WifiInteractor
 import horse.amazin.my.stratum0.statuswidget.push.SpaceUpdateJobService
 import horse.amazin.my.stratum0.statuswidget.push.Stratum0StatusUpdater
 import horse.amazin.my.stratum0.statuswidget.ui.StatusActivity
@@ -142,8 +141,6 @@ class Stratum0WidgetProvider : AppWidgetProvider() {
 
         setCachedSpaceStatusData(statusData, appWidgetIds, appWidgetManager)
         sendWidgetUpdateIntent(context, appWidgetIds)
-
-        WifiInteractor.checkWifi(context)
     }
 
     private fun setCachedSpaceStatusData(

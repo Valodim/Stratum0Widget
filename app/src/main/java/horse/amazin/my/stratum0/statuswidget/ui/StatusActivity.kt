@@ -22,9 +22,9 @@ import android.widget.Toast
 import horse.amazin.my.stratum0.statuswidget.R
 import horse.amazin.my.stratum0.statuswidget.SpaceStatus
 import horse.amazin.my.stratum0.statuswidget.SpaceStatusData
+import horse.amazin.my.stratum0.statuswidget.interactors.LocationInteractor
 import horse.amazin.my.stratum0.statuswidget.interactors.SshKeyStorage
 import horse.amazin.my.stratum0.statuswidget.interactors.StatusFetcher
-import horse.amazin.my.stratum0.statuswidget.interactors.WifiInteractor
 import horse.amazin.my.stratum0.statuswidget.service.DoorUnlockService
 import horse.amazin.my.stratum0.statuswidget.service.StatusChangerService
 import horse.amazin.my.stratum0.statuswidget.service.Stratum0WidgetProvider
@@ -47,6 +47,7 @@ class StatusActivity : Activity() {
     private val buttonClose: View by bindView(R.id.button_close)
     private val buttonUnlock: View by bindView(R.id.button_unlock)
     private val buttonRefresh: View by bindView(R.id.button_refresh)
+    private val buttonIamInSpace: View by bindView(R.id.button_i_am_in_space)
 
     private val currentStatusText: TextView by bindView(R.id.current_status_text)
     private val currentStatusTextUnlocked: TextView by bindView(R.id.current_status_text_unlocked)
@@ -93,7 +94,7 @@ class StatusActivity : Activity() {
         val isUnlockButton = view.id == R.id.button_unlock
         when (event?.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                checkPermissionAndStartFadeout(isUnlockButton)
+                requireBeenInSpaceOrStartFadeout(isUnlockButton)
                 return@OnTouchListener false
             }
             MotionEvent.ACTION_UP -> {
@@ -105,27 +106,38 @@ class StatusActivity : Activity() {
         false
     }
 
-    private fun checkPermissionAndStartFadeout(isUnlockButton: Boolean) {
-        WifiInteractor.checkWifi(applicationContext)
+    private fun requireBeenInSpaceOrStartFadeout(isUnlockButton: Boolean) {
+        if (!LocationInteractor.wasAtS0Before(applicationContext)) {
+            viewAnimator.displayedChildId = R.id.layout_never_in_space
+        } else {
+            startFadeoutAnimation(isUnlockButton)
+        }
+    }
 
-        if (!WifiInteractor.hasSeenS0Wifi(applicationContext)) {
-            // only need this permission starting sdk level 27
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 &&
-                    checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 1)
-                return
-            }
-
-            viewAnimator.displayedChildId = R.id.layout_wifi_missing
+    fun onClickIamInSpace() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 1)
             return
         }
 
-        startFadeoutAnimation(isUnlockButton)
+        checkIfInSpace()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray) {
-        if (grantResults.count() < 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            viewAnimator.displayedChildId = R.id.layout_wifi_missing
+        if (grantResults.size != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, R.string.location_check_permission, Toast.LENGTH_SHORT).show()
+            return
+        }
+        checkIfInSpace()
+    }
+
+    private fun checkIfInSpace() {
+        if (LocationInteractor.checkIfAtS0(applicationContext)) {
+            Toast.makeText(this, R.string.location_check_ok, Toast.LENGTH_SHORT).show()
+            viewAnimator.displayedChildId = R.id.layout_set_status
+        } else {
+            Toast.makeText(this, R.string.location_check_failed, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -242,6 +254,7 @@ class StatusActivity : Activity() {
         buttonClose.setOnTouchListener(onTouchListener)
         buttonUnlock.setOnTouchListener(onTouchListener)
         buttonRefresh.setOnClickListener({ onClickRefresh() })
+        buttonIamInSpace.setOnClickListener({ onClickIamInSpace() })
 
         findViewById<View>(R.id.button_settings).setOnClickListener { onClickSettings() }
         findViewById<View>(R.id.button_settings_cancel).setOnClickListener { onClickSettingsCancel() }

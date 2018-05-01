@@ -9,7 +9,6 @@ import horse.amazin.my.stratum0.statuswidget.BuildConfig
 import horse.amazin.my.stratum0.statuswidget.R
 import horse.amazin.my.stratum0.statuswidget.interactors.SshInteractor
 import horse.amazin.my.stratum0.statuswidget.interactors.SshKeyStorage
-import horse.amazin.my.stratum0.statuswidget.interactors.WifiInteractor
 
 class DoorUnlockService : IntentService("Space Door Service") {
     private lateinit var sshKeyStorage: SshKeyStorage

@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-feature android:name="android.hardware.location.network" />
+
     <application
         android:icon="@drawable/ic_stratum0_cutout"
         android:label="@string/app_name"
