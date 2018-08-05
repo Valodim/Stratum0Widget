@@ -38,7 +38,7 @@
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_back">Back</string>
-    <string name="button_i_am_in_space">I\'m in space!</string>
+    <string name="button_i_am_in_space">Go to space!</string>
 
     <string name="status_progress_closing">Closing…</string>
     <string name="status_progress_inheriting">Inheriting…</string>
@@ -61,7 +61,6 @@
     <string name="toast_no_nick">No nick configured!</string>
     <string name="toast_press_longer">Press longer to perform action</string>
 
-    <string name="space_must_have_been">You must have been at Stratum\u00A00 to use this feature.</string>
     <string name="title_status_activity">Stratum 0 Space Status</string>
 
     <string name="unlock_ok">Welcome!</string>
@@ -79,8 +78,8 @@
     <string name="time_just_now">just now</string>
     <string name="key_from_clipboard">Using key from clipboard</string>
 
-    <string name="location_check_ok">You\'re in space!</string>
-    <string name="location_check_failed">Doesn\'t look like it…</string>
-    <string name="location_check_permission">No permission? :(</string>
+    <string name="hint_pwd">"What's the S0 wifi password?"</string>
+    <string name="toast_pwd_ok">"Authorized!"</string>
+    <string name="toast_pwd_bad">"That's not right…"</string>
 
 </resources>
