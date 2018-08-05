@@ -42,7 +42,6 @@
     <string name="settings_label_nick">Nick:</string>
 
     <string name="toast_no_nick">Kein Nick konfiguriert!</string>
-    <string name="space_must_have_been">Du musst einmal das Stratum\u00A00 Wifi gesehen haben um dieses Feature zu nutzen!</string>
     <string name="title_status_activity">Stratum 0 Space Status</string>
     <string name="settings_label_ssh_password">Ssh Pass:</string>
     <string name="settings_label_ssh_key">Ssh Key:</string>
@@ -74,7 +73,7 @@
     <string name="status_unknown_short">Unbekannt</string>
     <string name="key_from_clipboard">Verwende Key aus Zwischenablage</string>
 
-    <string name="location_check_ok">Du bist Space!</string>
-    <string name="location_check_failed">Sieht nicht so aus…</string>
-    <string name="location_check_permission">Kein Zugriff? :(</string>
+    <string name="hint_pwd">"Was ist das S0 wifi password?"</string>
+    <string name="toast_pwd_ok">"Du bist Space!"</string>
+    <string name="toast_pwd_bad">"Hmm, nee…"</string>
 </resources>

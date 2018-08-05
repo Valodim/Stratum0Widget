@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minWidth="320dp"
+    tools:context=".ui.StatusActivity"
     >
 
     <TextView
@@ -444,14 +445,17 @@
                     android:src="@drawable/ic_s0_pin_48dp"
                     />
 
-                <TextView
+                <EditText
+                    android:id="@+id/text_pwd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@string/space_must_have_been"
-                    style="?android:textAppearanceMedium"
-                    />
+                    android:hint="@string/hint_pwd"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:inputType="textVisiblePassword"
+                    style="?android:textAppearanceMedium" />
 
             </LinearLayout>
 

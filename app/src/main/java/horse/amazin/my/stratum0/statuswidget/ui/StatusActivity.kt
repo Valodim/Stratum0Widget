@@ -1,10 +1,8 @@
 package horse.amazin.my.stratum0.statuswidget.ui
 
 
-import android.Manifest
 import android.app.Activity
 import android.content.*
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.*
 import android.support.annotation.ColorRes
@@ -22,7 +20,7 @@ import android.widget.Toast
 import horse.amazin.my.stratum0.statuswidget.R
 import horse.amazin.my.stratum0.statuswidget.SpaceStatus
 import horse.amazin.my.stratum0.statuswidget.SpaceStatusData
-import horse.amazin.my.stratum0.statuswidget.interactors.LocationInteractor
+import horse.amazin.my.stratum0.statuswidget.interactors.S0PermissionManager
 import horse.amazin.my.stratum0.statuswidget.interactors.SshKeyStorage
 import horse.amazin.my.stratum0.statuswidget.interactors.StatusFetcher
 import horse.amazin.my.stratum0.statuswidget.service.DoorUnlockService
@@ -64,6 +62,7 @@ class StatusActivity : Activity() {
     private val settingsSshPass: EditText by bindView(R.id.settings_ssh_pass)
 
     private val textUnlockError: TextView by bindView(R.id.text_unlock_error)
+    private val textPwd: TextView by bindView(R.id.text_pwd)
 
     private lateinit var username: String
     private lateinit var lastStatusData: SpaceStatusData
@@ -107,37 +106,20 @@ class StatusActivity : Activity() {
     }
 
     private fun requireBeenInSpaceOrStartFadeout(isUnlockButton: Boolean) {
-        if (!LocationInteractor.wasAtS0Before(applicationContext)) {
+        if (!S0PermissionManager.maySetSpaceStatus(applicationContext)) {
             viewAnimator.displayedChildId = R.id.layout_never_in_space
         } else {
             startFadeoutAnimation(isUnlockButton)
         }
     }
 
-    fun onClickIamInSpace() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 1)
-            return
-        }
-
-        checkIfInSpace()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray) {
-        if (grantResults.size != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, R.string.location_check_permission, Toast.LENGTH_SHORT).show()
-            return
-        }
-        checkIfInSpace()
-    }
-
-    private fun checkIfInSpace() {
-        if (LocationInteractor.checkIfAtS0(applicationContext)) {
-            Toast.makeText(this, R.string.location_check_ok, Toast.LENGTH_SHORT).show()
+    private fun onClickIamInSpace() {
+        if (S0PermissionManager.isS0WifiPwd(textPwd.text.toString().toByteArray())) {
+            S0PermissionManager.allowSetSpaceStatus(applicationContext)
+            Toast.makeText(this, R.string.toast_pwd_ok, Toast.LENGTH_SHORT).show()
             viewAnimator.displayedChildId = R.id.layout_set_status
         } else {
-            Toast.makeText(this, R.string.location_check_failed, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.toast_pwd_bad, Toast.LENGTH_SHORT).show()
         }
     }
 
