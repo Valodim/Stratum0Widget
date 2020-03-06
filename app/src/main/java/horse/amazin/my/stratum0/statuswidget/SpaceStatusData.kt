@@ -1,15 +1,15 @@
 package horse.amazin.my.stratum0.statuswidget
 
 
-import paperparcel.PaperParcel
-import paperparcel.PaperParcelable
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 enum class SpaceStatus {
     OPEN, CLOSED, ERROR, UPDATING
 }
 
-@PaperParcel
+@Parcelize
 data class SpaceStatusData(
         val lastUpdate: Calendar,
 
@@ -17,7 +17,7 @@ data class SpaceStatusData(
         val lastChange: Calendar?,
         val openedBy: String?,
         val since: Calendar?
-) : PaperParcelable {
+) : Parcelable {
     companion object {
         fun createOpenStatus(openedBy: String, lastChange: Calendar, since: Calendar): SpaceStatusData {
             return SpaceStatusData(Calendar.getInstance(), SpaceStatus.OPEN, lastChange, openedBy, since)
@@ -34,8 +34,5 @@ data class SpaceStatusData(
         fun createUpdatingStatus(): SpaceStatusData {
             return SpaceStatusData(Calendar.getInstance(), SpaceStatus.UPDATING, null,null, null)
         }
-
-        @Suppress("unused") // used by Parcelable
-        @JvmField val CREATOR = PaperParcelSpaceStatusData.CREATOR
     }
 }

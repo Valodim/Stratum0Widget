@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.*
 import android.net.Uri
 import android.os.*
-import android.support.annotation.ColorRes
 import android.text.format.DateUtils
 import android.view.MotionEvent
 import android.view.View
@@ -17,6 +16,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.ColorRes
 import horse.amazin.my.stratum0.statuswidget.R
 import horse.amazin.my.stratum0.statuswidget.SpaceStatus
 import horse.amazin.my.stratum0.statuswidget.SpaceStatusData
@@ -73,7 +73,7 @@ class StatusActivity : Activity() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 StatusChangerService.EVENT_UPDATE_RESULT -> {
-                    val status = intent.getParcelableExtra<SpaceStatusData>(StatusChangerService.EXTRA_STATUS)
+                    val status = intent.getParcelableExtra<SpaceStatusData>(StatusChangerService.EXTRA_STATUS)!!
                     onPostSpaceStatusUpdate(status)
                 }
                 DoorUnlockService.EVENT_UNLOCK_STATUS -> {
@@ -250,7 +250,7 @@ class StatusActivity : Activity() {
 
         settingsSshImport.setOnClickListener { onClickSshImport() }
 
-        username = prefs.getString("username", "")
+        username = prefs.getString("username", "")!!
 
         viewAnimator.displayedChildId = R.id.layout_progress
 
@@ -282,16 +282,16 @@ class StatusActivity : Activity() {
 
     private fun trySshKeyFromClipboard(): Boolean {
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        if (!clipboardManager.hasPrimaryClip() || clipboardManager.primaryClip.itemCount == 0) {
+        if (!clipboardManager.hasPrimaryClip() || clipboardManager.primaryClip?.itemCount == 0) {
             return false
         }
 
-        val clipboardText = clipboardManager.primaryClip.getItemAt(0).coerceToText(this).toString()
+        val clipboardText = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this).toString()
         if (!sshKeyStorage.looksLikeKey(clipboardText)) {
             return false
         }
 
-        clipboardManager.primaryClip = ClipData.newPlainText("", "")
+        clipboardManager.setPrimaryClip(ClipData.newPlainText("", ""))
 
         Toast.makeText(this, R.string.key_from_clipboard, Toast.LENGTH_LONG).show()
         askPassphraseAndStoreKey(clipboardText)
@@ -316,7 +316,7 @@ class StatusActivity : Activity() {
         }
 
         if (resultCode == RESULT_OK && data != null) {
-            val keyData = readSshKeyData(data.data)
+            val keyData = data.data?.let { readSshKeyData(it) }
             if (keyData != null) {
                 if (sshKeyStorage.looksLikeKey(keyData)) {
                     askPassphraseAndStoreKey(keyData)

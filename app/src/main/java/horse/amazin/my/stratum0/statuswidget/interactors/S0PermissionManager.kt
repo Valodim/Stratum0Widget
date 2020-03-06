@@ -1,7 +1,7 @@
 package horse.amazin.my.stratum0.statuswidget.interactors
 
 import android.content.Context
-import okio.ByteString
+import okio.ByteString.Companion.decodeHex
 import java.security.MessageDigest
 
 object S0PermissionManager {
@@ -25,5 +25,5 @@ object S0PermissionManager {
         return pwdDigest.contentEquals(S0WIFISHA256)
     }
 
-    private val S0WIFISHA256 = ByteString.decodeHex("b2f34b2eb4fb32ca1928016d9d502d4e9d88ba0730e2a24eca3df7601be450b6").toByteArray()
+    private val S0WIFISHA256 = "b2f34b2eb4fb32ca1928016d9d502d4e9d88ba0730e2a24eca3df7601be450b6".decodeHex().toByteArray()
 }

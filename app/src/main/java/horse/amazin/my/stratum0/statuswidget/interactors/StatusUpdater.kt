@@ -27,11 +27,11 @@ class StatusUpdater {
 
             val response = okHttpClient.newCall(Request.Builder().url(queryString).build()).execute()
 
-            if(response.code() != 200) {
+            if(response.code != 200) {
                 Timber.e("Could not update space status!")
             }
         } catch (e: IOException) {
-            Timber.e(e, "IOException " + e.message)
+            Timber.e(e)
         } catch (e: InterruptedException) {
             Timber.e(e, "Wait for new status didn't finish:")
         } catch (e: ExecutionException) {

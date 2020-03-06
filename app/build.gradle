@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jetbrains.kotlin.android.extensions'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 29
     defaultConfig {
         applicationId "horse.amazin.my.stratum0.statuswidget"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 29
 
         versionCode 22
         versionName "5.0.0"
@@ -36,24 +37,25 @@ android {
         }
     }
 
+    androidExtensions {
+        experimental = true
+    }
 }
 repositories {
     mavenCentral()
 }
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+//    compile 'com.hierynomus:sshj:0.27.0'
 
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile 'com.jcraft:jsch:0.1.54'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.0'
 
-    compile "com.jakewharton.timber:timber:4.5.1"
+    implementation 'com.jcraft:jsch:0.1.54'
 
-    compile 'nz.bradcampbell:paperparcel:2.0.4'
-    compile 'nz.bradcampbell:paperparcel-kotlin:2.0.4'
-    kapt 'nz.bradcampbell:paperparcel-compiler:2.0.4'
+    implementation "com.jakewharton.timber:timber:4.7.1"
 
-    fcmCompile 'com.google.firebase:firebase-messaging:11.6.2'
+    implementation 'com.google.firebase:firebase-messaging:20.1.2'
 }
 
 if (!getGradle().getStartParameter().getTaskRequests().toString().contains("Foss")) {

@@ -4,7 +4,7 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import horse.amazin.my.stratum0.statuswidget.BuildConfig
 import horse.amazin.my.stratum0.statuswidget.R
 import horse.amazin.my.stratum0.statuswidget.interactors.SshInteractor
@@ -79,14 +79,14 @@ class DoorUnlockService : IntentService("Space Door Service") {
     }
 
     companion object {
-        val ACTION_UNLOCK = "SpaceDoor.unlock"
+        const val ACTION_UNLOCK = "SpaceDoor.unlock"
 
-        val EVENT_UNLOCK_STATUS = "SpaceDoor.event.unlock_status"
+        const val EVENT_UNLOCK_STATUS = "SpaceDoor.event.unlock_status"
 
-        val EXTRA_STATUS = "status"
-        val EXTRA_ERROR_RES = "error"
+        const val EXTRA_STATUS = "status"
+        const val EXTRA_ERROR_RES = "error"
 
-        val MIN_UNLOCK_MS = 500L
+        const val MIN_UNLOCK_MS = 500L
 
         fun triggerDoorUnlock(context: Context) {
             val intent = Intent(context, DoorUnlockService::class.java)

@@ -50,14 +50,14 @@ class StatusFetcher {
 
         try {
             val response = okHttpClient.newCall(request).execute()
-            if (response.code() == 200) {
-                result = response.body()!!.string()
+            if (response.code == 200) {
+                result = response.body!!.string()
             } else {
-                Timber.d("Got negative http reply " + response.code())
+                Timber.d("Got negative http reply %d", response.code)
                 return SpaceStatusData.createErrorStatus()
             }
         } catch (e: IOException) {
-            Timber.e(e, "IOException: " + e.message)
+            Timber.e(e, "IOException: %s", e.message)
             return SpaceStatusData.createErrorStatus()
         }
 
@@ -68,16 +68,16 @@ class StatusFetcher {
             val lastChange = GregorianCalendar.getInstance()
             lastChange.timeInMillis = spaceStatus.getLong("lastchange") * 1000
 
-            if (spaceStatus.getBoolean("open")) {
+            return if (spaceStatus.getBoolean("open")) {
                 val rawOpenedBy = spaceStatus.getString("trigger_person")
                 val openedBy = rawOpenedBy.substringBeforeLast("[mx]")
 
                 val since = GregorianCalendar.getInstance()
                 since.timeInMillis = spaceStatus.getLong("ext_since") * 1000
 
-                return SpaceStatusData.createOpenStatus(openedBy, lastChange, since)
+                SpaceStatusData.createOpenStatus(openedBy, lastChange, since)
             } else {
-                return SpaceStatusData.createClosedStatus(lastChange)
+                SpaceStatusData.createClosedStatus(lastChange)
             }
         } catch (e: JSONException) {
             Timber.d(e, "Error creating JSON object")

@@ -79,7 +79,7 @@ class Stratum0WidgetProvider : AppWidgetProvider() {
                 onWidgetClick(context)
             }
             EVENT_REFRESH -> {
-                val status = intent.getParcelableExtra<SpaceStatusData>(StatusChangerService.EXTRA_STATUS)
+                val status = intent.getParcelableExtra<SpaceStatusData>(StatusChangerService.EXTRA_STATUS)!!
                 onSpaceStatusUpdated(context, status)
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
@@ -159,7 +159,7 @@ class Stratum0WidgetProvider : AppWidgetProvider() {
         val statusDataWrapper: Bundle? = appWidgetOptions.getParcelable("data")
         if (statusDataWrapper != null) {
             statusDataWrapper.classLoader = javaClass.classLoader
-            return statusDataWrapper.getParcelable<SpaceStatusData>("status")
+            return statusDataWrapper.getParcelable("status")!!
         }
 
         return SpaceStatusData.createErrorStatus()

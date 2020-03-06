@@ -42,11 +42,11 @@ class SshKeyStorage(context: Context) {
     }
 
     fun getKey(): String {
-        return prefs.getString("ssh-privkey-data", null)
+        return prefs.getString("ssh-privkey-data", "")!!
     }
 
     fun getPassword(): String {
-        return prefs.getString("ssh-privkey-pass", null)
+        return prefs.getString("ssh-privkey-pass", "")!!
     }
 
     fun isKeyOk(): Boolean {
