@@ -24,7 +24,7 @@
         android:inAnimation="@anim/fade_in_delayed"
         android:outAnimation="@anim/fade_out_delayed"
         android:measureAllChildren="true"
-        custom:initialView="04"
+        custom:initialView="01"
         tools:minHeight="200dp">
 
         <LinearLayout

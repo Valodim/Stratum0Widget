@@ -31,7 +31,7 @@ import horse.amazin.my.stratum0.statuswidget.service.Stratum0WidgetProvider
 class StatusActivity : Activity() {
     companion object {
         private val REQUEST_CODE_IMPORT_SSH = 1
-        private val PRESS_LONGER_HINT_TIMEOUT = 90
+        private val PRESS_LONGER_HINT_TIMEOUT = 140
         private val NICK_PATTERN = Regex("[a-zA-Z_\\[\\]{}^`|][a-zA-Z0-9_\\[\\]{}^`|-]+")
     }
 
@@ -90,10 +90,9 @@ class StatusActivity : Activity() {
     }
 
     private val onTouchListener = View.OnTouchListener { view, event ->
-        val isUnlockButton = view.id == R.id.button_unlock
         when (event?.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                requireBeenInSpaceOrStartFadeout(isUnlockButton)
+                requireBeenInSpaceOrStartFadeout(view.id)
                 return@OnTouchListener false
             }
             MotionEvent.ACTION_UP -> {
@@ -105,11 +104,11 @@ class StatusActivity : Activity() {
         false
     }
 
-    private fun requireBeenInSpaceOrStartFadeout(isUnlockButton: Boolean) {
+    private fun requireBeenInSpaceOrStartFadeout(pressedButtonId: Int) {
         if (!S0PermissionManager.maySetSpaceStatus(applicationContext)) {
             viewAnimator.displayedChildId = R.id.layout_never_in_space
         } else {
-            startFadeoutAnimation(isUnlockButton)
+            startFadeoutAnimation(pressedButtonId)
         }
     }
 
@@ -129,11 +128,13 @@ class StatusActivity : Activity() {
 
     private var lastButtonDown: Long? = null
 
-    private fun startFadeoutAnimation(isUnlock: Boolean) {
+    private fun startFadeoutAnimation(pressedButtonId: Int) {
         if (holdingButton || triggeredUpdate || triggeredUnlock) {
             return
         }
         lastButtonDown = SystemClock.elapsedRealtime()
+
+        val isUnlock = pressedButtonId == R.id.button_unlock
 
         if (!isUnlock && username.isEmpty()) {
             Toast.makeText(this, getString(R.string.toast_no_nick), Toast.LENGTH_LONG).show()
@@ -151,7 +152,8 @@ class StatusActivity : Activity() {
                     if (isUnlock) {
                         performDoorUnlockOperation()
                     } else {
-                        performSpaceStatusOperation()
+                        val isCloseElseInherit = pressedButtonId == R.id.button_close
+                        performSpaceStatusOperation(isCloseElseInherit)
                     }
                 }
             }
@@ -185,11 +187,11 @@ class StatusActivity : Activity() {
         }
     }
 
-    private fun performSpaceStatusOperation() {
+    private fun performSpaceStatusOperation(isCloseElseInherit: Boolean) {
         triggeredUpdate = true
         when (lastStatusData.status) {
             SpaceStatus.OPEN -> {
-                if (username == lastStatusData.openedBy) {
+                if (isCloseElseInherit) {
                     StatusChangerService.triggerStatusUpdate(applicationContext, null)
                     currentStatusTextLoading.text = getString(R.string.status_progress_closing)
                 } else {
@@ -528,7 +530,7 @@ class StatusActivity : Activity() {
                     buttonClose.visibility = View.VISIBLE
                 } else {
                     buttonInherit.visibility = View.VISIBLE
-                    buttonClose.visibility = View.GONE
+                    buttonClose.visibility = View.VISIBLE
                 }
 
                 val timestamp = lastStatusData.since!!.time.time
