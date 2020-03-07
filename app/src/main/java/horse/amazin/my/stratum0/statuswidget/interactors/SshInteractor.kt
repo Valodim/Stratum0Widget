@@ -1,73 +1,85 @@
 package horse.amazin.my.stratum0.statuswidget.interactors
 
 import android.os.SystemClock
-import android.util.Log
-import com.jcraft.jsch.JSch
-import com.jcraft.jsch.JSchException
-import com.jcraft.jsch.Session
 import horse.amazin.my.stratum0.statuswidget.BuildConfig
 import horse.amazin.my.stratum0.statuswidget.R
-import java.io.ByteArrayOutputStream
+import net.schmizz.sshj.SSHClient
+import net.schmizz.sshj.common.DisconnectReason
+import net.schmizz.sshj.transport.TransportException
+import net.schmizz.sshj.userauth.UserAuthException
+import net.schmizz.sshj.userauth.password.PasswordUtils
+import okhttp3.internal.closeQuietly
+import timber.log.Timber
+import java.io.IOException
 import java.net.ConnectException
-import java.net.SocketException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+
 
 class SshInteractor {
     fun open(sshPrivateKey: String, sshPassword: String): Int? {
-        val user = "auf"
+        val user = if (BuildConfig.DEBUG) "valodim" else "auf"
         val server = if (BuildConfig.DEBUG) "192.168.178.21" else "powerberry"
+        val expectedHostKey = if (BuildConfig.DEBUG) "c5:ee:ae:36:c6:fb:77:d5:c3:00:4f:d9:6d:da:fb:7f" else "SHA256:Z9I6IWdocW/tjlJm23iiZ4m2dZVD512329g0B3nn/JA"
 
-        val jsch = JSch()
-        JSch.setConfig("StrictHostKeyChecking", "no")
+        val sshClient = SSHClient()
 
-        try {
-            jsch.addIdentity("id_rsa", sshPrivateKey.toByteArray(), null, sshPassword.toByteArray())
-        } catch (e: JSchException) {
-            e.printStackTrace()
+        sshClient.addHostKeyVerifier(expectedHostKey)
+        sshClient.connectTimeout = 3000
+
+        val keys = try {
+            sshClient.loadKeys(sshPrivateKey, null, PasswordUtils.createOneOff(sshPassword.toCharArray()))
+        } catch (e: IOException) {
+            Timber.e(e, "Failed loading identity!")
             return R.string.unlock_error_identity
         }
 
-        val sshSession: Session
-        sshSession = jsch.getSession(user, server)
-
-        Log.d(this.javaClass.name, "Trying to connect...")
-
-        val baos = ByteArrayOutputStream()
-        baos.write("Output: ".toByteArray(), 0, 8)
+        Timber.d("Trying to connect...")
 
         try {
-            sshSession.connect(3000)
-
-            val channel = sshSession.openChannel("shell")
-            channel.outputStream = baos
-            channel.connect(3000)
+            sshClient.connect(server)
+            sshClient.authPublickey(user, keys)
+            val sshSession = sshClient.startSession()
+            val shell = sshSession.startShell()
 
             val startTime = SystemClock.elapsedRealtime()
-            while (channel.isConnected) {
+            while (!shell.isEOF) {
+                try {
+                    Thread.sleep(100)
+                } catch (e: InterruptedException) { }
                 if (SystemClock.elapsedRealtime() - startTime > MAX_CONNECTION_TIME) {
-                    channel.disconnect()
+                    shell.closeQuietly()
                     break
                 }
             }
 
-            Log.d(this.javaClass.name, baos.toString())
-        } catch (e: JSchException) {
-            Log.d(this.javaClass.name, "Connect NOT successful", e)
-            if (e.cause is ConnectException) {
-                return R.string.unlock_error_connect
+            val receivedText = shell.inputStream.bufferedReader().readText()
+            Timber.d("Received text: %s", receivedText)
+        } catch (e: UserAuthException) {
+            Timber.e(e)
+            return R.string.unlock_error_auth
+        } catch (e: TransportException) {
+            Timber.e(e, "Disconnect reason: %s", e.disconnectReason)
+            return when (e.disconnectReason) {
+                DisconnectReason.HOST_KEY_NOT_VERIFIABLE -> R.string.unlock_error_serverauth
+                DisconnectReason.NO_MORE_AUTH_METHODS_AVAILABLE -> R.string.unlock_error_auth
+                else -> R.string.unlock_error_network
             }
-            if (e.cause is SocketException) {
-                return R.string.unlock_error_network
-            }
-            if (e.message == "Auth fail") {
-                return R.string.unlock_error_auth
-            }
-            if (e.message?.contains("timeout") == true) {
-                return R.string.unlock_error_timeout
-            }
+        } catch (e: UnknownHostException) {
+            Timber.e(e)
+            return R.string.unlock_error_resolve
+        } catch (e: SocketTimeoutException) {
+            Timber.e(e)
+            return R.string.unlock_error_timeout
+        } catch (e: ConnectException) {
+            Timber.e(e)
+            return R.string.unlock_error_connect
+        } catch (e: IOException) {
+            Timber.e(e)
             return R.string.unlock_error_unknown
         }
 
-        Log.d(this.javaClass.name, "Connect successful")
+        Timber.d("Connect successful")
 
         return null
     }

@@ -299,11 +299,11 @@ class StatusActivity : Activity() {
         return true
     }
 
-    private fun askPassphraseAndStoreKey(clipboardText: String) {
-        if (sshKeyStorage.isMatchingPassword(clipboardText, null)) {
-            sshKeyStorage.setKey(clipboardText, "")
+    private fun askPassphraseAndStoreKey(keyData: String) {
+        if (sshKeyStorage.isMatchingPassword(keyData, null)) {
+            sshKeyStorage.setKey(keyData, "")
         } else {
-            displayPassphraseInput(clipboardText)
+            displayPassphraseInput(keyData)
         }
 
         updateSshStatus()

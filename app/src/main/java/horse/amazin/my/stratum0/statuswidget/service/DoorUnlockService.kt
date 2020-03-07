@@ -9,6 +9,7 @@ import horse.amazin.my.stratum0.statuswidget.BuildConfig
 import horse.amazin.my.stratum0.statuswidget.R
 import horse.amazin.my.stratum0.statuswidget.interactors.SshInteractor
 import horse.amazin.my.stratum0.statuswidget.interactors.SshKeyStorage
+import timber.log.Timber
 
 class DoorUnlockService : IntentService("Space Door Service") {
     private lateinit var sshKeyStorage: SshKeyStorage
@@ -44,6 +45,7 @@ class DoorUnlockService : IntentService("Space Door Service") {
                 try {
                     s0SshInteractor.open(sshPrivateKey, sshPassword)
                 } catch (e: Exception) {
+                    Timber.e(e, "Unknown error during connection attempt!")
                     R.string.unlock_error_unknown
                 }
             }

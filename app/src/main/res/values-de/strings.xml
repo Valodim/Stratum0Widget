@@ -57,6 +57,8 @@
     <string name="unlock_error_no_key">Fehler: Kein Ssh-Key konfiguriert!</string>
     <string name="unlock_error_auth">Fehler: Authentisierung fehlgeschlagen!</string>
     <string name="unlock_error_privkey">Fehler: Problem mit Ssh-Key!</string>
+    <string name="unlock_error_serverauth">Fehler: Falsches Server-Zertifikat!</string>
+    <string name="unlock_error_resolve">Fehler: Powerberry nicht im Netzwerk (Wifi prüfen!)</string>
     <string name="unlock_error_network">Fehler: Netzwerk-Fehler!</string>
     <string name="unlock_error_timeout">Fehler: Verbindungs-Timeout!</string>
     <string name="unlock_ok">Willkommen!</string>

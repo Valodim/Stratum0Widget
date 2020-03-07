@@ -68,6 +68,8 @@
     <string name="unlock_error_unknown">Unlock failed: Unknown error!</string>
     <string name="unlock_error_connect">Unlock failed: Connection refused!</string>
     <string name="unlock_error_network">Unlock failed: Network error!</string>
+    <string name="unlock_error_serverauth">Unlock failed: Invalid server certificate!</string>
+    <string name="unlock_error_resolve">Unlock failed: Powerberry not found (check wifi!)</string>
     <string name="unlock_error_timeout">Unlock failed: Connection timeout!</string>
     <string name="unlock_error_identity">Unlock failed: Problem with your private key!</string>
     <string name="unlock_error_no_key">Unlock failed: No private key configured!</string>

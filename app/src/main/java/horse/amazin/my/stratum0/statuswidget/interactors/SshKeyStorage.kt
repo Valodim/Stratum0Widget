@@ -2,12 +2,12 @@ package horse.amazin.my.stratum0.statuswidget.interactors
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.jcraft.jsch.JSch
-import com.jcraft.jsch.KeyPair
+import net.schmizz.sshj.SSHClient
+import net.schmizz.sshj.userauth.password.PasswordUtils
 
 class SshKeyStorage(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("ssh-prefs", Context.MODE_PRIVATE)
-    private val jsch = JSch()
+    private val sshClient = SSHClient()
 
     fun hasKey(): Boolean {
         return prefs.contains("ssh-privkey-data")
@@ -15,7 +15,7 @@ class SshKeyStorage(context: Context) {
 
     fun looksLikeKey(keyData: String): Boolean {
         return try {
-            KeyPair.load(jsch, keyData.toByteArray(), ByteArray(0))
+            sshClient.loadKeys(keyData, null, null)
             true
         } catch (e: Exception) {
             false
@@ -23,8 +23,15 @@ class SshKeyStorage(context: Context) {
     }
 
     fun isMatchingPassword(keyData: String, password: String?): Boolean {
-        val keyPair = KeyPair.load(jsch, keyData.toByteArray(), ByteArray(0))
-        return keyPair.decrypt(password)
+        return try {
+            val passwordFinder = password?.let {
+                PasswordUtils.createOneOff(it.toCharArray())
+            }
+            sshClient.loadKeys(keyData, null, passwordFinder).private
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     fun setKey(keyData: String, passphrase: String) {
