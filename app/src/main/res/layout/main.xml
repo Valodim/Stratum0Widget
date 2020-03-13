@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/status_icon_description"
-            android:src="@drawable/ic_stratum0_cutout"
+            android:src="@drawable/ic_biohazard_symbol"
             />
 
     </FrameLayout>
