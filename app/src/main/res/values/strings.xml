@@ -4,14 +4,6 @@
     <!-- AndroidManifest.xml -->
     <string name="app_name">Stratum 0 Widget</string>
 
-    <!-- Notification texts -->
-    <string name="notification_title">"You're in space, but it's closed!"</string>
-    <string name="notification_content">Click to open space</string>
-
-    <!-- FirstrunActivity.java -->
-    <string name="firstrun_explanation">Single tap triggers an update. Double tap lets you change the space status.</string>
-    <string name="button_dismiss">Got it!</string>
-
     <!-- StatusActivity.java -->
     <string name="status_error">Error fetching status</string>
     <string name="status_closed">Space is closed</string>
