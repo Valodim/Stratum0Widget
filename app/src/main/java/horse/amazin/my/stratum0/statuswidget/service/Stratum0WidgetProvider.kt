@@ -156,6 +156,12 @@ class Stratum0WidgetProvider : AppWidgetProvider() {
 
     private fun getCachedSpaceStatusData(appWidgetManager: AppWidgetManager, appWidgetIds: IntArray): SpaceStatusData {
         val appWidgetOptions = appWidgetManager.getAppWidgetOptions(appWidgetIds.first())
+        if (!appWidgetOptions.containsKey("data")) {
+            return SpaceStatusData.createErrorStatus()
+        }
+
+        // add our class loader, can't do cusom parcelables on some android derivations otherwise
+        appWidgetOptions.classLoader = javaClass.classLoader
         val statusDataWrapper: Bundle? = appWidgetOptions.getParcelable("data")
         if (statusDataWrapper != null) {
             statusDataWrapper.classLoader = javaClass.classLoader
