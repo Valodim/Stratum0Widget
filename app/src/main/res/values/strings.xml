@@ -76,4 +76,6 @@
     <string name="toast_pwd_ok">"Authorized!"</string>
     <string name="toast_pwd_bad">"That's not right…"</string>
 
+    <string name="corona_warning">As a precaution against the Corona virus, the space is currently restricted to members only.</string>
+
 </resources>

@@ -70,4 +70,7 @@
     <string name="hint_pwd">"Was ist das S0 wifi password?"</string>
     <string name="toast_pwd_ok">"Du bist Space!"</string>
     <string name="toast_pwd_bad">"Hmm, nee…"</string>
+
+    <string name="corona_warning">Als Vorsichtsmaßnahme gegen das Corona-Virus ist der Zugang aktuell auf Mitglieder beschränkt.</string>
+
 </resources>

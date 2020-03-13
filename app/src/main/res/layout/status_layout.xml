@@ -79,7 +79,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="12dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
@@ -184,6 +184,19 @@
                     />
 
             </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:gravity="center_vertical"
+                android:ellipsize="end"
+                android:text="@string/corona_warning"
+                android:textColor="@color/status_closed"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
