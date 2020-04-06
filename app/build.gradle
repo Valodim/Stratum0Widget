@@ -56,7 +56,7 @@ dependencies {
 
     implementation "com.jakewharton.timber:timber:4.7.1"
 
-    implementation 'com.google.firebase:firebase-messaging:20.1.2'
+    fcmImplementation 'com.google.firebase:firebase-messaging:20.1.2'
 }
 
 if (!getGradle().getStartParameter().getTaskRequests().toString().contains("Foss")) {
