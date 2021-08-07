@@ -12,9 +12,6 @@ import android.view.Window
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import horse.amazin.my.stratum0.statuswidget.R
@@ -26,6 +23,7 @@ import horse.amazin.my.stratum0.statuswidget.interactors.StatusFetcher
 import horse.amazin.my.stratum0.statuswidget.service.DoorUnlockService
 import horse.amazin.my.stratum0.statuswidget.service.StatusChangerService
 import horse.amazin.my.stratum0.statuswidget.service.Stratum0WidgetProvider
+import kotlinx.android.synthetic.main.status_layout.*
 
 
 class StatusActivity : Activity() {
@@ -38,31 +36,6 @@ class StatusActivity : Activity() {
     private val stratum0StatusFetcher = StatusFetcher()
 
     private lateinit var prefs: SharedPreferences
-
-    private val viewAnimator: ToolableViewAnimator by bindView(R.id.animator)
-    private val buttonOpen: View by bindView(R.id.button_open)
-    private val buttonInherit: View by bindView(R.id.button_inherit)
-    private val buttonClose: View by bindView(R.id.button_close)
-    private val buttonUnlock: View by bindView(R.id.button_unlock)
-    private val buttonRefresh: View by bindView(R.id.button_refresh)
-    private val buttonIamInSpace: View by bindView(R.id.button_i_am_in_space)
-
-    private val currentStatusText: TextView by bindView(R.id.current_status_text)
-    private val currentStatusTextUnlocked: TextView by bindView(R.id.current_status_text_unlocked)
-    private val currentStatusTextLoading: TextView by bindView(R.id.current_status_text_loading)
-
-    private val statusIcon: View by bindView(R.id.set_status_icon)
-    private val statusIconBackground: ImageView by bindView(R.id.set_status_icon_background)
-    private val statusProgress: View by bindView(R.id.set_status_progress)
-    private val statusUnlockedOk: ImageView by bindView(R.id.unlocked_ok_icon)
-
-    private val settingsEditName: EditText by bindView(R.id.settings_edit_name)
-    private val settingsSshStatus: TextView by bindView(R.id.settings_ssh_status)
-    private val settingsSshImport: View by bindView(R.id.settings_ssh_import)
-    private val settingsSshPass: EditText by bindView(R.id.settings_ssh_pass)
-
-    private val textUnlockError: TextView by bindView(R.id.text_unlock_error)
-    private val textPwd: TextView by bindView(R.id.text_pwd)
 
     private lateinit var username: String
     private lateinit var lastStatusData: SpaceStatusData
@@ -106,7 +79,7 @@ class StatusActivity : Activity() {
 
     private fun requireBeenInSpaceOrStartFadeout(pressedButtonId: Int) {
         if (!S0PermissionManager.maySetSpaceStatus(applicationContext)) {
-            viewAnimator.displayedChildId = R.id.layout_never_in_space
+            animator.displayedChildId = R.id.layout_never_in_space
         } else {
             startFadeoutAnimation(pressedButtonId)
         }
@@ -116,7 +89,7 @@ class StatusActivity : Activity() {
         if (S0PermissionManager.isS0WifiPwd(textPwd.text.toString().toByteArray())) {
             S0PermissionManager.allowSetSpaceStatus(applicationContext)
             Toast.makeText(this, R.string.toast_pwd_ok, Toast.LENGTH_SHORT).show()
-            viewAnimator.displayedChildId = R.id.layout_set_status
+            animator.displayedChildId = R.id.layout_set_status
         } else {
             Toast.makeText(this, R.string.toast_pwd_bad, Toast.LENGTH_SHORT).show()
         }
@@ -134,7 +107,7 @@ class StatusActivity : Activity() {
         }
         lastButtonDown = SystemClock.elapsedRealtime()
 
-        val isUnlock = pressedButtonId == R.id.button_unlock
+        val isUnlock = pressedButtonId == R.id.buttonUnlock
 
         if (!isUnlock && username.isEmpty()) {
             Toast.makeText(this, getString(R.string.toast_no_nick), Toast.LENGTH_LONG).show()
@@ -152,7 +125,7 @@ class StatusActivity : Activity() {
                     if (isUnlock) {
                         performDoorUnlockOperation()
                     } else {
-                        val isCloseElseInherit = pressedButtonId == R.id.button_close
+                        val isCloseElseInherit = pressedButtonId == R.id.buttonClose
                         performSpaceStatusOperation(isCloseElseInherit)
                     }
                 }
@@ -238,7 +211,7 @@ class StatusActivity : Activity() {
         buttonClose.setOnTouchListener(onTouchListener)
         buttonUnlock.setOnTouchListener(onTouchListener)
         buttonRefresh.setOnClickListener({ onClickRefresh() })
-        buttonIamInSpace.setOnClickListener({ onClickIamInSpace() })
+        buttonIAmInSpace.setOnClickListener({ onClickIamInSpace() })
 
         findViewById<View>(R.id.button_settings).setOnClickListener { onClickSettings() }
         findViewById<View>(R.id.button_settings_cancel).setOnClickListener { onClickSettingsCancel() }
@@ -254,7 +227,7 @@ class StatusActivity : Activity() {
 
         username = prefs.getString("username", "")!!
 
-        viewAnimator.displayedChildId = R.id.layout_progress
+        animator.displayedChildId = R.id.layout_progress
 
         refreshStatus()
     }
@@ -336,7 +309,7 @@ class StatusActivity : Activity() {
 
         candidateKeyData = keyData
 
-        viewAnimator.displayedChildId = R.id.layout_ssh_password
+        animator.displayedChildId = R.id.layout_ssh_password
     }
 
     private fun onClickSettingsSshSave() {
@@ -347,7 +320,7 @@ class StatusActivity : Activity() {
             candidateKeyData = null
 
             updateSshStatus()
-            viewAnimator.displayedChildId = R.id.layout_settings
+            animator.displayedChildId = R.id.layout_settings
         } else {
             settingsSshPass.error = getString(R.string.settings_error_bad_password)
         }
@@ -358,7 +331,7 @@ class StatusActivity : Activity() {
         settingsSshPass.setText("")
 
         updateSshStatus()
-        viewAnimator.displayedChildId = R.id.layout_settings
+        animator.displayedChildId = R.id.layout_settings
     }
 
     private fun readSshKeyData(uri: Uri): String? {
@@ -381,13 +354,13 @@ class StatusActivity : Activity() {
 
         hideKeyboard()
 
-        viewAnimator.displayedChildId = R.id.layout_progress
+        animator.displayedChildId = R.id.layout_progress
         refreshStatus()
     }
 
     private fun onClickSettingsCancel() {
         hideKeyboard()
-        viewAnimator.displayedChildId = R.id.layout_set_status
+        animator.displayedChildId = R.id.layout_set_status
     }
 
     private fun onClickSettings() {
@@ -395,7 +368,7 @@ class StatusActivity : Activity() {
             return
         }
 
-        viewAnimator.displayedChildId = R.id.layout_settings
+        animator.displayedChildId = R.id.layout_settings
         settingsEditName.setText(username)
         settingsEditName.setSelection(username.length)
         settingsEditName.requestFocus()
@@ -437,9 +410,9 @@ class StatusActivity : Activity() {
     private fun onDoorUnlockStatusEvent(errorRes: Int?) {
         if (errorRes == null) {
             val fadeInAnim = AnimationUtils.loadAnimation(this, R.anim.holding_fade_in)
-            statusUnlockedOk.startAnimation(fadeInAnim)
+            unlockedOkIcon.startAnimation(fadeInAnim)
             currentStatusTextUnlocked.startAnimation(fadeInAnim)
-            statusUnlockedOk.visibility = View.VISIBLE
+            unlockedOkIcon.visibility = View.VISIBLE
             currentStatusTextUnlocked.visibility = View.VISIBLE
 
             statusProgress.visibility = View.GONE
@@ -456,12 +429,12 @@ class StatusActivity : Activity() {
             currentStatusText.visibility = View.INVISIBLE
 
             textUnlockError.text = getText(errorRes)
-            viewAnimator.displayedChildId = R.id.layout_unlock_error
+            animator.displayedChildId = R.id.layout_unlock_error
         }
     }
 
     private fun onClickRefresh() {
-        viewAnimator.displayedChildId = R.id.layout_progress
+        animator.displayedChildId = R.id.layout_progress
         refreshStatus()
     }
 
@@ -494,7 +467,7 @@ class StatusActivity : Activity() {
     private fun displayStatus(animate: Boolean) {
         hideKeyboard()
 
-        viewAnimator.displayedChildId = R.id.layout_set_status
+        animator.displayedChildId = R.id.layout_set_status
 
         statusIcon.visibility = View.VISIBLE
         currentStatusText.visibility = View.VISIBLE
@@ -562,9 +535,9 @@ class StatusActivity : Activity() {
         statusProgress.visibility = View.GONE
 
         currentStatusTextUnlocked.clearAnimation()
-        statusUnlockedOk.clearAnimation()
+        unlockedOkIcon.clearAnimation()
         currentStatusTextUnlocked.visibility = View.GONE
-        statusUnlockedOk.visibility = View.GONE
+        unlockedOkIcon.visibility = View.GONE
     }
 
     private fun getReadableTime(timestamp: Long): String? {

@@ -1,187 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minWidth="320dp"
-    tools:context=".ui.StatusActivity"
-    >
+    tools:context=".ui.StatusActivity">
 
     <TextView
+        style="@android:style/TextAppearance.Material.DialogWindowTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_status_activity"
         android:layout_margin="24dp"
-        style="@android:style/TextAppearance.Material.DialogWindowTitle"
-        />
+        android:text="@string/title_status_activity" />
 
     <horse.amazin.my.stratum0.statuswidget.ui.ToolableViewAnimator
+        android:id="@+id/animator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/animator"
         android:inAnimation="@anim/fade_in_delayed"
-        android:outAnimation="@anim/fade_out_delayed"
         android:measureAllChildren="true"
+        android:outAnimation="@anim/fade_out_delayed"
         custom:initialView="01"
         tools:minHeight="200dp">
 
         <LinearLayout
+            android:id="@+id/layout_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="78dp"
             android:layout_marginLeft="24dp"
+            android:layout_marginTop="78dp"
             android:layout_marginRight="24dp"
-            android:orientation="horizontal"
-            android:id="@+id/layout_progress"
-            >
+            android:orientation="horizontal">
 
             <ProgressBar
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:padding="8dp"
                 android:indeterminate="true"
-                />
+                android:padding="8dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_gravity="center_vertical"
-                android:text="@string/updating"
                 android:gravity="center_vertical"
-                android:textAppearance="?android:textAppearanceMedium"
-                />
+                android:text="@string/updating"
+                android:textAppearance="?android:textAppearanceMedium" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_set_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/layout_set_status"
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/button_settings"
+                style="?android:buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="14dp"
                 android:layout_marginRight="4dp"
-                android:id="@+id/button_settings"
                 android:src="@drawable/ic_settings_black_24dp"
-                android:tint="#999999"
-                style="?android:buttonBarButtonStyle"
-                />
+                android:tint="#999999" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:layout_marginBottom="12dp"
                 android:orientation="horizontal">
 
                 <FrameLayout
+                    android:id="@+id/statusIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:id="@+id/set_status_icon"
-                    >
+                    android:layout_margin="8dp">
 
                     <ImageView
+                        android:id="@+id/statusIconBackground"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:id="@+id/set_status_icon_background"
                         android:contentDescription="@string/status_icon_description"
                         android:src="@drawable/ic_stratum0_background"
-                        android:tint="@color/status_unknown"
-                        />
+                        android:tint="@color/status_unknown" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:contentDescription="@string/status_icon_description"
-                        android:src="@drawable/ic_biohazard_symbol"
-                        />
+                        android:src="@drawable/ic_biohazard_symbol" />
 
                 </FrameLayout>
 
                 <ImageView
+                    android:id="@+id/unlockedOkIcon"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_margin="8dp"
                     android:src="@drawable/ic_check_black_24dp"
                     android:tint="#090"
-                    android:visibility="gone"
-                    android:id="@+id/unlocked_ok_icon"
-                    />
+                    android:visibility="gone" />
 
                 <ProgressBar
+                    android:id="@+id/statusProgress"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_margin="8dp"
-                    android:padding="8dp"
-                    android:id="@+id/set_status_progress"
                     android:indeterminate="true"
-                    android:visibility="gone"
-                    />
+                    android:padding="8dp"
+                    android:visibility="gone" />
 
                 <TextView
+                    android:id="@+id/currentStatusText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/set_status_icon"
-                    android:layout_alignTop="@+id/set_status_icon"
-                    android:layout_alignBottom="@+id/set_status_icon"
+                    android:layout_alignTop="@+id/statusIcon"
+                    android:layout_alignBottom="@+id/statusIcon"
                     android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:id="@+id/current_status_text"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:gravity="center_vertical"
+                    android:layout_toRightOf="@+id/statusIcon"
                     android:ellipsize="end"
-                    tools:text="Valodim\nsince 16:33"
-                    />
+                    android:gravity="center_vertical"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    tools:text="Valodim\nsince 16:33" />
 
                 <TextView
+                    android:id="@+id/currentStatusTextLoading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/set_status_icon"
-                    android:layout_alignTop="@+id/set_status_icon"
-                    android:layout_alignBottom="@+id/set_status_icon"
+                    android:layout_alignTop="@+id/statusIcon"
+                    android:layout_alignBottom="@+id/statusIcon"
                     android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:id="@+id/current_status_text_loading"
+                    android:layout_toRightOf="@+id/statusIcon"
                     android:gravity="center_vertical"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:visibility="gone"
-                    tools:text="Loading…"
-                    />
+                    tools:text="Loading…" />
 
                 <TextView
+                    android:id="@+id/currentStatusTextUnlocked"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/set_status_icon"
-                    android:layout_alignTop="@+id/set_status_icon"
-                    android:layout_alignBottom="@+id/set_status_icon"
+                    android:layout_alignTop="@+id/statusIcon"
+                    android:layout_alignBottom="@+id/statusIcon"
                     android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:id="@+id/current_status_text_unlocked"
+                    android:layout_toRightOf="@+id/statusIcon"
                     android:gravity="center_vertical"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:visibility="gone"
                     android:text="@string/unlock_ok"
-                    />
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -191,110 +176,100 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:gravity="center_vertical"
                 android:ellipsize="end"
+                android:gravity="center_vertical"
                 android:text="@string/corona_warning"
-                android:textColor="@color/status_closed"
-                />
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/status_closed" />
 
             <LinearLayout
+                style="?android:buttonBarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
                 android:gravity="end"
-                style="?android:buttonBarStyle">
+                android:padding="8dp">
 
                 <TextView
+                    android:id="@+id/buttonUnlock"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_unlock"
-                    android:text="@string/button_unlock"
-                    style="?android:buttonBarButtonStyle"
-                    />
+                    android:text="@string/button_unlock" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
-                    />
+                    android:layout_weight="1" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button_open"
-                    android:text="@string/button_open"
+                    android:id="@+id/buttonOpen"
                     style="?android:buttonBarButtonStyle"
-                    />
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_inherit"
+                    android:text="@string/button_open" />
+
+                <TextView
+                    android:id="@+id/buttonInherit"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="@string/button_inherit"
-                    android:visibility="gone"
-                    style="?android:buttonBarButtonStyle"
-                    />
+                    android:visibility="gone" />
 
                 <TextView
+                    android:id="@+id/buttonClose"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_close"
                     android:text="@string/button_close"
-                    android:visibility="gone"
-                    style="?android:buttonBarButtonStyle"
-                    />
+                    android:visibility="gone" />
 
                 <TextView
+                    android:id="@+id/buttonRefresh"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_refresh"
                     android:text="@string/button_refresh"
-                    android:visibility="gone"
-                    style="?android:buttonBarButtonStyle"
-                    />
+                    android:visibility="gone" />
 
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_settings"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_marginTop="36dp"
-            android:id="@+id/layout_settings">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
                 android:layout_marginLeft="6dp"
+                android:layout_marginTop="28dp"
                 android:layout_marginRight="6dp"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <TextView
+                    style="?android:textAppearanceMedium"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="12dp"
-                    android:text="@string/settings_label_nick"
-                    style="?android:textAppearanceMedium"
-                    />
+                    android:text="@string/settings_label_nick" />
 
                 <EditText
+                    android:id="@+id/settingsEditName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginRight="16dp"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
-                    android:id="@+id/settings_edit_name"
-                    android:inputType="textPersonName"
+                    android:layout_weight="1"
                     android:hint="@string/settings_hint_name"
-                    />
+                    android:inputType="textPersonName"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp" />
 
             </LinearLayout>
 
@@ -303,147 +278,135 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_marginRight="6dp"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <TextView
+                    style="?android:textAppearanceMedium"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:text="@string/settings_label_ssh_key"
-                    style="?android:textAppearanceMedium"
-                    />
+                    android:text="@string/settings_label_ssh_key" />
 
                 <TextView
+                    android:id="@+id/settingsSshStatus"
+                    style="?android:textAppearanceMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:id="@+id/settings_ssh_status"
-                    style="?android:textAppearanceMedium"
-                    tools:text="Ok"
-                    />
+                    tools:text="Ok" />
 
                 <ImageView
+                    android:id="@+id/settingsSshImport"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_cached_black_24dp"
-                    android:id="@+id/settings_ssh_import"
-                    style="?android:buttonBarButtonStyle"
-                    />
+                    android:src="@drawable/ic_cached_black_24dp" />
 
             </LinearLayout>
 
             <LinearLayout
+                style="?android:buttonBarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:padding="8dp"
-                style="?android:buttonBarStyle">
+                android:padding="8dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/button_settings_cancel"
-                    android:text="@string/button_cancel"
                     style="?android:buttonBarButtonStyle"
-                    />
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/button_cancel" />
+
+                <TextView
                     android:id="@+id/button_settings_save"
-                    android:text="@string/button_save"
                     style="?android:buttonBarButtonStyle"
-                    />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_save" />
 
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_ssh_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_marginTop="36dp"
-            android:id="@+id/layout_ssh_password">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_marginTop="16dp"
                 android:layout_marginLeft="6dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginRight="6dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <TextView
+                    style="?android:textAppearanceMedium"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="12dp"
-                    android:text="@string/settings_label_ssh_password"
-                    style="?android:textAppearanceMedium"
-                    />
+                    android:text="@string/settings_label_ssh_password" />
 
                 <EditText
+                    android:id="@+id/settingsSshPass"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginRight="16dp"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
-                    android:id="@+id/settings_ssh_pass"
-                    android:inputType="textVisiblePassword"
+                    android:layout_weight="1"
                     android:hint="@string/settings_hint_password"
-                    />
+                    android:inputType="textVisiblePassword"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp" />
 
             </LinearLayout>
 
             <LinearLayout
+                style="?android:buttonBarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:padding="8dp"
-                style="?android:buttonBarStyle">
+                android:padding="8dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/button_settings_ssh_cancel"
-                    android:text="@string/button_cancel"
                     style="?android:buttonBarButtonStyle"
-                    />
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/button_cancel" />
+
+                <TextView
                     android:id="@+id/button_settings_ssh_save"
-                    android:text="@string/button_save"
                     style="?android:buttonBarButtonStyle"
-                    />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_save" />
 
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_never_in_space"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/layout_never_in_space"
-            >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="86dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginTop="86dp"
                 android:layout_marginRight="24dp"
                 android:layout_marginBottom="14dp"
                 android:orientation="horizontal">
@@ -451,40 +414,38 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginRight="8dp"
-                    android:src="@drawable/ic_s0_pin_48dp"
-                    />
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/ic_s0_pin_48dp" />
 
                 <EditText
-                    android:id="@+id/text_pwd"
+                    android:id="@+id/textPwd"
+                    style="?android:textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/hint_pwd"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:inputType="textVisiblePassword"
-                    style="?android:textAppearanceMedium" />
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp" />
 
             </LinearLayout>
 
             <LinearLayout
+                style="?android:buttonBarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                style="?android:buttonBarStyle">
+                android:padding="8dp">
 
                 <TextView
+                    android:id="@+id/button_permission_back"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_permission_back"
-                    android:text="@string/button_back"
-                    style="?android:buttonBarButtonStyle"
-                    />
+                    android:text="@string/button_back" />
 
                 <Space
                     android:layout_width="0dp"
@@ -492,55 +453,51 @@
                     android:layout_weight="1" />
 
                 <TextView
+                    android:id="@+id/buttonIAmInSpace"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_i_am_in_space"
-                    android:text="@string/button_i_am_in_space"
-                    style="?android:buttonBarButtonStyle"
-                    />
+                    android:text="@string/button_i_am_in_space" />
 
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_unlock_error"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="36dp"
-            android:orientation="vertical"
-            android:id="@+id/layout_unlock_error"
-            >
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textUnlockError"
+                style="?android:textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_marginTop="34dp"
                 android:layout_marginLeft="26dp"
+                android:layout_marginTop="34dp"
                 android:layout_marginRight="26dp"
-                android:padding="16dp"
-                android:drawablePadding="20dp"
+                android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_error_outline_black_24dp"
+                android:drawablePadding="20dp"
                 android:drawableTint="#ff0000"
-                android:id="@+id/text_unlock_error"
                 android:gravity="center_vertical"
-                style="?android:textAppearanceMedium"
-                tools:text="Unlock failed: You're not connected to the Stratum 0 Wifi!"
-                />
+                android:padding="16dp"
+                tools:text="Unlock failed: You're not connected to the Stratum 0 Wifi!" />
 
             <LinearLayout
+                style="?android:buttonBarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                style="?android:buttonBarStyle">
+                android:padding="8dp">
 
                 <TextView
+                    android:id="@+id/button_error_back"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_error_back"
-                    android:text="@string/button_back"
-                    style="?android:buttonBarButtonStyle"
-                    />
+                    android:text="@string/button_back" />
 
             </LinearLayout>
 
