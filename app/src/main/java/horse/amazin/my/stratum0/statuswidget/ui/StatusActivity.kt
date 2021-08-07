@@ -210,8 +210,8 @@ class StatusActivity : Activity() {
         buttonInherit.setOnTouchListener(onTouchListener)
         buttonClose.setOnTouchListener(onTouchListener)
         buttonUnlock.setOnTouchListener(onTouchListener)
-        buttonRefresh.setOnClickListener({ onClickRefresh() })
-        buttonIAmInSpace.setOnClickListener({ onClickIamInSpace() })
+        buttonRefresh.setOnClickListener { onClickRefresh() }
+        buttonIAmInSpace.setOnClickListener { onClickIamInSpace() }
 
         findViewById<View>(R.id.button_settings).setOnClickListener { onClickSettings() }
         findViewById<View>(R.id.button_settings_cancel).setOnClickListener { onClickSettingsCancel() }
@@ -540,7 +540,7 @@ class StatusActivity : Activity() {
         unlockedOkIcon.visibility = View.GONE
     }
 
-    private fun getReadableTime(timestamp: Long): String? {
+    private fun getReadableTime(timestamp: Long): String {
         if (timestamp > System.currentTimeMillis() - DateUtils.MINUTE_IN_MILLIS)
             return getString(R.string.time_just_now)
         else {
