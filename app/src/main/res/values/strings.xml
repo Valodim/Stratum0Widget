@@ -25,7 +25,8 @@
     <string name="button_open">Open Space</string>
     <string name="button_inherit">Inherit</string>
     <string name="button_close">Close</string>
-    <string name="button_unlock">Unlock Space</string>
+    <string name="button_unlock">Unlock Door</string>
+    <string name="button_lock">Lock Door</string>
     <string name="button_refresh">Refresh</string>
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
@@ -36,6 +37,7 @@
     <string name="status_progress_inheriting">Inheriting…</string>
     <string name="status_progress_opening">Opening…</string>
     <string name="status_progress_unlock">Unlocking…</string>
+    <string name="status_progress_lock">Locking…</string>
 
     <string name="settings_hint_name"><![CDATA[<your nick>]]></string>
     <string name="settings_label_nick">Nick:</string>
@@ -57,16 +59,16 @@
 
     <string name="unlock_ok">Welcome!</string>
 
-    <string name="unlock_error_unknown">Unlock failed: Unknown error!</string>
-    <string name="unlock_error_connect">Unlock failed: Connection refused!</string>
-    <string name="unlock_error_network">Unlock failed: Network error!</string>
-    <string name="unlock_error_serverauth">Unlock failed: Invalid server certificate!</string>
-    <string name="unlock_error_resolve">Unlock failed: Powerberry not found (check wifi!)</string>
-    <string name="unlock_error_timeout">Unlock failed: Connection timeout!</string>
-    <string name="unlock_error_identity">Unlock failed: Problem with your private key!</string>
-    <string name="unlock_error_no_key">Unlock failed: No private key configured!</string>
-    <string name="unlock_error_auth">Unlock failed: Authentication error!</string>
-    <string name="unlock_error_privkey">Unlock failed: Problem with private key!</string>
+    <string name="ssh_error_unknown">Error: Unknown error!</string>
+    <string name="ssh_error_connect">Error: Connection refused!</string>
+    <string name="ssh_error_network">Error: Network error!</string>
+    <string name="ssh_error_serverauth">Error: Invalid server certificate!</string>
+    <string name="ssh_error_resolve">Error: Host (basilisk) not found (check wifi!)</string>
+    <string name="ssh_error_timeout">Error: Connection timeout!</string>
+    <string name="ssh_error_identity">Error: Problem with your private key!</string>
+    <string name="ssh_error_no_key">Error: No private key configured!</string>
+    <string name="ssh_error_auth">Error: Authentication error!</string>
+    <string name="ssh_error_privkey">Error: Problem with private key!</string>
     <string name="time_today">Today</string>
     <string name="time_yesterday">Yesterday</string>
     <string name="time_just_now">just now</string>

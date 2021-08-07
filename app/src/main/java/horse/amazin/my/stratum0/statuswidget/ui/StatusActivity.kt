@@ -81,7 +81,15 @@ class StatusActivity : Activity() {
         if (!S0PermissionManager.maySetSpaceStatus(applicationContext)) {
             animator.displayedChildId = R.id.layout_never_in_space
         } else {
-            startFadeoutAnimation(pressedButtonId)
+            val action = when (pressedButtonId) {
+                R.id.buttonUnlock -> ButtonActionType.UNLOCK
+                R.id.buttonLock -> ButtonActionType.LOCK
+                R.id.buttonClose -> ButtonActionType.CLOSE
+                R.id.buttonOpen -> ButtonActionType.OPEN
+                R.id.buttonInherit -> ButtonActionType.INHERIT
+                else -> throw java.lang.IllegalArgumentException("Unknown button!")
+            }
+            startFadeoutAnimation(action)
         }
     }
 
@@ -97,19 +105,24 @@ class StatusActivity : Activity() {
 
     private var holdingButton = false
     private var triggeredUpdate = false
-    private var triggeredUnlock = false
+    private var triggeredDoorOperation = false
 
     private var lastButtonDown: Long? = null
 
-    private fun startFadeoutAnimation(pressedButtonId: Int) {
-        if (holdingButton || triggeredUpdate || triggeredUnlock) {
+    enum class ButtonActionType {
+        LOCK, UNLOCK, OPEN, CLOSE, INHERIT;
+
+        val isDoorAction
+            get() = this == LOCK || this == UNLOCK
+    }
+
+    private fun startFadeoutAnimation(actionType: ButtonActionType) {
+        if (holdingButton || triggeredUpdate || triggeredDoorOperation) {
             return
         }
         lastButtonDown = SystemClock.elapsedRealtime()
 
-        val isUnlock = pressedButtonId == R.id.buttonUnlock
-
-        if (!isUnlock && username.isEmpty()) {
+        if (actionType.isDoorAction && username.isEmpty()) {
             Toast.makeText(this, getString(R.string.toast_no_nick), Toast.LENGTH_LONG).show()
             return
         }
@@ -122,11 +135,11 @@ class StatusActivity : Activity() {
             override fun onAnimationEnd(anim: Animation) {
                 if (holdingButton) {
                     holdingButton = false
-                    if (isUnlock) {
-                        performDoorUnlockOperation()
-                    } else {
-                        val isCloseElseInherit = pressedButtonId == R.id.buttonClose
-                        performSpaceStatusOperation(isCloseElseInherit)
+                    when (actionType) {
+                        ButtonActionType.LOCK -> performDoorLockOperation()
+                        ButtonActionType.UNLOCK -> performDoorUnlockOperation()
+                        ButtonActionType.CLOSE -> performSpaceStatusOperation(true)
+                        ButtonActionType.INHERIT, ButtonActionType.OPEN -> performSpaceStatusOperation(false)
                     }
                 }
             }
@@ -185,8 +198,17 @@ class StatusActivity : Activity() {
         currentStatusTextLoading.visibility = View.VISIBLE
     }
 
+    private fun performDoorLockOperation() {
+        triggeredDoorOperation = true
+
+        currentStatusTextLoading.text = getString(R.string.status_progress_lock)
+        currentStatusTextLoading.visibility = View.VISIBLE
+
+        DoorUnlockService.triggerDoorLock(applicationContext)
+    }
+
     private fun performDoorUnlockOperation() {
-        triggeredUnlock = true
+        triggeredDoorOperation = true
 
         currentStatusTextLoading.text = getString(R.string.status_progress_unlock)
         currentStatusTextLoading.visibility = View.VISIBLE
@@ -210,6 +232,7 @@ class StatusActivity : Activity() {
         buttonInherit.setOnTouchListener(onTouchListener)
         buttonClose.setOnTouchListener(onTouchListener)
         buttonUnlock.setOnTouchListener(onTouchListener)
+        buttonLock.setOnTouchListener(onTouchListener)
         buttonRefresh.setOnClickListener { onClickRefresh() }
         buttonIAmInSpace.setOnClickListener { onClickIamInSpace() }
 
@@ -222,6 +245,7 @@ class StatusActivity : Activity() {
         findViewById<View>(R.id.button_settings_ssh_cancel).setOnClickListener { onClickSettingsSshCancel() }
 
         buttonUnlock.isEnabled = sshKeyStorage.hasKey()
+        buttonLock.isEnabled = sshKeyStorage.hasKey()
 
         settingsSshImport.setOnClickListener { onClickSshImport() }
 
@@ -389,6 +413,7 @@ class StatusActivity : Activity() {
         }
 
         buttonUnlock.isEnabled = sshKeyStorage.hasKey()
+        buttonLock.isEnabled = sshKeyStorage.hasKey()
     }
 
     override fun onStart() {
@@ -419,11 +444,11 @@ class StatusActivity : Activity() {
             currentStatusTextLoading.visibility = View.GONE
 
             Handler().postDelayed({
-                triggeredUnlock = false
+                triggeredDoorOperation = false
                 displayStatus(true)
             }, 1000)
         } else {
-            triggeredUnlock = false
+            triggeredDoorOperation = false
 
             statusIcon.visibility = View.INVISIBLE
             currentStatusText.visibility = View.INVISIBLE
@@ -480,6 +505,8 @@ class StatusActivity : Activity() {
                 buttonClose.visibility = View.GONE
                 buttonInherit.visibility = View.GONE
                 buttonOpen.visibility = View.GONE
+                buttonLock.visibility = View.GONE
+                buttonUnlock.visibility = View.GONE
                 buttonRefresh.visibility = View.VISIBLE
 
                 statusText = getString(R.string.status_error)
@@ -490,6 +517,8 @@ class StatusActivity : Activity() {
                 buttonClose.visibility = View.GONE
                 buttonInherit.visibility = View.GONE
                 buttonOpen.visibility = View.VISIBLE
+                buttonLock.visibility = View.VISIBLE
+                buttonUnlock.visibility = View.GONE
 
                 statusText = getString(R.string.status_closed)
                 statusColor = R.color.status_closed
@@ -497,6 +526,8 @@ class StatusActivity : Activity() {
 
             SpaceStatus.OPEN -> {
                 buttonOpen.visibility = View.GONE
+                buttonLock.visibility = View.GONE
+                buttonUnlock.visibility = View.VISIBLE
 
                 if (username == lastStatusData.openedBy) {
                     buttonInherit.visibility = View.GONE

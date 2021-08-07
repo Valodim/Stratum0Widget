@@ -27,26 +27,27 @@ class DoorUnlockService : IntentService("Space Door Service") {
         }
 
         when (intent.action) {
-            ACTION_UNLOCK -> doorUnlock()
+            ACTION_LOCK -> sshLoginOperation("zu")
+            ACTION_UNLOCK -> sshLoginOperation("auf")
         }
     }
 
-    private fun doorUnlock() {
+    private fun sshLoginOperation(sshUser: String) {
         val startRealtime = SystemClock.elapsedRealtime()
 
         val error: Int? =
             if (!sshKeyStorage.hasKey()) {
-                R.string.unlock_error_no_key
+                R.string.ssh_error_no_key
             } else if (!sshKeyStorage.isKeyOk()) {
-                R.string.unlock_error_privkey
+                R.string.ssh_error_privkey
             } else {
                 val sshPrivateKey = sshKeyStorage.getKey()
                 val sshPassword = sshKeyStorage.getPassword()
                 try {
-                    s0SshInteractor.open(sshPrivateKey, sshPassword)
+                    s0SshInteractor.performSshLogin(sshPrivateKey, sshPassword, sshUser)
                 } catch (e: Exception) {
                     Timber.e(e, "Unknown error during connection attempt!")
-                    R.string.unlock_error_unknown
+                    R.string.ssh_error_unknown
                 }
             }
 
@@ -82,6 +83,7 @@ class DoorUnlockService : IntentService("Space Door Service") {
 
     companion object {
         const val ACTION_UNLOCK = "SpaceDoor.unlock"
+        const val ACTION_LOCK = "SpaceDoor.lock"
 
         const val EVENT_UNLOCK_STATUS = "SpaceDoor.event.unlock_status"
 
@@ -89,6 +91,13 @@ class DoorUnlockService : IntentService("Space Door Service") {
         const val EXTRA_ERROR_RES = "error"
 
         const val MIN_UNLOCK_MS = 500L
+
+        fun triggerDoorLock(context: Context) {
+            val intent = Intent(context, DoorUnlockService::class.java)
+            intent.`package` = BuildConfig.APPLICATION_ID
+            intent.action = ACTION_LOCK
+            context.startService(intent)
+        }
 
         fun triggerDoorUnlock(context: Context) {
             val intent = Intent(context, DoorUnlockService::class.java)

@@ -17,8 +17,7 @@ import java.net.UnknownHostException
 
 
 class SshInteractor {
-    fun open(sshPrivateKey: String, sshPassword: String): Int? {
-        val user = if (BuildConfig.DEBUG) "valodim" else "auf"
+    fun performSshLogin(sshPrivateKey: String, sshPassword: String, user: String): Int? {
         val server = if (BuildConfig.DEBUG) "192.168.178.21" else "basilisk"
         val expectedHostKey = if (BuildConfig.DEBUG) "c5:ee:ae:36:c6:fb:77:d5:c3:00:4f:d9:6d:da:fb:7f" else "SHA256:QaGYf6krjSFsmFiQn48r0k1RPY8YyyNIAKi9YDqmPH4"
 
@@ -31,7 +30,7 @@ class SshInteractor {
             sshClient.loadKeys(sshPrivateKey, null, PasswordUtils.createOneOff(sshPassword.toCharArray()))
         } catch (e: IOException) {
             Timber.e(e, "Failed loading identity!")
-            return R.string.unlock_error_identity
+            return R.string.ssh_error_identity
         }
 
         Timber.d("Trying to connect...")
@@ -57,26 +56,26 @@ class SshInteractor {
             Timber.d("Received text: %s", receivedText)
         } catch (e: UserAuthException) {
             Timber.e(e)
-            return R.string.unlock_error_auth
+            return R.string.ssh_error_auth
         } catch (e: TransportException) {
             Timber.e(e, "Disconnect reason: %s", e.disconnectReason)
             return when (e.disconnectReason) {
-                DisconnectReason.HOST_KEY_NOT_VERIFIABLE -> R.string.unlock_error_serverauth
-                DisconnectReason.NO_MORE_AUTH_METHODS_AVAILABLE -> R.string.unlock_error_auth
-                else -> R.string.unlock_error_network
+                DisconnectReason.HOST_KEY_NOT_VERIFIABLE -> R.string.ssh_error_serverauth
+                DisconnectReason.NO_MORE_AUTH_METHODS_AVAILABLE -> R.string.ssh_error_auth
+                else -> R.string.ssh_error_network
             }
         } catch (e: UnknownHostException) {
             Timber.e(e)
-            return R.string.unlock_error_resolve
+            return R.string.ssh_error_resolve
         } catch (e: SocketTimeoutException) {
             Timber.e(e)
-            return R.string.unlock_error_timeout
+            return R.string.ssh_error_timeout
         } catch (e: ConnectException) {
             Timber.e(e)
-            return R.string.unlock_error_connect
+            return R.string.ssh_error_connect
         } catch (e: IOException) {
             Timber.e(e)
-            return R.string.unlock_error_unknown
+            return R.string.ssh_error_unknown
         }
 
         Timber.d("Connect successful")
