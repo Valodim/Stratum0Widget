@@ -19,8 +19,8 @@ import java.net.UnknownHostException
 class SshInteractor {
     fun open(sshPrivateKey: String, sshPassword: String): Int? {
         val user = if (BuildConfig.DEBUG) "valodim" else "auf"
-        val server = if (BuildConfig.DEBUG) "192.168.178.21" else "powerberry"
-        val expectedHostKey = if (BuildConfig.DEBUG) "c5:ee:ae:36:c6:fb:77:d5:c3:00:4f:d9:6d:da:fb:7f" else "SHA256:Z9I6IWdocW/tjlJm23iiZ4m2dZVD512329g0B3nn/JA"
+        val server = if (BuildConfig.DEBUG) "192.168.178.21" else "basilisk"
+        val expectedHostKey = if (BuildConfig.DEBUG) "c5:ee:ae:36:c6:fb:77:d5:c3:00:4f:d9:6d:da:fb:7f" else "SHA256:QaGYf6krjSFsmFiQn48r0k1RPY8YyyNIAKi9YDqmPH4"
 
         val sshClient = SSHClient()
 
