@@ -98,7 +98,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:contentDescription="@string/status_icon_description"
-                        android:src="@drawable/ic_biohazard_symbol" />
+                        android:src="@drawable/ic_stratum0_cutout"
+                        />
 
                 </FrameLayout>
 
@@ -169,18 +170,6 @@
                     android:visibility="gone" />
 
             </RelativeLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:text="@string/corona_warning"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textColor="@color/status_closed" />
 
             <LinearLayout
                 style="?android:buttonBarStyle"
