@@ -32,6 +32,7 @@ class Stratum0WidgetProvider : AppWidgetProvider() {
         super.onEnabled(context)
         Stratum0StatusUpdater.initializeBackgroundUpdates(context)
         SpaceUpdateJobService.jobScheduleConnectivityRefresh(context)
+        refreshStatusAsync(context)
     }
 
     override fun onDisabled(context: Context) {
