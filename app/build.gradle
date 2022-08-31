@@ -45,8 +45,6 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
     implementation 'com.squareup.okhttp3:okhttp:4.4.0'
 
     implementation "org.bouncycastle:bcprov-jdk15on:1.64"
