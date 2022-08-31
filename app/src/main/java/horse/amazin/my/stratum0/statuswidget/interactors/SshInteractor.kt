@@ -19,11 +19,12 @@ import java.net.UnknownHostException
 class SshInteractor {
     fun performSshLogin(sshPrivateKey: String, sshPassword: String, user: String): Int? {
         val server = if (BuildConfig.DEBUG) "192.168.178.21" else "basilisk"
-        val expectedHostKey = if (BuildConfig.DEBUG) "c5:ee:ae:36:c6:fb:77:d5:c3:00:4f:d9:6d:da:fb:7f" else "SHA256:QaGYf6krjSFsmFiQn48r0k1RPY8YyyNIAKi9YDqmPH4"
 
         val sshClient = SSHClient()
 
-        sshClient.addHostKeyVerifier(expectedHostKey)
+        // Accept all clients. Security reasoning: The only thing a MitM-attacker could do here is
+        // open the door on a network where the user doesn't expect the mechanism to work.
+        sshClient.addHostKeyVerifier { _, _, _ -> true }
         sshClient.connectTimeout = 3000
 
         val keys = try {
