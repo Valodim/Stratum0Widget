@@ -4,11 +4,11 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jetbrains.kotlin.android.extensions'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 33
     defaultConfig {
         applicationId "horse.amazin.my.stratum0.statuswidget"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 33
 
         versionCode 25
         versionName "7.0.0"
@@ -45,6 +45,7 @@ android {
 dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.4.0'
 
+    // needed for sshj secret key operations
     implementation "org.bouncycastle:bcprov-jdk15on:1.64"
 
     // implementation 'com.jcraft:jsch:0.1.54'

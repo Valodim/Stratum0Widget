@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.widget.RemoteViews
@@ -21,6 +22,10 @@ import horse.amazin.my.stratum0.statuswidget.push.SpaceUpdateJobService
 import horse.amazin.my.stratum0.statuswidget.push.Stratum0StatusUpdater
 import horse.amazin.my.stratum0.statuswidget.ui.StatusActivity
 
+val FLAG_IMMUTABLE_COMPAT = when {
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> PendingIntent.FLAG_IMMUTABLE
+    else -> 0
+}
 
 class Stratum0WidgetProvider : AppWidgetProvider() {
     override fun onEnabled(context: Context) {
@@ -177,7 +182,12 @@ class Stratum0WidgetProvider : AppWidgetProvider() {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
 
         for (appWidgetId in appWidgetIds) {
-            val clickIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val clickIntent = PendingIntent.getBroadcast(
+                context,
+                appWidgetId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE_COMPAT
+            )
             views.setOnClickPendingIntent(R.id.widget_root, clickIntent)
         }
     }

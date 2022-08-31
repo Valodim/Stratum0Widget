@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:tools="http://schemas.android.com/tools"
-    package="horse.amazin.my.stratum0.statuswidget"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="horse.amazin.my.stratum0.statuswidget">
 
     <application>
-        <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+        <meta-data
+            android:name="firebase_analytics_collection_deactivated"
+            android:value="true" />
 
-        <service android:name=".push.PushFcmUpdateService"
-            tools:ignore="ExportedService"> <!-- the firebase service class takes care of permission checks -->
+        <service
+            android:name=".push.PushFcmUpdateService"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
     </application>
