@@ -52,8 +52,9 @@ dependencies {
     implementation 'com.hierynomus:sshj:0.27.0'
 
     implementation "com.jakewharton.timber:timber:4.7.1"
+    implementation 'androidx.annotation:annotation:1.4.0'
 
-    fcmImplementation 'com.google.firebase:firebase-messaging:20.1.2'
+    fcmImplementation 'com.google.firebase:firebase-messaging:23.0.7'
 }
 
 if (!getGradle().getStartParameter().getTaskRequests().toString().contains("Foss")) {
