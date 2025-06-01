@@ -20,9 +20,7 @@ import java.util.Collections.singletonList
 
 
 class SshInteractor {
-    fun performSshLogin(sshPrivateKey: String, sshPassword: String?, user: String): Int? {
-        val server = if (BuildConfig.DEBUG) "192.168.178.21" else "basilisk"
-
+    fun performSshLogin(sshPrivateKey: String, sshPassword: String?, user: String, server: String): Int? {
         val sshClient = SSHClient()
 
         sshClient.connectTimeout = 3000

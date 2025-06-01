@@ -72,4 +72,7 @@
     <string name="hint_pwd">"Was ist das S0 wifi password?"</string>
     <string name="toast_pwd_ok">"Du bist Space!"</string>
     <string name="toast_pwd_bad">"Hmm, nee…"</string>
+    <string name="button_upper_text">Space 3</string>
+    <string name="button_lower_text">Space 2</string>
+    <string name="select_location">Tür öffnen</string>
 </resources>

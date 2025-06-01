@@ -21,7 +21,7 @@
         android:inAnimation="@anim/fade_in_delayed"
         android:measureAllChildren="true"
         android:outAnimation="@anim/fade_out_delayed"
-        custom:initialView="01"
+        custom:initialView="6"
         tools:minHeight="200dp">
 
         <LinearLayout
@@ -98,8 +98,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:contentDescription="@string/status_icon_description"
-                        android:src="@drawable/ic_stratum0_cutout"
-                        />
+                        android:src="@drawable/ic_stratum0_cutout" />
 
                 </FrameLayout>
 
@@ -494,6 +493,81 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/button_back" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_select_location"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="52dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textSelectLocation"
+                    style="?android:textAppearanceMedium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/space2_t_r_open"
+                    android:drawablePadding="20dp"
+                    android:gravity="center_vertical"
+                    android:padding="8dp"
+                    android:text="@string/select_location" />
+
+                <ProgressBar
+                    android:id="@+id/statusUnlockProgress"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:indeterminate="true"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                style="?android:buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/button_select_location_back"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_back" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/button_space2"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_lower_text" />
+
+                <TextView
+                    android:id="@+id/button_space3"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_upper_text" />
 
             </LinearLayout>
 
